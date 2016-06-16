@@ -9,8 +9,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.configserver</groupId>
-    <artifactId>cola-config-server</artifactId>
+    <groupId>com.cola.configuration</groupId>
+    <artifactId>cola-configuration</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
