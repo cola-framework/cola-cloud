@@ -13,22 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.discovery;
+package com.cola.auth;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.netflix.eureka.server.EnableEurekaServer;
 
 /**
  * cola
- * Created by jiachen.shi on 6/16/2016.
+ * Created by jiachen.shi on 6/23/2016.
  */
 @SpringBootApplication
-@EnableEurekaServer
-public class ApplicationRunner {
+public class WebApplicationRunner {
+
+    private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
 
     public static void main(String[] args) {
-        SpringApplication.run(ApplicationRunner.class, args);
+        logger.info("**************** WebApplication Cola-Auth Start *****************");
+        SpringApplication.run(WebApplicationRunner.class, args);
+        logger.info("***************** WebApplication Cola-Auth End ******************");
     }
 
 }

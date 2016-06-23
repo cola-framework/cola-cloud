@@ -11,6 +11,7 @@
 # idea IDE files #
 .idea/
 *.iml
+*.project
 
 # log file
 *.log
