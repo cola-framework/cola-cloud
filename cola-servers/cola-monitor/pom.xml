@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>com.cola.monitor</groupId>
+    <groupId>com.cola.servers.monitor</groupId>
     <artifactId>cola-monitor</artifactId>
     <packaging>jar</packaging>
 

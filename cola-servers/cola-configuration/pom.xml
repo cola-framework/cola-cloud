@@ -9,7 +9,7 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.configuration</groupId>
+    <groupId>com.cola.servers.configuration</groupId>
     <artifactId>cola-configuration</artifactId>
     <packaging>jar</packaging>
 

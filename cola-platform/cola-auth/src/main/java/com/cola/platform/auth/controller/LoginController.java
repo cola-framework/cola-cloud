@@ -13,34 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.auth.controller;
+package com.cola.platform.auth.controller;
 
 import com.cola.libs.beans.ResponseHeader;
 import com.cola.libs.beans.ResponseMessage;
+import com.cola.libs.beans.UserLogin;
 import com.cola.libs.enums.ResponseCode;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
-
-import javax.servlet.http.HttpServletRequest;
 
 /**
  * cola
  * Created by jiachen.shi on 6/21/2016.
  */
 @RestController
-@RequestMapping("/oauth2")
-public class Oauth2Controller {
+public class LoginController {
 
-    @Autowired
-    private HttpServletRequest request;
-
-    public
-    @ResponseBody
-    ResponseMessage oauth2(@RequestHeader("providerType") String providerType, @RequestHeader("accessToken") String accessToken) {
+    public @ResponseBody
+    ResponseMessage login(@RequestBody UserLogin userLogin){
 
         ResponseMessage responseMessage = new ResponseMessage();
         ResponseHeader responseHeader = new ResponseHeader();
@@ -49,18 +41,7 @@ public class Oauth2Controller {
         responseHeader.setCode(ResponseCode.SUCCESS.getCode());
 
         return responseMessage;
-    }
 
-    @RequestMapping(value = "/token")
-    public @ResponseBody ResponseMessage token(){
-
-        ResponseMessage responseMessage = new ResponseMessage();
-        ResponseHeader responseHeader = new ResponseHeader();
-        responseMessage.setHeader(responseHeader);
-
-        responseHeader.setCode(ResponseCode.SUCCESS.getCode());
-
-        return responseMessage;
     }
 
 }

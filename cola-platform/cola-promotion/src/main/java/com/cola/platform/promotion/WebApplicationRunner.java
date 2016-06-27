@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.auth;
+package com.cola.platform.promotion;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,9 +30,9 @@ public class WebApplicationRunner {
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
 
     public static void main(String[] args) {
-        logger.info("**************** WebApplication Cola-Auth Start *****************");
+        logger.info("**************** WebApplication Cola-Promotion Start *****************");
         SpringApplication.run(WebApplicationRunner.class, args);
-        logger.info("***************** WebApplication Cola-Auth End ******************");
+        logger.info("**************** WebApplication Cola-Promotion End ******************");
     }
 
 }

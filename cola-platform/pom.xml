@@ -8,17 +8,17 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
-    <name>cola-servers</name>
+    <name>cola-platform</name>
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.servers</groupId>
-    <artifactId>cola-servers</artifactId>
+    <groupId>com.cola.platform</groupId>
+    <artifactId>cola-platform</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <modules>
-        <module>cola-discovery</module>
-        <module>cola-configuration</module>
-        <module>cola-monitor</module>
+        <module>cola-auth</module>
+        <module>cola-promotion</module>
+        <module>cola-oms</module>
     </modules>
 
     <build>
