@@ -15,13 +15,9 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs</groupId>
-            <artifactId>cola-libs</artifactId>
+            <groupId>com.cola.libs.jpa</groupId>
+            <artifactId>cola-jpa</artifactId>
             <version>0.0.1-SNAPSHOT</version>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
     </dependencies>
 

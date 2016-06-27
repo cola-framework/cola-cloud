@@ -3,21 +3,21 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.cola.platform</groupId>
-        <artifactId>cola-platform</artifactId>
+        <artifactId>cola-libs</artifactId>
+        <groupId>com.cola.libs</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.platform.oms</groupId>
-    <artifactId>cola-oms</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <groupId>com.cola.libs.jpa</groupId>
+    <artifactId>cola-jpa</artifactId>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.jpa</groupId>
-            <artifactId>cola-jpa</artifactId>
-            <version>0.0.1-SNAPSHOT</version>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
     </dependencies>
+
 </project>
