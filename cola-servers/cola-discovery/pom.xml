@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>cola-parent</artifactId>
-        <groupId>com.cola</groupId>
+        <artifactId>cola-servers</artifactId>
+        <groupId>com.cola.servers</groupId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
@@ -13,21 +13,7 @@
     <artifactId>cola-discovery</artifactId>
     <packaging>jar</packaging>
 
-    <build>
-        <plugins>
-            <plugin>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-maven-plugin</artifactId>
-            </plugin>
-        </plugins>
-    </build>
-
     <dependencies>
-        <dependency>
-            <groupId>com.cola.libs</groupId>
-            <artifactId>cola-libs</artifactId>
-            <version>${project.version}</version>
-        </dependency>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-starter</artifactId>
