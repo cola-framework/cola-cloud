@@ -34,43 +34,73 @@ if "%1" == "-help" (
     goto help
 )
 
-if not "%2" == "start" (
-    if not "%2" == "stop" (
+if not "%3" == "start" (
+    if not "%3" == "stop" (
         goto paramError
     )
 )
 
-set param1=%1
-set jarPrefix=cola-%param1%*.jar
+set appName=%1
+set appVersion=%2
+set jarFile=*cola-%appName%-%appVersion%.jar
 
-echo %jarPrefix%
-
-for /f "delims=" %%i in (*) do (
-    echo %%i
-)
-
-%JAVA_EXE% -jar
-
+if "%3" == "start" (goto start) else (if "%3" == "stop" goto stop)
 goto end
 
-:notExist
-echo Application jar file is not exist.
+:start
+:loop
+set pn=%4
+set pv=%5
+if not "%pn%" == "" (
+    set "params=%params% %pn%=%pv%"
+    shift
+    shift
+    goto :loop
+)
+
+echo Looking for "%jarFile:~1%" ....
+
+for /r ".." %%i in (%jarFile%) do (
+    set filePath=%%i
+    "%JAVA_EXE%" -server -jar %%i%params%
+    set params=
+    if not "%ERRORLEVEL%"=="0" (
+        goto javaError
+    ) else (
+        goto end
+    )
+)
+echo ERROR: Jar file is not exist.
+goto end
+
+:stop
+echo WARN: Application can not be stop in Windows OS. Please look at the task list below.
+tasklist /fi "imagename eq java.exe"
+goto end
+
+:javaError
+echo ERROR: Illegal java command.
+echo.
+echo Command Prompt: %JAVA_EXE% -server -jar %params% %filePath%
 goto end
 
 :help
 echo.
-echo Usage:  cola app-name [start ^| stop] [jar command args...]
+echo Usage:  cola app-name app-version [start ^| stop] [jar command args...]
 echo.
 echo Sample:
-echo         1.if you want to start discovery application node.
-echo           cola discovery start --server.port=8080
+echo         1.if you want to start cola-discovery application node.
+echo           cola discovery 0.0.1-SNAPSHOT start --server.port=8080
+echo           or
+echo           cola discovery 0.0.1-SNAPSHOT start --server.port 8080
 echo.
-echo         2.if you want to stop discovery application node.
-echo           cola discovery stop
+echo         2.if you want to stop cola-discovery application node.
+echo           cola discovery 0.0.1-SNAPSHOT stop
 goto end
 
 :paramError
-echo Illegal Parameters
+echo ERROR: Illegal Parameters
+echo.
 echo Please use '-help' for more information.
 
 :end
