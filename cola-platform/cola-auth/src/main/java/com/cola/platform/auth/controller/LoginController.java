@@ -15,10 +15,10 @@
  */
 package com.cola.platform.auth.controller;
 
-import com.cola.libs.jpa.beans.ResponseHeader;
-import com.cola.libs.jpa.beans.ResponseMessage;
-import com.cola.libs.jpa.beans.UserLogin;
-import com.cola.libs.jpa.enums.ResponseCode;
+import com.cola.libs.beans.enums.ResponseCode;
+import com.cola.libs.beans.ResponseHeader;
+import com.cola.libs.beans.ResponseMessage;
+import com.cola.libs.beans.UserLogin;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;

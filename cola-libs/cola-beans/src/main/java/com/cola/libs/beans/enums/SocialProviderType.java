@@ -13,33 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.enums;
+package com.cola.libs.beans.enums;
 
 /**
  * cola
- * Created by jiachen.shi on 6/20/2016.
+ * Created by jiachen.shi on 6/21/2016.
  */
-public enum ResponseCode {
+public enum SocialProviderType {
 
-    SUCCESS("response.header.message.success", 200),
-
-    ERROR("response.header.message.error", 500);
-
-    private String msgKey;
-    private int code;
-
-    ResponseCode(String msgKey, int code) {
-        this.msgKey = msgKey;
-        this.code = code;
-    }
-
-
-    public String getMsgKey() {
-        return msgKey;
-    }
-
-    public int getCode() {
-        return code;
-    }
+    FACEBOOK, GOOGLE, QQ, WEICHART, WEIBO, ALIPAY, MICROSOFT;
 
 }

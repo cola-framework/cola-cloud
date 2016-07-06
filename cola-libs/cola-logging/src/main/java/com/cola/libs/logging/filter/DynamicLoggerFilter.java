@@ -18,20 +18,16 @@ package com.cola.libs.logging.filter;
 import com.cola.libs.logging.beans.LoggerCondition;
 import com.cola.libs.logging.util.LoggerConditionHelper;
 
-import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.MDC;
 import org.slf4j.Marker;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import ch.qos.logback.classic.turbo.TurboFilter;
-import ch.qos.logback.core.net.QueueFactory;
 import ch.qos.logback.core.spi.FilterReply;
 
 /**
@@ -98,7 +94,6 @@ public class DynamicLoggerFilter extends TurboFilter {
                     }
                 }
             }
-
 
             if(result){
                 return FilterReply.ACCEPT;

@@ -15,9 +15,9 @@
  */
 package com.cola.platform.auth.controller;
 
-import com.cola.libs.jpa.beans.ResponseHeader;
-import com.cola.libs.jpa.beans.ResponseMessage;
-import com.cola.libs.jpa.enums.ResponseCode;
+import com.cola.libs.beans.enums.ResponseCode;
+import com.cola.libs.beans.ResponseHeader;
+import com.cola.libs.beans.ResponseMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;

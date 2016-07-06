@@ -15,6 +15,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.cola.libs.beans</groupId>
+            <artifactId>cola-beans</artifactId>
+            <version>0.0.1-SNAPSHOT</version>
+        </dependency>
+        <dependency>
             <groupId>com.cola.libs.jpa</groupId>
             <artifactId>cola-jpa</artifactId>
             <version>0.0.1-SNAPSHOT</version>

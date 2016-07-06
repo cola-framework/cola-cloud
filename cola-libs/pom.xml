@@ -16,12 +16,13 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>cola-beans</module>
+        <module>cola-logging</module>
         <module>cola-jpa</module>
         <module>cola-search</module>
-		<module>cola-integration</module>
+        <module>cola-integration</module>
         <module>cola-file</module>
-		<module>cola-medias</module>
-        <module>cola-logging</module>
+        <module>cola-medias</module>
     </modules>
 
     <dependencies>
