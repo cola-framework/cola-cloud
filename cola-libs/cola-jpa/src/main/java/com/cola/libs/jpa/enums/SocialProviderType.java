@@ -13,30 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.beans;
+package com.cola.libs.jpa.enums;
 
 /**
  * cola
- * Created by jiachen.shi on 6/20/2016.
+ * Created by jiachen.shi on 6/21/2016.
  */
-public class ResponseHeader {
+public enum SocialProviderType {
 
-    private int code;
-    private String message;
+    FACEBOOK, GOOGLE, QQ, WEICHART, WEIBO, ALIPAY, MICROSOFT;
 
-    public int getCode() {
-        return code;
-    }
-
-    public void setCode(int code) {
-        this.code = code;
-    }
-
-    public String getMessage() {
-        return message;
-    }
-
-    public void setMessage(String message) {
-        this.message = message;
-    }
 }

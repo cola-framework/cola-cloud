@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.entities;
+package com.cola.libs.jpa.entities;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,25 +25,25 @@ import javax.persistence.UniqueConstraint;
  * Created by jiachen.shi on 6/21/2016.
  */
 @Entity
-@Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
-public class Product extends AbstractEntity {
+@Table(name = "t_language", uniqueConstraints = {@UniqueConstraint(columnNames = {"iso_code"})})
+public class Language extends AbstractEntity{
 
-    @Column(length = 20, unique = true, nullable = false)
-    private String code;
+    @Column(name="iso_code", length = 20, unique = true)
+    private String isoCode;
 
     /**
-     * Gets code.
-     * @return the code
+     * Gets iso code.
+     * @return the iso code
      */
-    public String getCode() {
-        return code;
+    public String getIsoCode() {
+        return isoCode;
     }
 
     /**
-     * Sets code.
-     * @param code the code
+     * Sets iso code.
+     * @param isoCode the iso code
      */
-    public void setCode(String code) {
-        this.code = code;
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
     }
 }
