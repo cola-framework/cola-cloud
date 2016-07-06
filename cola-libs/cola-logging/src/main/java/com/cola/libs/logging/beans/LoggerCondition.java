@@ -32,10 +32,9 @@ public class LoggerCondition implements Serializable {
     public transient static final String MARKER = "logging.marker";
     public transient static final String LEVEL = "logging.level";
     public transient static final String THROWABLE = "logging.throwable";
-
     public transient static final String LEVEL_WHITELIST = "logging.level.whitelist";
-    public transient static final String MDCKEY_PREFIX = "loggging.mdckey.";
-    public transient static final String CONTENT = "logging.content";
+    public transient static final String MDCKEY_PREFIX = "loggging.";
+    public transient static final String CONTENT = "logging.contents";
 
     private Marker marker;
     private Level level;
