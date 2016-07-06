@@ -40,9 +40,10 @@ if not "%3" == "start" (
     )
 )
 
-set appName=%1
-set appVersion=%2
-set jarFile=*cola-%appName%-%appVersion%.jar
+set COLA_HOME=%~dp0/..
+set APP_NAME=%1
+set APP_VERSION=%2
+set jarFile=*cola-%APP_NAME%-%APP_VERSION%.jar
 
 if "%3" == "start" (goto start) else (if "%3" == "stop" goto stop)
 goto end
@@ -60,7 +61,7 @@ if not "%pn%" == "" (
 
 echo Looking for "%jarFile:~1%" ....
 
-for /r ".." %%i in (%jarFile%) do (
+for /r %COLA_HOME% %%i in (%jarFile%) do (
     set filePath=%%i
     "%JAVA_EXE%" -server -jar %%i%params%
     set params=
