@@ -21,6 +21,7 @@ import javax.persistence.Column;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
@@ -28,6 +29,7 @@ import javax.persistence.TemporalType;
  * cola
  * Created by jiachen.shi on 6/21/2016.
  */
+@MappedSuperclass
 public class AbstractEntity {
 
     @Id

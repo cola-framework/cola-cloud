@@ -38,7 +38,7 @@ public class ConfigurationServerRunner {
         SpringApplication app = new SpringApplication(ConfigurationServerRunner.class);
         //app.setShowBanner(false);
         app.run(args);
-        logger.info("************ Cola Configuration Server Start *************");
+        logger.info("************ Cola Configuration Server End *************");
     }
 
 }

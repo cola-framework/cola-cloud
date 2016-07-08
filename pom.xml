@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.cloud</groupId>
         <artifactId>spring-cloud-starter-parent</artifactId>
-        <version>RELEASE</version>
+        <version>1.0.2.RELEASE</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -25,15 +25,12 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.version>0.0.1-SNAPSHOT</project.version>
         <java.version>1.8</java.version>
+        <cola.version>0.0.1-SNAPSHOT</cola.version>
         <commons.lang.version>2.6</commons.lang.version>
-        <spring-boot.version>1.3.3.RELEASE</spring-boot.version>
-        <spring-cloud.version>1.1.1.RELEASE</spring-cloud.version>
-        <spring-cloud-eureka.version>1.1.2.RELEASE</spring-cloud-eureka.version>
-        <spring-cloud-hystrix-dashboard.version>1.1.2.RELEASE</spring-cloud-hystrix-dashboard.version>
-        <spring-cloud-turbine.version>1.1.2.RELEASE</spring-cloud-turbine.version>
         <powermock.version>1.6.5</powermock.version>
-        <mysql.version>5.1.38</mysql.version>
         <raven.version>6.0.0</raven.version>
+        <spring-retry.version>1.1.2.RELEASE</spring-retry.version>
+        <spring-data-commons.version>1.10.2.RELEASE</spring-data-commons.version>
     </properties>
 
     <build>
@@ -73,11 +70,11 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- DATABASE -->
+            <!-- HIBERNATE -->
             <dependency>
-                <groupId>mysql</groupId>
-                <artifactId>mysql-connector-java</artifactId>
-                <version>${mysql.version}</version>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -89,91 +86,31 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- SPRING BOOT FRAMEWORK -->
+            <!-- SPRING SECURITY -->
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter</artifactId>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.springframework.boot</groupId>
-                        <artifactId>spring-boot-starter-logging</artifactId>
-                    </exclusion>
-                </exclusions>
-                <version>${spring-boot.version}</version>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-config</artifactId>
+                <version>${spring-security.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-logging</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-web</artifactId>
+                <version>${spring-security.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-test</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-actuator</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-web</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-data-jpa</artifactId>
-                <version>${spring-boot.version}</version>
+                <groupId> org.springframework.data</groupId>
+                <artifactId>spring-data-commons</artifactId>
+                <version>${spring-data-commons.version}</version>
                 <scope>compile</scope>
             </dependency>
 
-            <!-- SPRING CLOUD FRAMEWORK -->
+            <!-- SPRING RETRY -->
             <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter</artifactId>
-                <version>${spring-cloud.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-config-server</artifactId>
-                <version>${spring-cloud.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- SPRING CLOUD EUREKA -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-eureka</artifactId>
-                <version>${spring-cloud-eureka.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-eureka-server</artifactId>
-                <version>${spring-cloud-eureka.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- SPRING CLOUD HYSTRIX DASHBOARD -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-hystrix-dashboard</artifactId>
-                <version>${spring-cloud-hystrix-dashboard.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
-            <!-- SPRING CLOUD TURBINE -->
-            <dependency>
-                <groupId>org.springframework.cloud</groupId>
-                <artifactId>spring-cloud-starter-turbine</artifactId>
-                <version>${spring-cloud-turbine.version}</version>
+                <groupId>org.springframework.retry</groupId>
+                <artifactId>spring-retry</artifactId>
+                <version>${spring-retry.version}</version>
                 <scope>compile</scope>
             </dependency>
         </dependencies>
