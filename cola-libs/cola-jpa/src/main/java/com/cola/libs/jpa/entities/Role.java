@@ -38,9 +38,9 @@ public class Role extends AbstractEntity{
     @Column(length = 20, unique = true)
     private String code;
 
-    @OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "t_role")
-    @JoinTable(name = "ref_lang_value", joinColumns = {@JoinColumn()})
-    private List<LangValue> names;
+    //@OneToMany(cascade = {CascadeType.ALL}, fetch = FetchType.LAZY, mappedBy = "t_role")
+    //@JoinTable(name = "ref_lang_value", joinColumns = {@JoinColumn()})
+    //private List<LangValue> names;
 
     /**
      * Gets code.
@@ -58,11 +58,11 @@ public class Role extends AbstractEntity{
         this.code = code;
     }
 
-    public List<LangValue> getNames() {
+/*    public List<LangValue> getNames() {
         return names;
     }
 
     public void setNames(List<LangValue> names) {
         this.names = names;
-    }
+    }*/
 }

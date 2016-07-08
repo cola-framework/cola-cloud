@@ -19,12 +19,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.orm.jpa.EntityScan;
 
 /**
  * cola
  * Created by jiachen.shi on 6/23/2016.
  */
 @SpringBootApplication
+@EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
 public class WebApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
