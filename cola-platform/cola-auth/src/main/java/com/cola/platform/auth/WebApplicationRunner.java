@@ -20,12 +20,14 @@ import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.orm.jpa.EntityScan;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * cola
  * Created by jiachen.shi on 6/23/2016.
  */
 @SpringBootApplication
+@EnableDiscoveryClient
 @EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
 public class WebApplicationRunner {
 

@@ -19,7 +19,7 @@ import com.cola.libs.logging.beans.LoggerCondition;
 import com.cola.libs.logging.util.LoggerConditionHelper;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.log4j.MDC;
+import org.slf4j.MDC;
 import org.slf4j.Marker;
 
 import java.util.List;
@@ -75,7 +75,7 @@ public class DynamicLoggerFilter extends TurboFilter {
             Map<String, String> mdcKeysWhiteList = condition.getMdcKeysWhiteList();
             if(mdcKeysWhiteList != null && mdcKeysWhiteList.size() > 0){
                 for(String key:mdcKeysWhiteList.keySet()){
-                    String value = (String)MDC.get(LoggerCondition.MDCKEY_PREFIX + key);
+                    String value = (String) MDC.get(LoggerCondition.MDCKEY_PREFIX + key);
                     if(value.equals(MDC.get(key))){
                         result = true;
                     }else{
