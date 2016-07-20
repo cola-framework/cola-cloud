@@ -15,6 +15,11 @@
  */
 package com.cola.libs.jpa.entities;
 
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.LastModifiedDate;
+
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -24,6 +29,7 @@ import javax.persistence.Id;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
+import javax.persistence.Version;
 
 /**
  * cola
@@ -36,22 +42,26 @@ public class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
+    @CreatedDate
     @Column(name = "create_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
+    @LastModifiedDate
     @Column(name = "modify_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
-    private Date modifiTime;
+    private Date lastModifiedTime;
 
+    @CreatedBy
     @Column(name = "create_by", nullable = false)
     private Long createBy;
 
+    @LastModifiedBy
     @Column(name = "modify_by", nullable = false)
-    private Long modifiBy;
+    private Long lastModifiedBy;
 
-    @Column(name = "up_times", nullable = false)
-    private Long updateTimes = 0L;
+    @Version
+    private Long version;
 
     /**
      * Gets id.
@@ -86,22 +96,6 @@ public class AbstractEntity {
     }
 
     /**
-     * Gets modifi time.
-     * @return the modifi time
-     */
-    public Date getModifiTime() {
-        return modifiTime;
-    }
-
-    /**
-     * Sets modifi time.
-     * @param modifiTime the modifi time
-     */
-    public void setModifiTime(Date modifiTime) {
-        this.modifiTime = modifiTime;
-    }
-
-    /**
      * Gets create by.
      * @return the create by
      */
@@ -117,35 +111,27 @@ public class AbstractEntity {
         this.createBy = createBy;
     }
 
-    /**
-     * Gets modifi by.
-     * @return the modifi by
-     */
-    public Long getModifiBy() {
-        return modifiBy;
+    public Long getVersion() {
+        return version;
     }
 
-    /**
-     * Sets modifi by.
-     * @param modifiBy the modifi by
-     */
-    public void setModifiBy(Long modifiBy) {
-        this.modifiBy = modifiBy;
+    public void setVersion(Long version) {
+        this.version = version;
     }
 
-    /**
-     * Gets update times.
-     * @return the update times
-     */
-    public Long getUpdateTimes() {
-        return updateTimes;
+    public Date getLastModifiedTime() {
+        return lastModifiedTime;
     }
 
-    /**
-     * Sets update times.
-     * @param updateTimes the update times
-     */
-    public void setUpdateTimes(Long updateTimes) {
-        this.updateTimes = updateTimes;
+    public void setLastModifiedTime(Date lastModifiedTime) {
+        this.lastModifiedTime = lastModifiedTime;
+    }
+
+    public Long getLastModifiedBy() {
+        return lastModifiedBy;
+    }
+
+    public void setLastModifiedBy(Long lastModifiedBy) {
+        this.lastModifiedBy = lastModifiedBy;
     }
 }

@@ -28,7 +28,6 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
  */
 @SpringBootApplication
 @EnableDiscoveryClient
-@EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
 public class WebApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
