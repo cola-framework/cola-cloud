@@ -111,26 +111,50 @@ public class AbstractEntity {
         this.createBy = createBy;
     }
 
+    /**
+     * Gets version.
+     * @return the version
+     */
     public Long getVersion() {
         return version;
     }
 
+    /**
+     * Sets version.
+     * @param version the version
+     */
     public void setVersion(Long version) {
         this.version = version;
     }
 
+    /**
+     * Gets last modified time.
+     * @return the last modified time
+     */
     public Date getLastModifiedTime() {
         return lastModifiedTime;
     }
 
+    /**
+     * Sets last modified time.
+     * @param lastModifiedTime the last modified time
+     */
     public void setLastModifiedTime(Date lastModifiedTime) {
         this.lastModifiedTime = lastModifiedTime;
     }
 
+    /**
+     * Gets last modified by.
+     * @return the last modified by
+     */
     public Long getLastModifiedBy() {
         return lastModifiedBy;
     }
 
+    /**
+     * Sets last modified by.
+     * @param lastModifiedBy the last modified by
+     */
     public void setLastModifiedBy(Long lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
     }

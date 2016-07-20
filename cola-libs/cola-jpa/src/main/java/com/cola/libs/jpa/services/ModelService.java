@@ -29,32 +29,123 @@ import javax.persistence.LockModeType;
  */
 public interface ModelService {
 
+    /**
+     * Save t.
+     * @param <T>    the type parameter
+     * @param entity the entity
+     * @return the t
+     */
     public <T extends AbstractEntity> T save(T entity);
 
+    /**
+     * Save list.
+     * @param <T>      the type parameter
+     * @param entities the entities
+     * @return the list
+     */
     public <T extends AbstractEntity> List<T> save(Iterable<T> entities);
 
+    /**
+     * Delete.
+     * @param <T>    the type parameter
+     * @param <ID>   the type parameter
+     * @param tClass the t class
+     * @param id     the id
+     */
     public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id);
 
+    /**
+     * Delete.
+     * @param <T>    the type parameter
+     * @param entity the entity
+     */
     public <T extends AbstractEntity> void delete(T entity);
 
+    /**
+     * Delete.
+     * @param <T>      the type parameter
+     * @param entities the entities
+     */
     public <T extends AbstractEntity> void delete(Iterable<? extends T> entities);
 
+    /**
+     * Delete all.
+     * @param <T>         the type parameter
+     * @param entityClass the entity class
+     */
     public <T extends AbstractEntity> void deleteAll(Class<T> entityClass);
 
+    /**
+     * Delete in batch.
+     * @param <T>      the type parameter
+     * @param entities the entities
+     */
     public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities);
 
+    /**
+     * Load t.
+     * @param <T>    the type parameter
+     * @param <ID>   the type parameter
+     * @param tClass the t class
+     * @param id     the id
+     * @return the t
+     */
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id);
 
+    /**
+     * Load t.
+     * @param <T>          the type parameter
+     * @param <ID>         the type parameter
+     * @param tClass       the t class
+     * @param id           the id
+     * @param lockModeType the lock mode type
+     * @return the t
+     */
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType lockModeType);
 
+    /**
+     * Get t.
+     * @param <T>    the type parameter
+     * @param <ID>   the type parameter
+     * @param tClass the t class
+     * @param id     the id
+     * @return the t
+     */
     public <T extends AbstractEntity, ID extends Serializable> T get(Class<T> tClass, ID id);
 
+    /**
+     * Execute int.
+     * @param jpql the jpql
+     * @return the int
+     */
     public int execute(String jpql);
 
+    /**
+     * Execute int.
+     * @param <P>     the type parameter
+     * @param jpql    the jpql
+     * @param parames the parames
+     * @return the int
+     */
     public <P extends Serializable> int execute(String jpql, Iterable<P> parames);
 
+    /**
+     * Execute int.
+     * @param <P>     the type parameter
+     * @param jpql    the jpql
+     * @param parames the parames
+     * @return the int
+     */
     public <P extends Serializable> int execute(String jpql, Map<String, P> parames);
 
+    /**
+     * Exists boolean.
+     * @param <T>         the type parameter
+     * @param <ID>        the type parameter
+     * @param entityClass the entity class
+     * @param id          the id
+     * @return the boolean
+     */
     public <T extends AbstractEntity, ID extends Serializable> boolean exists(Class<T> entityClass, ID id);
 
 }

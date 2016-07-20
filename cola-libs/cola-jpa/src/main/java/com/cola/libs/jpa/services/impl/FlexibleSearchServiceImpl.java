@@ -15,7 +15,6 @@
  */
 package com.cola.libs.jpa.services.impl;
 
-import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
 import com.cola.libs.jpa.entities.AbstractEntity;
 import com.cola.libs.jpa.services.FlexibleSearchService;
 

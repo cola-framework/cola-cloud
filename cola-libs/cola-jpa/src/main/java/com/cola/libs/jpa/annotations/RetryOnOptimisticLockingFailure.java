@@ -14,5 +14,9 @@ import java.lang.annotation.Target;
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
 public @interface RetryOnOptimisticLockingFailure {
+    /**
+     * Max retries int.
+     * @return the int
+     */
     int maxRetries();
 }

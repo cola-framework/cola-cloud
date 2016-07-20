@@ -27,16 +27,55 @@ import org.springframework.data.domain.Sort;
  */
 public interface FlexibleSearchService {
 
+    /**
+     * Find all iterable.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @return the iterable
+     */
     public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass);
 
+    /**
+     * Find all iterable.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param sort   the sort
+     * @return the iterable
+     */
     public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass, Sort sort);
 
+    /**
+     * Find all page.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param page   the page
+     * @return the page
+     */
     public <T extends AbstractEntity> Page<T> findAll(Class<T> tClass, Pageable page);
 
+    /**
+     * Count long.
+     * @param <T>         the type parameter
+     * @param entityClass the entity class
+     * @return the long
+     */
     public <T extends AbstractEntity> long count(Class<T> entityClass);
 
+    /**
+     * Query iterable.
+     * @param <T>  the type parameter
+     * @param jpql the jpql
+     * @return the iterable
+     */
     public <T> Iterable<T> query(String jpql);
 
+    /**
+     * Query page.
+     * @param <T>  the type parameter
+     * @param jpql the jpql
+     * @param page the page
+     * @return the page
+     */
     public <T> Page<T> query(String jpql, Pageable page);
 
 }

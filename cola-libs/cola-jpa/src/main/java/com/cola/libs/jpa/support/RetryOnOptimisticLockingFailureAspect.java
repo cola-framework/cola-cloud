@@ -22,7 +22,6 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.dao.OptimisticLockingFailureException;
 
 import java.lang.reflect.Method;
@@ -32,13 +31,21 @@ import java.lang.reflect.Method;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
-@Configuration
 public class RetryOnOptimisticLockingFailureAspect {
 
+    /**
+     * Retry on opt failure.
+     */
     @Pointcut("@annotation(RetryOnOptimisticLockingFailure)")
     public void retryOnOptFailure() {
     }
 
+    /**
+     * Do concurrent operation object.
+     * @param pjp the pjp
+     * @return the object
+     * @throws Throwable the throwable
+     */
     @Around("retryOnOptFailure()")
     public Object doConcurrentOperation(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) pjp.getSignature();

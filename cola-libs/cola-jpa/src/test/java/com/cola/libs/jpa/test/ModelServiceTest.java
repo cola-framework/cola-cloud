@@ -13,28 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.platform.test.service;
+package com.cola.libs.jpa.test;
 
 import com.cola.libs.jpa.entities.Role;
 import com.cola.libs.jpa.services.ModelService;
-import com.cola.platform.auth.WebApplicationRunner;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.SpringApplicationConfiguration;
+import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 
 /**
  * cola
  * Created by jiachen.shi on 7/18/2016.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@SpringApplicationConfiguration(classes = WebApplicationRunner.class)
-@WebAppConfiguration
+@ContextConfiguration(classes = TestConfiguration.class)
 public class ModelServiceTest {
 
     private static Logger logger = LoggerFactory.getLogger(ModelServiceTest.class);
@@ -42,17 +40,12 @@ public class ModelServiceTest {
     @Autowired
     private ModelService modelService;
 
-    public static void main(String[] args) {
-        logger.info(Role.class.getName());
-    }
-
     @Test
     public void saveTest(){
 
         Role role = new Role();
         role.setCode("111");
         role.setCreateBy(111L);
-        role.setModifiBy(111L);
 
         modelService.save(role);
     }
