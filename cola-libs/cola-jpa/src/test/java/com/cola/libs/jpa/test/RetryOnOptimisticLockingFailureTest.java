@@ -15,21 +15,28 @@
  */
 package com.cola.libs.jpa.test;
 
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.orm.jpa.EntityScan;
-import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 /**
  * cola
- * Created by jiachen.shi on 7/18/2016.
+ * Created by jiachen.shi on 7/22/2016.
  */
-@Configuration
-@PropertySource("classpath:test.properties")
-@EnableAutoConfiguration
-@ComponentScan(basePackages = {"com.cola.libs.jpa"})
-@EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
-public class TestConfiguration {
+@Component
+public class RetryOnOptimisticLockingFailureTest {
+
+    @Autowired
+    private OptimisticLockingFailueTest optimisticLockingFailueTest;
+
+    private int retryNum = -1;
+
+    @RetryOnOptimisticLockingFailure
+    public void test(){
+        this.retryNum++;
+        System.out.println("retryNum:"+retryNum);
+        optimisticLockingFailueTest.test();
+    }
+
 }

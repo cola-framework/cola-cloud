@@ -11,12 +11,12 @@ import java.lang.annotation.Target;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD, ElementType.TYPE})
+@Target({ElementType.METHOD})
 @Documented
 public @interface RetryOnOptimisticLockingFailure {
     /**
      * Max retries int.
      * @return the int
      */
-    int maxRetries();
+    int maxRetries() default 3;
 }

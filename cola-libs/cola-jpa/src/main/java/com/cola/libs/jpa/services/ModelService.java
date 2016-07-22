@@ -122,21 +122,19 @@ public interface ModelService {
 
     /**
      * Execute int.
-     * @param <P>     the type parameter
      * @param jpql    the jpql
      * @param parames the parames
      * @return the int
      */
-    public <P extends Serializable> int execute(String jpql, Iterable<P> parames);
+    public int execute(String jpql, Iterable<Object> parames);
 
     /**
      * Execute int.
-     * @param <P>     the type parameter
      * @param jpql    the jpql
      * @param parames the parames
      * @return the int
      */
-    public <P extends Serializable> int execute(String jpql, Map<String, P> parames);
+    public int execute(String jpql, Map<String, Object> parames);
 
     /**
      * Exists boolean.

@@ -42,25 +42,22 @@ public class AbstractEntity {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @CreatedDate
     @Column(name = "create_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date createTime;
 
-    @LastModifiedDate
-    @Column(name = "modify_time", nullable = false)
+    @Column(name = "last_modified_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
     private Date lastModifiedTime;
 
-    @CreatedBy
     @Column(name = "create_by", nullable = false)
     private Long createBy;
 
-    @LastModifiedBy
-    @Column(name = "modify_by", nullable = false)
+    @Column(name = "last_modified_by", nullable = false)
     private Long lastModifiedBy;
 
     @Version
+    @Column(nullable = false)
     private Long version;
 
     /**

@@ -22,21 +22,27 @@ import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.core.annotation.Order;
 import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.lang.reflect.Method;
+
+import javax.persistence.OptimisticLockException;
 
 /**
  * cola
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
+@Configuration
 public class RetryOnOptimisticLockingFailureAspect {
 
     /**
      * Retry on opt failure.
      */
-    @Pointcut("@annotation(RetryOnOptimisticLockingFailure)")
+    @Pointcut("@annotation(com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure)")
     public void retryOnOptFailure() {
     }
 
@@ -57,7 +63,7 @@ public class RetryOnOptimisticLockingFailureAspect {
             numAttempts++;
             try {
                 return pjp.proceed();
-            } catch (OptimisticLockingFailureException ex) {
+            } catch (OptimisticLockException ex) {
                 if (numAttempts > maxRetries) {
                     throw ex;
                 }

@@ -17,6 +17,7 @@ package com.cola.libs.jpa.services.impl;
 
 import com.cola.libs.jpa.entities.AbstractEntity;
 import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.jpa.support.QueryTranslatorHelper;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.QueryUtils;
@@ -28,6 +29,7 @@ import org.springframework.util.Assert;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,7 +57,10 @@ public class ModelServiceImpl implements ModelService {
     public <T extends AbstractEntity> T save(T entity){
         Assert.notNull(entity, "The entity must not be null!");
         JpaEntityInformation<T, ?> entityInformation = JpaEntityInformationSupport.getMetadata((Class<T>) entity.getClass(), em);
+        Date now = new Date();
+        entity.setLastModifiedTime(now);
         if(entityInformation.isNew(entity)) {
+            entity.setCreateTime(now);
             em.persist(entity);
             return entity;
         } else {
@@ -103,17 +108,18 @@ public class ModelServiceImpl implements ModelService {
     @Override
     @Transactional
     public int  execute(String jpql){
-        return execute(jpql, new HashMap<String, Serializable>());
+        return execute(jpql, new HashMap<String, Object>());
     }
 
     @Override
     @Transactional
-    public <P extends Serializable> int execute(String jpql, Iterable<P> parames) {
+    public int execute(String jpql, Iterable<Object> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
+        jpql = QueryTranslatorHelper.appendVersionForUpdate(jpql);
         Query query = em.createQuery(jpql);
         if(parames != null && parames.iterator().hasNext()){
             int i = 1;
-            for(P p:parames){
+            for(Object p:parames){
                 query.setParameter(i, p);
                 i++;
             }
@@ -123,8 +129,9 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    public <P extends Serializable> int execute(String jpql, Map<String, P> parames){
+    public int execute(String jpql, Map<String, Object> parames){
         Assert.notNull(jpql, "The JPQL must not be null!");
+        jpql = QueryTranslatorHelper.appendVersionForUpdate(jpql);
         Query query = em.createQuery(jpql);
         if(parames != null && parames.keySet() != null ){
             for(String name:parames.keySet()){
@@ -175,7 +182,6 @@ public class ModelServiceImpl implements ModelService {
             T entity = (T) var2.next();
             this.delete(entity);
         }
-
     }
 
     @Override

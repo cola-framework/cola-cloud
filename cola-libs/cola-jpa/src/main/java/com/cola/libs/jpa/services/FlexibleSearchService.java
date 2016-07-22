@@ -21,6 +21,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
  * cola
  * Created by jiachen.shi on 7/20/2016.
@@ -61,6 +64,8 @@ public interface FlexibleSearchService {
      */
     public <T extends AbstractEntity> long count(Class<T> entityClass);
 
+    public <T extends AbstractEntity, V extends Serializable> T uniqueQuery(Class<T> tClass, Map<String, V> condition);
+
     /**
      * Query iterable.
      * @param <T>  the type parameter
@@ -69,6 +74,10 @@ public interface FlexibleSearchService {
      */
     public <T> Iterable<T> query(String jpql);
 
+    public <T, P extends Serializable> Iterable<T> query(String jpql, Iterable<P> parames);
+
+    public <T, P extends Serializable> Iterable<T> query(String jpql, Map<String, P> parames);
+
     /**
      * Query page.
      * @param <T>  the type parameter
@@ -76,6 +85,10 @@ public interface FlexibleSearchService {
      * @param page the page
      * @return the page
      */
-    public <T> Page<T> query(String jpql, Pageable page);
+    public <T> Page<T> pagingQuery(String jpql, Pageable page);
+
+    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page);
+
+    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page);
 
 }

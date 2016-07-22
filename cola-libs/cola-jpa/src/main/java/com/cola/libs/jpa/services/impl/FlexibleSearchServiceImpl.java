@@ -26,6 +26,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.io.Serializable;
+import java.util.Map;
+
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 
@@ -52,6 +55,11 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
+    public <T extends AbstractEntity, V extends Serializable> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
+        return null;
+    }
+
+    @Override
     public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass) {
         return null;
     }
@@ -72,7 +80,27 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T> Page<T> query(String jpql, Pageable page) {
+    public <T, P extends Serializable> Iterable<T> query(String jpql, Iterable<P> parames) {
+        return null;
+    }
+
+    @Override
+    public <T, P extends Serializable> Iterable<T> query(String jpql, Map<String, P> parames) {
+        return null;
+    }
+
+    @Override
+    public <T> Page<T> pagingQuery(String jpql, Pageable page) {
+        return null;
+    }
+
+    @Override
+    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page) {
+        return null;
+    }
+
+    @Override
+    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page) {
         return null;
     }
 

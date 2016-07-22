@@ -18,14 +18,27 @@ package com.cola.libs.jpa.test;
 import com.cola.libs.jpa.entities.Role;
 import com.cola.libs.jpa.services.ModelService;
 
+import org.hamcrest.Matchers;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.boot.test.OutputCapture;
+import org.springframework.dao.OptimisticLockingFailureException;
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.LockModeType;
+import javax.persistence.OptimisticLockException;
 
 /**
  * cola
@@ -35,19 +48,130 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @ContextConfiguration(classes = TestConfiguration.class)
 public class ModelServiceTest {
 
-    private static Logger logger = LoggerFactory.getLogger(ModelServiceTest.class);
-
     @Autowired
     private ModelService modelService;
 
+    @Autowired
+    private OptimisticLockingFailueTest optimisticLockingFailueTest;
+
+    @Autowired
+    private RetryOnOptimisticLockingFailureTest retryOnOptimisticLockingFailureTest;
+
+    @Rule
+    public OutputCapture capture = new OutputCapture();
+
     @Test
-    public void saveTest(){
+    @Transactional
+    public void singleEntityTest(){
 
         Role role = new Role();
-        role.setCode("111");
+        role.setCode("MTIzNDU2Nzg5");
         role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
 
-        modelService.save(role);
+        //Via Save method to create entity
+        Role newRole = modelService.save(role);
+        Role loadRole = modelService.load(Role.class, newRole.getId());
+        Assert.assertEquals(newRole.getCode(), loadRole.getCode());
+
+        //Via Save method to update entity
+        loadRole.setCode("OTg3NjU0MzIx");
+        modelService.save(loadRole);
+        Role updatedRole = modelService.load(Role.class, loadRole.getId());
+        Assert.assertEquals(updatedRole.getCode(), loadRole.getCode());
+
+        //For get method test
+        Role getRole = modelService.get(Role.class, loadRole.getId());
+        Assert.assertEquals(updatedRole.getCode(), getRole.getCode());
+
+        //For load method with LoadModeType test
+        modelService.load(Role.class, loadRole.getId(), LockModeType.PESSIMISTIC_WRITE);
+        Assert.assertThat(capture.toString(), Matchers.containsString("for update"));
+
+        //Test entity is exist
+        boolean exists = modelService.exists(Role.class, updatedRole.getId());
+        Assert.assertTrue(exists);
+
+        //For delete(Class<T> tClass, ID id) method test
+        modelService.delete(Role.class, newRole.getId());
+        Role deletedRole = modelService.load(Role.class, newRole.getId());
+        Assert.assertNull(deletedRole);
+
+        //Test entity is not exist
+        exists = modelService.exists(Role.class, updatedRole.getId());
+        Assert.assertFalse(exists);
+
+        //For delete(T entity method test
+        Role renewRole = modelService.save(role);
+        exists = modelService.exists(Role.class, renewRole.getId());
+        Assert.assertTrue(exists);
+        modelService.delete(renewRole);
+        exists = modelService.exists(Role.class, renewRole.getId());
+        Assert.assertFalse(exists);
     }
+
+    @Test
+    public void optimisticLockingFailureTest(){
+        try {
+            optimisticLockingFailueTest.test();
+        }catch (Exception e){
+            System.out.println("catchOptimisticLockingFailure");
+            Assert.assertTrue(e instanceof OptimisticLockException);
+        }
+        Assert.assertThat(capture.toString(), Matchers.containsString("catchOptimisticLockingFailure"));
+    }
+
+    @Test
+    public void retryOnOptimisticLockingFailureTest(){
+        try{
+            retryOnOptimisticLockingFailureTest.test();
+        }catch (Exception e){
+            Assert.assertTrue(e instanceof OptimisticLockException);
+        }
+        Assert.assertThat(capture.toString(), Matchers.containsString("retryNum:3"));
+    }
+
+    @Test
+    public void versionIncrementTest(){
+
+        Role role = new Role();
+        role.setCode("MTIzNDU2Nzg5");
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+
+        //Test version column is valid
+        Role newRole = modelService.save(role);
+        Role loadRole = modelService.load(Role.class, newRole.getId());
+        Assert.assertEquals(loadRole.getVersion().longValue(), 0L);
+
+        loadRole.setCode("OTg3NjU0MzIx");
+        modelService.save(loadRole);
+        Role updatedRole = modelService.load(Role.class, loadRole.getId());
+        Assert.assertEquals(updatedRole.getVersion().longValue(), 1L);
+
+        updatedRole.setCode("MTIxMjEyMTIx");
+        modelService.save(updatedRole);
+        updatedRole = modelService.load(Role.class, updatedRole.getId());
+        Assert.assertEquals(updatedRole.getVersion().longValue(), 2L);
+
+        //Test execute method
+        String jpql = "update Role set code=:code where id=:id";
+        Map<String, Object> params = new HashMap<>();
+        params.put("code", "KjMyMzIzMjMy");
+        params.put("id", updatedRole.getId());
+        int result = modelService.execute(jpql, params);
+        Assert.assertEquals(result, 1);
+
+        updatedRole = modelService.load(Role.class, updatedRole.getId());
+        Assert.assertEquals(updatedRole.getVersion().longValue(), 3L);
+
+        modelService.delete(updatedRole);
+    }
+
+    @Test
+    public void multiEntityTest(){
+        List<Role> roleList = new ArrayList<Role>();
+    }
+
 
 }
