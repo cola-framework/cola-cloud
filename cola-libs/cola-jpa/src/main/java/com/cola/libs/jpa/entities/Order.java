@@ -15,35 +15,42 @@
  */
 package com.cola.libs.jpa.entities;
 
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
  * cola
- * Created by jiachen.shi on 6/21/2016.
+ * Created by jiachen.shi on 7/25/2016.
  */
 @Entity
-@Table(name = "t_language", uniqueConstraints = {@UniqueConstraint(columnNames = {"iso_code"})})
-public class Language extends AbstractEntity{
+@Table(name = "t_order", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
+public class Order extends AbstractEntity{
 
-    @Column(name="iso_code", length = 20)
-    private String isoCode;
+    @Column(length = 20, nullable = false)
+    private String code;
 
-    /**
-     * Gets iso code.
-     * @return the iso code
-     */
-    public String getIsoCode() {
-        return isoCode;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="order")
+    private List<OrderItem> orderItems;
+
+    public String getCode() {
+        return code;
     }
 
-    /**
-     * Sets iso code.
-     * @param isoCode the iso code
-     */
-    public void setIsoCode(String isoCode) {
-        this.isoCode = isoCode;
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
+    }
+
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

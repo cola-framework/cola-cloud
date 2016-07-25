@@ -15,6 +15,11 @@
  */
 package com.cola.libs.jpa.test;
 
+import com.cola.libs.jpa.entities.LangValue;
+import com.cola.libs.jpa.entities.Language;
+import com.cola.libs.jpa.entities.Order;
+import com.cola.libs.jpa.entities.OrderItem;
+import com.cola.libs.jpa.entities.Product;
 import com.cola.libs.jpa.entities.Role;
 import com.cola.libs.jpa.services.ModelService;
 
@@ -25,14 +30,14 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.OutputCapture;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -59,6 +64,58 @@ public class ModelServiceTest {
 
     @Rule
     public OutputCapture capture = new OutputCapture();
+
+    @Test
+    @Transactional
+    @Rollback(value = false)
+    public void CascadeTest(){
+
+        LangValue langValue = new LangValue();
+        langValue.setTableName("Role");
+        langValue.setBid(1l);
+        langValue.setColumnName("code");
+        langValue.setValue("ABCD");
+        langValue.setCreateBy(1L);
+        langValue.setLastModifiedBy(1L);
+
+        Language language = new Language();
+        language.setIsoCode("111");
+        language.setCreateBy(1L);
+        language.setLastModifiedBy(1L);
+        language = modelService.save(language);
+
+        langValue.setLanguage(language);
+        modelService.save(langValue);
+
+        language.setIsoCode("222");
+        modelService.save(langValue);
+
+        Product product = new Product();
+        product.setCode("111");
+        product.setCreateBy(1L);
+        product.setLastModifiedBy(1L);
+        product = modelService.save(product);
+
+        Order order = new Order();
+        order.setCreateBy(1L);
+        order.setLastModifiedBy(1L);
+        order.setCode("222");
+
+        List<OrderItem> orderItems = new ArrayList<>();
+        OrderItem orderItem = new OrderItem();
+        orderItem.setQuantity(1);
+        orderItem.setLastModifiedBy(1L);
+        orderItem.setCreateBy(1L);
+        orderItem.setProduct(product);
+        orderItem.setPrice(new BigDecimal(10.00));
+        orderItem.setOrder(order);
+        orderItem.setCreateTime(new Date());
+        orderItem.setLastModifiedTime(new Date());
+        orderItems.add(orderItem);
+        order.setOrderItems(orderItems);
+        modelService.save(order);
+
+    }
 
     @Test
     @Transactional

@@ -15,8 +15,11 @@
  */
 package com.cola.libs.jpa.entities;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -28,16 +31,17 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "ref_lang_value", uniqueConstraints = {@UniqueConstraint(columnNames = {"lang_id", "b_id", "table_name", "column_name"})})
 public class LangValue extends AbstractEntity {
 
-    @Column(name = "lang_id", nullable = false, unique = true)
-    private Long langId;
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
+    @JoinColumn(name="lang_id", nullable = false)
+    private Language language;
 
-    @Column(name = "b_id", nullable = false, unique = true)
+    @Column(name = "b_id", nullable = false)
     private Long bid;
 
-    @Column(name = "table_name", length = 50, nullable = false, unique = true)
+    @Column(name = "table_name", length = 50, nullable = false)
     private String tableName;
 
-    @Column(name = "column_name", length = 50, nullable = false, unique = true)
+    @Column(name = "column_name", length = 50, nullable = false)
     private String columnName;
 
     private String value;
@@ -58,20 +62,12 @@ public class LangValue extends AbstractEntity {
         this.columnName = columnName;
     }
 
-    /**
-     * Gets lang id.
-     * @return the lang id
-     */
-    public Long getLangId() {
-        return langId;
+    public Language getLanguage() {
+        return language;
     }
 
-    /**
-     * Sets lang id.
-     * @param langId the lang id
-     */
-    public void setLangId(Long langId) {
-        this.langId = langId;
+    public void setLanguage(Language language) {
+        this.language = language;
     }
 
     /**

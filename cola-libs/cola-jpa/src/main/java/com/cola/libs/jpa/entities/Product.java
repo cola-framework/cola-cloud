@@ -15,8 +15,13 @@
  */
 package com.cola.libs.jpa.entities;
 
+import java.math.BigDecimal;
+import java.util.List;
+
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -28,8 +33,11 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
 public class Product extends AbstractEntity {
 
-    @Column(length = 20, unique = true, nullable = false)
+    @Column(length = 20, nullable = false)
     private String code;
+
+    @OneToMany(cascade = { CascadeType.ALL}, mappedBy ="product")
+    private List<PriceRow> priceRows;
 
     /**
      * Gets code.
@@ -45,5 +53,13 @@ public class Product extends AbstractEntity {
      */
     public void setCode(String code) {
         this.code = code;
+    }
+
+    public List<PriceRow> getPriceRows() {
+        return priceRows;
+    }
+
+    public void setPriceRows(List<PriceRow> priceRows) {
+        this.priceRows = priceRows;
     }
 }
