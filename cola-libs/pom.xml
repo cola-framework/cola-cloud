@@ -18,6 +18,7 @@
         <module>cola-beans</module>
         <module>cola-logging</module>
         <module>cola-jpa</module>
+        <module>cola-cache</module>
         <module>cola-search</module>
         <module>cola-integration</module>
         <module>cola-file</module>

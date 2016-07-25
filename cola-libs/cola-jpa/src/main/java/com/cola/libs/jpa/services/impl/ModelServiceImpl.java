@@ -115,7 +115,7 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     public int execute(String jpql, Iterable<Object> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
-        jpql = QueryTranslatorHelper.appendVersionForUpdate(jpql);
+        jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
         Query query = em.createQuery(jpql);
         if(parames != null && parames.iterator().hasNext()){
             int i = 1;
@@ -131,7 +131,7 @@ public class ModelServiceImpl implements ModelService {
     @Transactional
     public int execute(String jpql, Map<String, Object> parames){
         Assert.notNull(jpql, "The JPQL must not be null!");
-        jpql = QueryTranslatorHelper.appendVersionForUpdate(jpql);
+        jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
         Query query = em.createQuery(jpql);
         if(parames != null && parames.keySet() != null ){
             for(String name:parames.keySet()){

@@ -170,7 +170,39 @@ public class ModelServiceTest {
 
     @Test
     public void multiEntityTest(){
+
         List<Role> roleList = new ArrayList<Role>();
+
+        Role role = new Role();
+        role.setCode("MTIzNDU2Nzg5");
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        roleList.add(role);
+
+        role = new Role();
+        role.setCode("NDc4MzkyMDM5");
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        roleList.add(role);
+
+        role = new Role();
+        role.setCode("UjkzODQ4NTc4");
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        roleList.add(role);
+
+        List<Role> newRoleList = modelService.save(roleList);
+        Assert.assertNotNull(newRoleList);
+        Assert.assertEquals(newRoleList.size(), 3);
+
+        modelService.deleteInBatch(newRoleList);
+
+        newRoleList = modelService.save(roleList);
+        modelService.delete(newRoleList);
+
+        newRoleList = modelService.save(roleList);
+        modelService.deleteAll(Role.class);
+
     }
 
 

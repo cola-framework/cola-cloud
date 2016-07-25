@@ -29,7 +29,7 @@ public class QueryTranslatorHelper {
     public static JpqlAnalysisConstant.StatementType getStatementType(String jpql){
         Assert.notNull(jpql, "The JPQL must not be null!");
         jpql = jpql.toUpperCase().trim();
-        if (jpql.startsWith(JpqlAnalysisConstant.StatementType.SELECT.name())) {
+        if (jpql.startsWith(JpqlAnalysisConstant.StatementType.SELECT.name()) || jpql.startsWith(JpqlAnalysisConstant.Clause.FROM.name())) {
             return JpqlAnalysisConstant.StatementType.SELECT;
         } else if (jpql.startsWith(JpqlAnalysisConstant.StatementType.INSERT.name())) {
             return JpqlAnalysisConstant.StatementType.INSERT;
@@ -41,7 +41,7 @@ public class QueryTranslatorHelper {
         throw new IllegalArgumentException("Invalid Statement.");
     }
 
-    public static String appendVersionForUpdate(String jpql){
+    public static String appendVersionIncrementForUpdate(String jpql){
         Assert.notNull(jpql, "The JPQL must not be null!");
         JpqlAnalysisConstant.StatementType statementType = getStatementType(jpql);
         if (JpqlAnalysisConstant.StatementType.UPDATE.equals(statementType)) {

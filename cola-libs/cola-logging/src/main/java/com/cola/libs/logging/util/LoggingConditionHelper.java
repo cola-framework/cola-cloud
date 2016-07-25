@@ -15,7 +15,7 @@
  */
 package com.cola.libs.logging.util;
 
-import com.cola.libs.logging.beans.LoggerCondition;
+import com.cola.libs.logging.beans.LoggingCondition;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.MDC;
@@ -33,32 +33,32 @@ import ch.qos.logback.classic.Level;
  * cola
  * Created by jiachen.shi on 7/5/2016.
  */
-public class LoggerConditionHelper {
+public class LoggingConditionHelper {
 
     public static final String class_name_separator = ";";
 
-    public static LoggerCondition getLoggerConditionFromMDC(){
+    public static LoggingCondition getLoggerConditionFromMDC(){
 
-        LoggerCondition condition = new LoggerCondition();
+        LoggingCondition condition = new LoggingCondition();
 
         //get marker from MDC
-        String markerStr = MDC.get(LoggerCondition.MARKER);
+        String markerStr = MDC.get(LoggingCondition.MARKER);
         if(StringUtils.isNotEmpty(markerStr)){
             Marker marker = MarkerFactory.getMarker(markerStr);
             condition.setMarker(marker);
         }
         //get level from MDC
-        String levelStr = MDC.get(LoggerCondition.LEVEL);
+        String levelStr = MDC.get(LoggingCondition.LEVEL);
         if(StringUtils.isNotEmpty(levelStr)){
             condition.setLevel(Level.valueOf(levelStr));
         }
         //get throwable from MDC
-        String throwable = MDC.get(LoggerCondition.THROWABLE);
+        String throwable = MDC.get(LoggingCondition.THROWABLE);
         if(StringUtils.isNotEmpty(throwable)){
             condition.setThrowable(throwable);
         }
         //get white list via level from MDC
-        String levelTraceClassNames = MDC.get(LoggerCondition.LEVEL_WHITELIST);
+        String levelTraceClassNames = MDC.get(LoggingCondition.LEVEL_WHITELIST);
         if(StringUtils.isNotEmpty(levelTraceClassNames)){
             String[] split = levelTraceClassNames.split(class_name_separator);
             condition.setClassNamesWhiteList(Arrays.asList(split));
@@ -68,16 +68,16 @@ public class LoggerConditionHelper {
         Map<String, String> mdcKeysWhiteList = new HashMap<>();
         Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
         if(copyOfContextMap != null && copyOfContextMap.size() > 0){
-            copyOfContextMap.keySet().stream().filter(key -> key.startsWith(LoggerCondition.MDCKEY_PREFIX)).forEach(key -> {
+            copyOfContextMap.keySet().stream().filter(key -> key.startsWith(LoggingCondition.MDCKEY_PREFIX)).forEach(key -> {
                 String value = copyOfContextMap.get(key);
-                String mdcKey = key.substring(LoggerCondition.MDCKEY_PREFIX.length());
+                String mdcKey = key.substring(LoggingCondition.MDCKEY_PREFIX.length());
                 mdcKeysWhiteList.put(mdcKey, value);
             });
         }
         condition.setMdcKeysWhiteList(mdcKeysWhiteList);
 
         //get content from MDC
-        String contentStr = MDC.get(LoggerCondition.CONTENT);
+        String contentStr = MDC.get(LoggingCondition.CONTENT);
         if(StringUtils.isNotEmpty(contentStr)){
             String[] split = contentStr.split(class_name_separator);
             condition.setContent(Arrays.asList(split));
@@ -86,21 +86,21 @@ public class LoggerConditionHelper {
         return condition;
     }
 
-    public static void saveToMDC(LoggerCondition condition) throws NullPointerException{
+    public static void saveToMDC(LoggingCondition condition) throws NullPointerException{
         if(condition == null){
-            throw new NullPointerException("LoggerCondition is null");
+            throw new NullPointerException("LoggingCondition is null");
         }
         Marker marker = condition.getMarker();
         if(marker != null){
-            MDC.put(LoggerCondition.MARKER, marker.getName());
+            MDC.put(LoggingCondition.MARKER, marker.getName());
         }
         Level level = condition.getLevel();
         if(level != null){
-            MDC.put(LoggerCondition.LEVEL, level.levelStr);
+            MDC.put(LoggingCondition.LEVEL, level.levelStr);
         }
         String throwable = condition.getThrowable();
         if(StringUtils.isNotEmpty(throwable)){
-            MDC.put(LoggerCondition.THROWABLE, throwable);
+            MDC.put(LoggingCondition.THROWABLE, throwable);
         }
         List<String> classNamesWhiteList = condition.getClassNamesWhiteList();
         if(classNamesWhiteList != null && classNamesWhiteList.size() > 0){
@@ -109,7 +109,7 @@ public class LoggerConditionHelper {
                 str.append(className);
                 str.append(class_name_separator);
             }
-            MDC.put(LoggerCondition.LEVEL_WHITELIST, str.toString());
+            MDC.put(LoggingCondition.LEVEL_WHITELIST, str.toString());
         }
         List<String> contents = condition.getContent();
         if(contents != null && contents.size() > 0){
@@ -118,25 +118,25 @@ public class LoggerConditionHelper {
                 str.append(c);
                 str.append(class_name_separator);
             }
-            MDC.put(LoggerCondition.CONTENT, str.toString());
+            MDC.put(LoggingCondition.CONTENT, str.toString());
         }
         Map<String, String> mdcKeysWhiteList = condition.getMdcKeysWhiteList();
         if(mdcKeysWhiteList != null && mdcKeysWhiteList.size() > 0){
             for(String key:mdcKeysWhiteList.keySet()){
-                MDC.put(LoggerCondition.MDCKEY_PREFIX+key, mdcKeysWhiteList.get(key));
+                MDC.put(LoggingCondition.MDCKEY_PREFIX+key, mdcKeysWhiteList.get(key));
             }
         }
     }
 
     public static void removeLogger4MDC(){
-        MDC.remove(LoggerCondition.MARKER);
-        MDC.remove(LoggerCondition.LEVEL);
-        MDC.remove(LoggerCondition.THROWABLE);
-        MDC.remove(LoggerCondition.LEVEL_WHITELIST);
-        MDC.remove(LoggerCondition.CONTENT);
+        MDC.remove(LoggingCondition.MARKER);
+        MDC.remove(LoggingCondition.LEVEL);
+        MDC.remove(LoggingCondition.THROWABLE);
+        MDC.remove(LoggingCondition.LEVEL_WHITELIST);
+        MDC.remove(LoggingCondition.CONTENT);
         Map<String, String> copyOfContextMap = MDC.getCopyOfContextMap();
         if(copyOfContextMap != null && copyOfContextMap.size() > 0){
-            copyOfContextMap.keySet().stream().filter(key -> key.startsWith(LoggerCondition.MDCKEY_PREFIX)).forEach(key -> {
+            copyOfContextMap.keySet().stream().filter(key -> key.startsWith(LoggingCondition.MDCKEY_PREFIX)).forEach(key -> {
                 MDC.remove(key);
             });
         }

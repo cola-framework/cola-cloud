@@ -15,8 +15,8 @@
  */
 package com.cola.libs.logging.filter;
 
-import com.cola.libs.logging.beans.LoggerCondition;
-import com.cola.libs.logging.util.LoggerConditionHelper;
+import com.cola.libs.logging.beans.LoggingCondition;
+import com.cola.libs.logging.util.LoggingConditionHelper;
 
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.MDC;
@@ -38,7 +38,7 @@ public class DynamicLoggerFilter extends TurboFilter {
 
     @Override
     public FilterReply decide(Marker marker, Logger logger, Level level, String format, Object[] params, Throwable throwable) {
-        LoggerCondition condition = LoggerConditionHelper.getLoggerConditionFromMDC();
+        LoggingCondition condition = LoggingConditionHelper.getLoggerConditionFromMDC();
         if(condition != null){
             boolean result = false;
             Level cLevel = condition.getLevel();
@@ -75,7 +75,7 @@ public class DynamicLoggerFilter extends TurboFilter {
             Map<String, String> mdcKeysWhiteList = condition.getMdcKeysWhiteList();
             if(mdcKeysWhiteList != null && mdcKeysWhiteList.size() > 0){
                 for(String key:mdcKeysWhiteList.keySet()){
-                    String value = (String) MDC.get(LoggerCondition.MDCKEY_PREFIX + key);
+                    String value = (String) MDC.get(LoggingCondition.MDCKEY_PREFIX + key);
                     if(value.equals(MDC.get(key))){
                         result = true;
                     }else{

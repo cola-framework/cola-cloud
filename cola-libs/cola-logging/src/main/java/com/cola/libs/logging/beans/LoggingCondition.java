@@ -27,7 +27,7 @@ import ch.qos.logback.classic.Level;
  * cola
  * Created by jiachen.shi on 7/5/2016.
  */
-public class LoggerCondition implements Serializable {
+public class LoggingCondition implements Serializable {
 
     public transient static final String MARKER = "logging.marker";
     public transient static final String LEVEL = "logging.level";
