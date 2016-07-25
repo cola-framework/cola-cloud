@@ -15,8 +15,6 @@
  */
 package com.cola.servers.discovery;
 
-import com.cola.libs.logging.beans.LoggerCondition;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
