@@ -21,6 +21,7 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 /**
  * cola
@@ -31,5 +32,6 @@ import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 @EnableAutoConfiguration
 @ComponentScan(basePackages = {"com.cola.libs.jpa"})
 @EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
+@EnableJpaRepositories(basePackages = {"com.cola.libs.jpa"})
 public class TestConfiguration {
 }

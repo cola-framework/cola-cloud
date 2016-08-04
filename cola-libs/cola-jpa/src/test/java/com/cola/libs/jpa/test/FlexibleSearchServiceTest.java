@@ -15,14 +15,25 @@
  */
 package com.cola.libs.jpa.test;
 
+import com.cola.libs.jpa.entities.Language;
+import com.cola.libs.jpa.entities.Role;
 import com.cola.libs.jpa.services.FlexibleSearchService;
+import com.cola.libs.jpa.services.ModelService;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 /**
  * cola
@@ -35,6 +46,39 @@ public class FlexibleSearchServiceTest {
     private static Logger logger = LoggerFactory.getLogger(FlexibleSearchServiceTest.class);
 
     @Autowired
+    private ModelService modelService;
+
+    @Autowired
     private FlexibleSearchService flexibleSearchService;
+
+    @Test
+    @Transactional
+    public void countTest(){
+        UUID uuid = UUID.randomUUID();
+        String isoCode = uuid.toString().substring(0, 20);
+        Language language = new Language();
+        language.setIsoCode(isoCode);
+        language.setCreateBy(1L);
+        language.setLastModifiedBy(1L);
+        language = modelService.save(language);
+
+        long count = flexibleSearchService.count(Language.class);
+        Assert.assertEquals(count, 1L);
+
+        Map<String, Serializable> condition = new  HashMap<>();
+        condition.put("isoCode", isoCode);
+        count = flexibleSearchService.count(Language.class, condition);
+        Assert.assertEquals(count, 1L);
+
+        condition.put("createBy", 2L);
+        count = flexibleSearchService.count(Language.class, condition);
+        Assert.assertEquals(count, 0L);
+    }
+
+    @Test
+    @Transactional
+    public void findAllTest(){
+
+    }
 
 }

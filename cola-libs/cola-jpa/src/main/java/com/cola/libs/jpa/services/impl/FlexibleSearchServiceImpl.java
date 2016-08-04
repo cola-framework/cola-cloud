@@ -18,25 +18,26 @@ package com.cola.libs.jpa.services.impl;
 import com.cola.libs.jpa.entities.AbstractEntity;
 import com.cola.libs.jpa.services.FlexibleSearchService;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
-import com.mysql.fabric.xmlrpc.base.Params;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.io.Serializable;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityManager;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
@@ -57,23 +58,45 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
     protected <T extends AbstractEntity> String getCountQueryString(Class<T> tClass) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
-        String countQuery = String.format("select count(x) from %s x");
-        return QueryUtils.getQueryString(countQuery, tClass.getSimpleName());
+        return this.getCountQueryString(tClass, null);
     }
 
-    protected <T extends AbstractEntity, V extends Serializable> String getCountQueryString(Class<T> tClass, Map<String, V> condition) {
+    protected <T extends AbstractEntity> void addFetchJoinForEager(Class<T> tClass, StringBuilder builder){
         Assert.notNull(tClass, "The EntityClass must not be null!");
-        Assert.notNull(condition, "The Condition must not be null!");
-        Assert.notNull(condition.keySet(), "The Condition must not be null!");
-        String placeholder = "x";
-        return QueryUtils.getExistsQueryString(tClass.getSimpleName(), placeholder, condition.keySet());
+        if(builder != null){
+            try{
+                Field[] fields = tClass.getDeclaredFields();
+                for (Field field : fields) {
+                    FetchType fetchType = null;
+                    ManyToOne manyToOne = field.getAnnotation(ManyToOne.class);
+                    if(manyToOne == null){
+                        OneToOne oneToOne = field.getAnnotation(OneToOne.class);
+                        if(oneToOne != null){
+                            fetchType = oneToOne.fetch();
+                        }
+                    }else{
+                        fetchType = manyToOne.fetch();
+                    }
+                    if(FetchType.EAGER.equals(fetchType)){
+                        builder.append(" left join fetch x.").append(field.getName());
+                    }
+                }
+            }catch(Exception e){
+                throw new RuntimeException(e);
+            }
+        }
     }
 
-    protected <T extends AbstractEntity, V extends Serializable> String getQueryString(Class<T> tClass, Map<String, V> condition) {
+    protected <T extends AbstractEntity, P> String getCountQueryString(Class<T> tClass, Map<String, P> condition) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
-        Assert.notNull(condition, "The Condition must not be null!");
-        Assert.notNull(condition.keySet(), "The Condition must not be null!");
+        String countHeader = "select count(x) ";
+        return countHeader + this.getQueryString(tClass, condition, false);
+    }
+
+    protected <T extends AbstractEntity, P> String getQueryString(Class<T> tClass, Map<String, P> condition, boolean fetchJoinIsNeed) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
         StringBuilder sb = new StringBuilder(String.format("from %s x", new Object[]{tClass.getSimpleName()}));
+        if(fetchJoinIsNeed) addFetchJoinForEager(tClass, sb);
         if (condition != null && condition.keySet() != null && condition.keySet().size() > 0) {
             Iterator<String> var = condition.keySet().iterator();
             sb.append(" WHERE ");
@@ -96,15 +119,26 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Sort sort) {
-        CriteriaBuilder builder = this.em.getCriteriaBuilder();
-        CriteriaQuery query = builder.createQuery(tClass);
-        Root root = query.from(tClass);
-        query.select(root);
-        if (sort != null) {
-            query.orderBy(QueryUtils.toOrders(sort, root, builder));
+        StringBuilder result = new StringBuilder(this.getQueryString(tClass, null, true));
+        String jpql = result.toString();
+        if(sort != null){
+            String orderHeader = " order by ";
+            String separator = ", ";
+            result.append(orderHeader);
+            Iterator<Sort.Order> var = sort.iterator();
+            while(var.hasNext()){
+                Sort.Order next = var.next();
+                result.append(" x.").append(next.getProperty()).append(" ").append(next.getDirection()).append(separator);
+            }
+            jpql = result.toString();
+            if(jpql.endsWith(orderHeader)){
+                jpql = jpql.replace(orderHeader, "");
+            }
+            if(jpql.endsWith(separator)){
+                jpql = jpql.substring(0, jpql.lastIndexOf(separator));
+            }
         }
-
-        return this.em.createQuery(query);
+        return this.em.createQuery(jpql, tClass);
     }
 
     protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Pageable pageable) {
@@ -128,7 +162,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return new PageImpl(content, pageable, total.longValue());
     }
 
-    protected <T extends AbstractEntity, P extends Serializable> Page readPage(Query query, Pageable pageable, String jpql, Iterable<P> parames) {
+    protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, String jpql, Iterable<P> parames) {
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
         TypedQuery<Long> countQuery = this.em.createQuery(this.covertCountQuery(jpql), Long.class);
@@ -144,7 +178,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return new PageImpl(content, pageable, total.longValue());
     }
 
-    protected <T extends AbstractEntity, P extends Serializable> Page readPage(Query query, Pageable pageable, String jpql, Map<String, P> parames) {
+    protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, String jpql, Map<String, P> parames) {
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
         TypedQuery<Long> countQuery = this.em.createQuery(this.covertCountQuery(jpql), Long.class);
@@ -164,7 +198,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity, V extends Serializable> long count(Class<T> tClass, Map<String, V> condition) {
+    public <T extends AbstractEntity, V> long count(Class<T> tClass, Map<String, V> condition) {
         TypedQuery query = this.em.createQuery(this.getCountQueryString(tClass, condition), Long.class);
         for (String key : condition.keySet()) {
             query.setParameter(key, condition.get(key));
@@ -173,8 +207,8 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity, V extends Serializable> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
-        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, condition), tClass);
+    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
+        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, condition, true), tClass);
         if (condition != null && condition.keySet() != null && condition.keySet().size() > 0) {
             for (String key : condition.keySet()) {
                 query.setParameter(key, condition.get(key));
@@ -191,7 +225,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends Number, P extends Serializable> T aggregatedQuery(String jpql, Iterable<P> parames) {
+    public <T extends Number, P> T aggregatedQuery(String jpql, Iterable<P> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.em.createQuery(jpql);
         if (parames != null && parames.iterator().hasNext()) {
@@ -205,7 +239,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends Number, P extends Serializable> T aggregatedQuery(String jpql, Map<String, P> parames) {
+    public <T extends Number, P> T aggregatedQuery(String jpql, Map<String, P> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = em.createQuery(jpql);
         if (parames != null && parames.keySet() != null) {
@@ -218,7 +252,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
     @Override
     public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass) {
-        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, null), tClass);
+        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, null, true), tClass);
         return query.getResultList();
     }
 
@@ -241,7 +275,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T, P extends Serializable> Iterable<T> query(String jpql, Iterable<P> parames) {
+    public <T, P> Iterable<T> query(String jpql, Iterable<P> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.em.createQuery(jpql);
         if (parames != null && parames.iterator().hasNext()) {
@@ -255,7 +289,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T, P extends Serializable> Iterable<T> query(String jpql, Map<String, P> parames) {
+    public <T, P> Iterable<T> query(String jpql, Map<String, P> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = em.createQuery(jpql);
         if (parames != null && parames.keySet() != null) {
@@ -274,7 +308,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page) {
+    public <T, P> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = em.createQuery(jpql);
         if (parames != null && parames.iterator().hasNext()) {
@@ -288,7 +322,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page) {
+    public <T, P> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = em.createQuery(jpql);
         if (parames != null && parames.keySet() != null) {

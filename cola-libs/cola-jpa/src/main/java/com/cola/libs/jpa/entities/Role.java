@@ -15,14 +15,14 @@
  */
 package com.cola.libs.jpa.entities;
 
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
+
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -35,11 +35,11 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
 public class Role extends AbstractEntity{
 
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private String code;
 
-    @OneToMany(cascade = {CascadeType.ALL})
-    private List<LangValue> names;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="role")
+    private List<Rolelp> rolelps;
 
     /**
      * Gets code.
@@ -57,11 +57,11 @@ public class Role extends AbstractEntity{
         this.code = code;
     }
 
-    public List<LangValue> getNames() {
-        return names;
+    public List<Rolelp> getRolelps() {
+        return rolelps;
     }
 
-    public void setNames(List<LangValue> names) {
-        this.names = names;
+    public void setRolelps(List<Rolelp> rolelps) {
+        this.rolelps = rolelps;
     }
 }

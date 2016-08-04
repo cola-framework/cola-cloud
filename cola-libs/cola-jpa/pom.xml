@@ -22,6 +22,11 @@
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>RELEASE</version>
+        </dependency>
     </dependencies>
 
 </project>

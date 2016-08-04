@@ -21,7 +21,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 
-import java.io.Serializable;
 import java.util.Map;
 
 /**
@@ -72,7 +71,7 @@ public interface FlexibleSearchService {
      * @param condition   the condition
      * @return the long
      */
-    public <T extends AbstractEntity, V extends Serializable> long count(Class<T> entityClass, Map<String, V> condition);
+    public <T extends AbstractEntity, V> long count(Class<T> entityClass, Map<String, V> condition);
 
     /**
      * Unique query t.
@@ -82,7 +81,7 @@ public interface FlexibleSearchService {
      * @param condition the condition
      * @return the t
      */
-    public <T extends AbstractEntity, V extends Serializable> T uniqueQuery(Class<T> tClass, Map<String, V> condition);
+    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition);
 
     /**
      * Aggregated query t.
@@ -100,7 +99,7 @@ public interface FlexibleSearchService {
      * @param parames the parames
      * @return the t
      */
-    public <T extends Number, P extends Serializable> T aggregatedQuery(String jpql, Iterable<P> parames);
+    public <T extends Number, P> T aggregatedQuery(String jpql, Iterable<P> parames);
 
     /**
      * Aggregated query t.
@@ -110,7 +109,7 @@ public interface FlexibleSearchService {
      * @param parames the parames
      * @return the t
      */
-    public <T extends Number, P extends Serializable> T aggregatedQuery(String jpql, Map<String, P> parames);
+    public <T extends Number, P> T aggregatedQuery(String jpql, Map<String, P> parames);
 
     /**
      * Query iterable.
@@ -128,7 +127,7 @@ public interface FlexibleSearchService {
      * @param parames the parames
      * @return the iterable
      */
-    public <T, P extends Serializable> Iterable<T> query(String jpql, Iterable<P> parames);
+    public <T, P> Iterable<T> query(String jpql, Iterable<P> parames);
 
     /**
      * Query iterable.
@@ -138,7 +137,7 @@ public interface FlexibleSearchService {
      * @param parames the parames
      * @return the iterable
      */
-    public <T, P extends Serializable> Iterable<T> query(String jpql, Map<String, P> parames);
+    public <T, P> Iterable<T> query(String jpql, Map<String, P> parames);
 
     /**
      * Query page.
@@ -158,7 +157,7 @@ public interface FlexibleSearchService {
      * @param page    the page
      * @return the iterable
      */
-    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page);
+    public <T, P> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page);
 
     /**
      * Paging query iterable.
@@ -169,6 +168,6 @@ public interface FlexibleSearchService {
      * @param page    the page
      * @return the iterable
      */
-    public <T, P extends Serializable> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page);
+    public <T, P> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page);
 
 }

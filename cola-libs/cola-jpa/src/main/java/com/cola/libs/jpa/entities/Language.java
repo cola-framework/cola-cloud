@@ -28,7 +28,7 @@ import javax.persistence.UniqueConstraint;
 @Table(name = "t_language", uniqueConstraints = {@UniqueConstraint(columnNames = {"iso_code"})})
 public class Language extends AbstractEntity{
 
-    @Column(name="iso_code", length = 20)
+    @Column(name="iso_code", length = 20, nullable = false)
     private String isoCode;
 
     /**

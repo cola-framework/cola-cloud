@@ -31,6 +31,7 @@
         <raven.version>6.0.0</raven.version>
         <spring-retry.version>1.1.2.RELEASE</spring-retry.version>
         <spring-data-commons.version>1.10.2.RELEASE</spring-data-commons.version>
+        <drools-version>6.4.0.Final</drools-version>
     </properties>
 
     <build>
@@ -47,6 +48,18 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- DROOLS -->
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-core</artifactId>
+                <version>${drools-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.drools</groupId>
+                <artifactId>drools-compiler</artifactId>
+                <version>${drools-version}</version>
+            </dependency>
+
             <!-- APACHA COMMONS -->
             <dependency>
                 <groupId>commons-lang</groupId>
