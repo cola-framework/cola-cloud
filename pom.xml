@@ -32,6 +32,8 @@
         <spring-retry.version>1.1.2.RELEASE</spring-retry.version>
         <spring-data-commons.version>1.10.2.RELEASE</spring-data-commons.version>
         <drools-version>6.4.0.Final</drools-version>
+        <hikariCP-version>2.4.7</hikariCP-version>
+        <druid-version>1.0.23</druid-version>
     </properties>
 
     <build>
@@ -48,6 +50,22 @@
 
     <dependencyManagement>
         <dependencies>
+            <!-- Druid -->
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>druid</artifactId>
+                <version>${druid-version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+            <!-- HikariCP -->
+            <dependency>
+                <groupId>com.zaxxer</groupId>
+                <artifactId>HikariCP</artifactId>
+                <version>${hikariCP-version}</version>
+                <scope>compile</scope>
+            </dependency>
+
             <!-- DROOLS -->
             <dependency>
                 <groupId>org.drools</groupId>

@@ -16,10 +16,12 @@
 package com.cola.libs.jpa.services;
 
 import com.cola.libs.jpa.entities.AbstractEntity;
+import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Map;
 
@@ -28,32 +30,6 @@ import java.util.Map;
  * Created by jiachen.shi on 7/20/2016.
  */
 public interface FlexibleSearchService {
-
-    /**
-     * Find all iterable.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @return the iterable
-     */
-    public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass);
-
-    /**
-     * Find all iterable.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @param sort   the sort
-     * @return the iterable
-     */
-    public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass, Sort sort);
-
-    /**
-     * Find all page.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @param page   the page
-     * @return the page
-     */
-    public <T extends AbstractEntity> Page<T> findAll(Class<T> tClass, Pageable page);
 
     /**
      * Count long.
@@ -74,6 +50,15 @@ public interface FlexibleSearchService {
     public <T extends AbstractEntity, V> long count(Class<T> entityClass, Map<String, V> condition);
 
     /**
+     * Count long.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param spec   the spec
+     * @return the long
+     */
+    public <T extends AbstractEntity> long count(Class<T> tClass, Specification<T> spec);
+
+    /**
      * Unique query t.
      * @param <T>       the type parameter
      * @param <V>       the type parameter
@@ -84,90 +69,110 @@ public interface FlexibleSearchService {
     public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition);
 
     /**
-     * Aggregated query t.
-     * @param <T>  the type parameter
-     * @param jpql the jpql
+     * Unique query t.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param spec   the spec
      * @return the t
      */
-    public <T extends Number> T aggregatedQuery(String jpql);
-
-    /**
-     * Aggregated query t.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
-     * @return the t
-     */
-    public <T extends Number, P> T aggregatedQuery(String jpql, Iterable<P> parames);
+    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec);
 
     /**
      * Aggregated query t.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
+     * @param <T>         the type parameter
+     * @param jpql        the jpql
+     * @param returnClass the return class
      * @return the t
      */
-    public <T extends Number, P> T aggregatedQuery(String jpql, Map<String, P> parames);
+    public <T> T uniqueQuery(String jpql, Class<T> returnClass);
+
+    /**
+     * Unique query t.
+     * @param <T>         the type parameter
+     * @param builder     the builder
+     * @param returnClass the return class
+     * @return the t
+     */
+    public <T> T uniqueQuery(FlexibleQueryBuilder builder, Class<T> returnClass);
 
     /**
      * Query iterable.
-     * @param <T>  the type parameter
-     * @param jpql the jpql
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param spec   the spec
+     * @param sort   the sort
      * @return the iterable
      */
-    public <T> Iterable<T> query(String jpql);
+    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort);
 
     /**
      * Query iterable.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
+     * @param <T>       the type parameter
+     * @param <P>       the type parameter
+     * @param tClass    the t class
+     * @param condition the condition
+     * @param sort      the sort
      * @return the iterable
      */
-    public <T, P> Iterable<T> query(String jpql, Iterable<P> parames);
+    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort);
 
     /**
      * Query iterable.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
+     * @param <T>         the type parameter
+     * @param builder     the builder
+     * @param resultClass the result class
      * @return the iterable
      */
-    public <T, P> Iterable<T> query(String jpql, Map<String, P> parames);
+    public <T> Iterable<T> query(FlexibleQueryBuilder builder, Class<T> resultClass);
+
+    /**
+     * Query iterable.
+     * @param <T>         the type parameter
+     * @param jpql        the jpql
+     * @param resultClass the result class
+     * @return the iterable
+     */
+    public <T> Iterable<T> query(String jpql, Class<T> resultClass);
+
+    /**
+     * Paging query iterable.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @param spec   the spec
+     * @param page   the page
+     * @return the iterable
+     */
+    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page);
+
+    /**
+     * Paging query iterable.
+     * @param <T>       the type parameter
+     * @param <P>       the type parameter
+     * @param tClass    the t class
+     * @param condition the condition
+     * @param page      the page
+     * @return the iterable
+     */
+    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page);
 
     /**
      * Query page.
-     * @param <T>  the type parameter
-     * @param jpql the jpql
-     * @param page the page
+     * @param <T>         the type parameter
+     * @param jpql        the jpql
+     * @param resultClass the result class
+     * @param page        the page
      * @return the page
      */
-    public <T> Page<T> pagingQuery(String jpql, Pageable page);
+    public <T> Page<T> pagingQuery(String jpql, Class<T> resultClass, Pageable page);
 
     /**
      * Paging query iterable.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
-     * @param page    the page
+     * @param <T>         the type parameter
+     * @param builder     the builder
+     * @param resultClass the result class
+     * @param page        the page
      * @return the iterable
      */
-    public <T, P> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page);
-
-    /**
-     * Paging query iterable.
-     * @param <T>     the type parameter
-     * @param <P>     the type parameter
-     * @param jpql    the jpql
-     * @param parames the parames
-     * @param page    the page
-     * @return the iterable
-     */
-    public <T, P> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page);
+    public <T> Page<T> pagingQuery(FlexibleQueryBuilder builder, Class<T> resultClass, Pageable page);
 
 }

@@ -29,6 +29,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -78,27 +79,15 @@ public class LazyLoadingTest {
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Role test(Long roleId){
         Role role = modelService.load(Role.class, roleId);
-        List<Rolelp> rolelps = role.getRolelps();
+        Collection<Rolelp> rolelps = role.getRolelps();
 
         Role role1 = modelService.get(Role.class, roleId);
-        List<Rolelp> rolelps1 = role1.getRolelps();
+        Collection<Rolelp> rolelps1 = role1.getRolelps();
         return role;
     }
 
     @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void destroy(Role role){
-
-        flexibleSearchService.count(Rolelp.class);
-
-        Sort sort = new Sort(Sort.Direction.ASC, "name");
-        Iterable<Rolelp> all = flexibleSearchService.findAll(Rolelp.class, sort);
-
-        String jpql = "from Rolelp r where r.role = ?";
-        List list = new ArrayList<>();
-        list.add(role);
-        Iterable query = flexibleSearchService.query(jpql, list);
-
-
         Map<String, Object> condition = new HashMap<>();
         condition.put("role", role);
         Rolelp rolelp = flexibleSearchService.uniqueQuery(Rolelp.class, condition);

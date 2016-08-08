@@ -17,33 +17,48 @@ package com.cola.libs.jpa.services.impl;
 
 import com.cola.libs.jpa.entities.AbstractEntity;
 import com.cola.libs.jpa.services.FlexibleSearchService;
+import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.AccessibleObject;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import javax.persistence.metamodel.EntityType;
 
 /**
  * cola
@@ -56,100 +71,220 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     @PersistenceContext
     private EntityManager em;
 
-    protected <T extends AbstractEntity> String getCountQueryString(Class<T> tClass) {
-        Assert.notNull(tClass, "The EntityClass must not be null!");
-        return this.getCountQueryString(tClass, null);
+    private enum RelationType {
+        ToOne, ToMany
     }
 
-    protected <T extends AbstractEntity> void addFetchJoinForEager(Class<T> tClass, StringBuilder builder){
-        Assert.notNull(tClass, "The EntityClass must not be null!");
-        if(builder != null){
-            try{
-                Field[] fields = tClass.getDeclaredFields();
-                for (Field field : fields) {
-                    FetchType fetchType = null;
-                    ManyToOne manyToOne = field.getAnnotation(ManyToOne.class);
-                    if(manyToOne == null){
-                        OneToOne oneToOne = field.getAnnotation(OneToOne.class);
-                        if(oneToOne != null){
-                            fetchType = oneToOne.fetch();
+    private class RelationShip {
+        private FetchType fetchType;
+        private RelationType relationType;
+
+        public FetchType getFetchType() {
+            return fetchType;
+        }
+
+        public void setFetchType(FetchType fetchType) {
+            this.fetchType = fetchType;
+        }
+
+        public RelationType getRelationType() {
+            return relationType;
+        }
+
+        public void setRelationType(RelationType relationType) {
+            this.relationType = relationType;
+        }
+    }
+
+    private <T extends AbstractEntity> RelationShip getRelationShip(Class<T> tClass, AccessibleObject accessibleObject) {
+        Assert.notNull(accessibleObject, "The Field must not be null!");
+        RelationShip relationShip = new RelationShip();
+        try {
+            ManyToOne manyToOne = accessibleObject.getAnnotation(ManyToOne.class);
+            if (manyToOne != null) {
+                relationShip.setFetchType(manyToOne.fetch());
+                relationShip.setRelationType(RelationType.ToOne);
+            } else {
+                OneToOne oneToOne = accessibleObject.getAnnotation(OneToOne.class);
+                if (oneToOne != null) {
+                    relationShip.setFetchType(oneToOne.fetch());
+                    relationShip.setRelationType(RelationType.ToOne);
+                } else {
+                    OneToMany oneToMany = accessibleObject.getAnnotation(OneToMany.class);
+                    if (oneToMany != null) {
+                        relationShip.setFetchType(oneToMany.fetch());
+                        relationShip.setRelationType(RelationType.ToMany);
+                    } else {
+                        ManyToMany manyToMany = accessibleObject.getAnnotation(ManyToMany.class);
+                        if (manyToMany != null) {
+                            relationShip.setFetchType(manyToMany.fetch());
+                            relationShip.setRelationType(RelationType.ToMany);
+                        } else {
+                            if (accessibleObject instanceof Field) {
+                                Field field = (Field) accessibleObject;
+                                PropertyDescriptor pd = new PropertyDescriptor(field.getName(), tClass);
+                                Method getMethod = pd.getReadMethod();
+                                if (getMethod != null) {
+                                    relationShip = this.getRelationShip(tClass, getMethod);
+                                }
+                            }
                         }
-                    }else{
-                        fetchType = manyToOne.fetch();
-                    }
-                    if(FetchType.EAGER.equals(fetchType)){
-                        builder.append(" left join fetch x.").append(field.getName());
                     }
                 }
-            }catch(Exception e){
-                throw new RuntimeException(e);
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return relationShip;
+    }
+
+    private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
+        Query query;
+        if (resultClass != null) {
+            query = this.em.createQuery(builder.toJPQL(), resultClass);
+        } else {
+            query = this.em.createQuery(builder.toJPQL());
+        }
+        if (builder.getParamList().size() > 0) {
+            int i = 1;
+            for (Object p : builder.getParamList()) {
+                query.setParameter(i, p);
+                i++;
             }
         }
-    }
-
-    protected <T extends AbstractEntity, P> String getCountQueryString(Class<T> tClass, Map<String, P> condition) {
-        Assert.notNull(tClass, "The EntityClass must not be null!");
-        String countHeader = "select count(x) ";
-        return countHeader + this.getQueryString(tClass, condition, false);
-    }
-
-    protected <T extends AbstractEntity, P> String getQueryString(Class<T> tClass, Map<String, P> condition, boolean fetchJoinIsNeed) {
-        Assert.notNull(tClass, "The EntityClass must not be null!");
-        StringBuilder sb = new StringBuilder(String.format("from %s x", new Object[]{tClass.getSimpleName()}));
-        if(fetchJoinIsNeed) addFetchJoinForEager(tClass, sb);
-        if (condition != null && condition.keySet() != null && condition.keySet().size() > 0) {
-            Iterator<String> var = condition.keySet().iterator();
-            sb.append(" WHERE ");
-            while (var.hasNext()) {
-                String idAttribute = (String) var.next();
-                sb.append(String.format("%s.%s = :%s", new Object[]{"x", idAttribute, idAttribute}));
-                sb.append(" AND ");
+        if (builder.getParamMap().keySet() != null && builder.getParamMap().keySet().size() > 0) {
+            for (String name : builder.getParamMap().keySet()) {
+                query.setParameter(name, builder.getParamMap().get(name));
             }
-            sb = new StringBuilder(sb.substring(0, sb.lastIndexOf("AND")));
         }
-        return sb.toString();
+        return query;
     }
 
-    protected String covertCountQuery(String jpql){
+    private String covertCountQuery(String jpql) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         StringBuilder result = new StringBuilder("select count(*) ");
         String uc = jpql.toUpperCase().trim();
-        result.append(jpql.substring(uc.indexOf(JpqlAnalysisConstant.Clause.FROM.name()) + 4));
+        result.append(jpql.substring(uc.indexOf(JpqlAnalysisConstant.Clause.FROM.name())));
         return result.toString();
     }
 
-    protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Sort sort) {
-        StringBuilder result = new StringBuilder(this.getQueryString(tClass, null, true));
-        String jpql = result.toString();
-        if(sort != null){
-            String orderHeader = " order by ";
-            String separator = ", ";
-            result.append(orderHeader);
-            Iterator<Sort.Order> var = sort.iterator();
-            while(var.hasNext()){
-                Sort.Order next = var.next();
-                result.append(" x.").append(next.getProperty()).append(" ").append(next.getDirection()).append(separator);
-            }
-            jpql = result.toString();
-            if(jpql.endsWith(orderHeader)){
-                jpql = jpql.replace(orderHeader, "");
-            }
-            if(jpql.endsWith(separator)){
-                jpql = jpql.substring(0, jpql.lastIndexOf(separator));
-            }
-        }
-        return this.em.createQuery(jpql, tClass);
+    private Query coverCountQuery(FlexibleQueryBuilder builder){
+        Assert.notNull(builder, "The FlexibleQueryBuilder must not be null!");
+        String jpql = builder.toJPQL();
+        StringBuilder result = new StringBuilder("select count(*) ");
+        String uc = jpql.toUpperCase().trim();
+        result.append(jpql.substring(uc.indexOf(JpqlAnalysisConstant.Clause.FROM.name())));
+        FlexibleQueryBuilder countBuilder = new FlexibleQueryBuilder(result.toString());
+        countBuilder.addParameters(builder.getParamList());
+        countBuilder.setParameters(builder.getParamMap());
+        return covertQueryFromFlexibleQueryBuilder(countBuilder, Long.class);
     }
 
-    protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Pageable pageable) {
-        Sort sort = pageable == null?null:pageable.getSort();
-        return this.getQuery(tClass, sort);
+    private <T extends AbstractEntity> void addFetchJoin(Class<T> tClass, Root root) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        Assert.notNull(root, "The Root must not be null!");
+        EntityType<T> model = root.getModel();
+        Field[] fields = tClass.getDeclaredFields();
+        for (Field field : fields) {
+            RelationShip r = this.getRelationShip(tClass, field);
+            if (FetchType.EAGER.equals(r.getFetchType())) {
+                if (RelationType.ToOne.equals(r.getRelationType())) {
+                    root.fetch(model.getSingularAttribute(field.getName(), field.getType()), JoinType.LEFT);
+                } else if (RelationType.ToMany.equals(r.getRelationType())) {
+                    if (Collection.class.isAssignableFrom(field.getType())) {
+                        Type genericType = field.getGenericType();
+                        if (genericType instanceof ParameterizedType) {
+                            ParameterizedType pt = (ParameterizedType) genericType;
+                            Class genericClazz = (Class) pt.getActualTypeArguments()[0];
+                            if (List.class.isAssignableFrom(field.getType())) {
+                                root.fetch(model.getList(field.getName(), genericClazz), JoinType.LEFT);
+                            } else if (Set.class.isAssignableFrom(field.getType())) {
+                                root.fetch(model.getSet(field.getName(), genericClazz), JoinType.LEFT);
+                            } else {
+                                root.fetch(model.getCollection(field.getName(), genericClazz), JoinType.LEFT);
+                            }
+                        }
+                    } else {
+                        root.fetch(model.getMap(field.getName()), JoinType.LEFT);
+                    }
+                }
+            }
+        }
+    }
+
+    private <P> Specification covertSpecificationFromMap(Map<String, P> condition) {
+        return new Specification() {
+            @Override
+            public Predicate toPredicate(Root root, CriteriaQuery criteriaQuery, CriteriaBuilder criteriaBuilder) {
+                List<Predicate> list = new ArrayList<Predicate>();
+                if (condition != null && condition.keySet() != null && condition.keySet().size() > 0) {
+                    Iterator<String> var = condition.keySet().iterator();
+                    while (var.hasNext()) {
+                        String key = var.next();
+                        list.add(criteriaBuilder.equal(root.get(key).as(condition.get(key).getClass()), condition.get(key)));
+                    }
+                }
+                if (list.size() > 0) {
+                    Predicate[] p = new Predicate[list.size()];
+                    return criteriaBuilder.and(list.toArray(p));
+                }
+                return null;
+            }
+        };
+    }
+
+    protected <T extends AbstractEntity> TypedQuery<Long> getCountQuery(Class<T> tClass) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        return this.getCountQuery(tClass, (Map) null);
+    }
+
+    protected <T extends AbstractEntity, P> TypedQuery<Long> getCountQuery(Class<T> tClass, Map<String, P> condition) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        return this.getCountQuery(tClass, covertSpecificationFromMap(condition));
+    }
+
+    protected <T extends AbstractEntity> TypedQuery<Long> getCountQuery(Class<T> tClass, Specification<T> spec) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(Long.class);
+        Root root = query.from(tClass);
+        if (query.isDistinct()) {
+            query.select(builder.countDistinct(root));
+        } else {
+            query.select(builder.count(root));
+        }
+        if (spec != null) {
+            Predicate predicate = spec.toPredicate(root, query, builder);
+            if (predicate != null) {
+                query.where(predicate);
+            }
+        }
+        return this.em.createQuery(query);
+    }
+
+    protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Specification<T> spec, Sort sort) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        CriteriaQuery query = builder.createQuery(tClass);
+        Root root = query.from(tClass);
+        this.addFetchJoin(tClass, root);
+        query.select(root);
+        if (spec != null) {
+            Predicate predicate = spec.toPredicate(root, query, builder);
+            if (predicate != null) {
+                query.where(predicate);
+            }
+        }
+        if (sort != null) {
+            query.orderBy(QueryUtils.toOrders(sort, root, builder));
+        }
+        return this.em.createQuery(query);
     }
 
     protected <T extends AbstractEntity> Page readPage(Query query, Pageable pageable, Class<T> tClass) {
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
-        Long total = count(tClass);
+        Long total = this.count(tClass);
         List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl(content, pageable, total.longValue());
     }
@@ -160,177 +295,118 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         Long total = this.em.createQuery(this.covertCountQuery(jpql), Long.class).getSingleResult();
         List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl(content, pageable, total.longValue());
+
     }
 
-    protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, String jpql, Iterable<P> parames) {
+    protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, FlexibleQueryBuilder builder) {
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
-        TypedQuery<Long> countQuery = this.em.createQuery(this.covertCountQuery(jpql), Long.class);
-        if (parames != null && parames.iterator().hasNext()) {
-            int i = 1;
-            for (P p : parames) {
-                countQuery.setParameter(i, p);
-                i++;
-            }
-        }
-        Long total = countQuery.getSingleResult();
-        List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
-        return new PageImpl(content, pageable, total.longValue());
-    }
-
-    protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, String jpql, Map<String, P> parames) {
-        query.setFirstResult(pageable.getOffset());
-        query.setMaxResults(pageable.getPageSize());
-        TypedQuery<Long> countQuery = this.em.createQuery(this.covertCountQuery(jpql), Long.class);
-        if (parames != null && parames.keySet() != null) {
-            for (String name : parames.keySet()) {
-                countQuery.setParameter(name, parames.get(name));
-            }
-        }
-        Long total = countQuery.getSingleResult();
+        Long total = (Long) this.coverCountQuery(builder).getSingleResult();
         List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl(content, pageable, total.longValue());
     }
 
     @Override
-    public <T extends AbstractEntity> long count(Class<T> entityClass) {
-        return ((Long)this.em.createQuery(this.getCountQueryString(entityClass), Long.class).getSingleResult()).longValue();
+    public <T extends AbstractEntity> long count(Class<T> tClass) {
+        return ((Long) this.getCountQuery(tClass).getSingleResult()).longValue();
     }
 
     @Override
     public <T extends AbstractEntity, V> long count(Class<T> tClass, Map<String, V> condition) {
-        TypedQuery query = this.em.createQuery(this.getCountQueryString(tClass, condition), Long.class);
-        for (String key : condition.keySet()) {
-            query.setParameter(key, condition.get(key));
-        }
-        return ((Long) query.getSingleResult()).longValue();
+        return ((Long) this.getCountQuery(tClass, condition).getSingleResult()).longValue();
+
+    }
+
+    @Override
+    public <T extends AbstractEntity> long count(Class<T> tClass, Specification<T> spec) {
+        return ((Long) this.getCountQuery(tClass, spec).getSingleResult()).longValue();
     }
 
     @Override
     public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
-        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, condition, true), tClass);
-        if (condition != null && condition.keySet() != null && condition.keySet().size() > 0) {
-            for (String key : condition.keySet()) {
-                query.setParameter(key, condition.get(key));
-            }
-        }
-        return query.getSingleResult();
+        return (T) this.getQuery(tClass, this.covertSpecificationFromMap(condition), null).getSingleResult();
     }
 
     @Override
-    public <T extends Number> T aggregatedQuery(String jpql) {
+    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec) {
+        return this.getQuery(tClass, spec, null).getSingleResult();
+    }
+
+    @Override
+    public <T> T uniqueQuery(FlexibleQueryBuilder builder, Class<T> resultClass) {
+        Assert.notNull(builder, "The FlexibleQueryBuilder must not be null!");
+        return (T) this.covertQueryFromFlexibleQueryBuilder(builder, resultClass).getSingleResult();
+    }
+
+    @Override
+    public <T> T uniqueQuery(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.em.createQuery(jpql);
         return (T) query.getSingleResult();
     }
 
     @Override
-    public <T extends Number, P> T aggregatedQuery(String jpql, Iterable<P> parames) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = this.em.createQuery(jpql);
-        if (parames != null && parames.iterator().hasNext()) {
-            int i = 1;
-            for (P p : parames) {
-                query.setParameter(i, p);
-                i++;
-            }
-        }
-        return (T) query.getSingleResult();
+    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        return this.getQuery(tClass, spec, sort).getResultList();
     }
 
     @Override
-    public <T extends Number, P> T aggregatedQuery(String jpql, Map<String, P> parames) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = em.createQuery(jpql);
-        if (parames != null && parames.keySet() != null) {
-            for (String name : parames.keySet()) {
-                query.setParameter(name, parames.get(name));
-            }
-        }
-        return (T) query.getSingleResult();
+    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        return this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort).getResultList();
     }
 
     @Override
-    public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass) {
-        TypedQuery<T> query = this.em.createQuery(this.getQueryString(tClass, null, true), tClass);
+    public <T> Iterable<T> query(String jpql, Class<T> resultClass) {
+        Assert.notNull(jpql, "The JPQL must not be null!");
+        Query query;
+        if (resultClass != null) {
+            query = this.em.createQuery(jpql, resultClass);
+        } else {
+            query = this.em.createQuery(jpql);
+        }
         return query.getResultList();
     }
 
     @Override
-    public <T extends AbstractEntity> Iterable<T> findAll(Class<T> tClass, Sort sort) {
-        return this.getQuery(tClass, (Sort) sort).getResultList();
+    public <T> Iterable<T> query(FlexibleQueryBuilder builder, Class<T> resultClass) {
+        Assert.notNull(builder, "The FlexibleQueryBuilder must not be null!");
+        return this.covertQueryFromFlexibleQueryBuilder(builder, resultClass).getResultList();
     }
 
     @Override
-    public <T extends AbstractEntity> Page<T> findAll(Class<T> tClass, Pageable page) {
-        TypedQuery query = this.getQuery(tClass, page);
+    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        Sort sort = page == null ? null : page.getSort();
+        TypedQuery query = this.getQuery(tClass, spec, sort);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, tClass));
     }
 
     @Override
-    public <T> Iterable<T> query(String jpql) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = this.em.createQuery(jpql);
-        return query.getResultList();
+    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        Sort sort = page == null ? null : page.getSort();
+        TypedQuery query = this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort);
+        return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, tClass));
     }
 
     @Override
-    public <T, P> Iterable<T> query(String jpql, Iterable<P> parames) {
+    public <T> Page<T> pagingQuery(String jpql, Class<T> resultClass, Pageable page) {
         Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = this.em.createQuery(jpql);
-        if (parames != null && parames.iterator().hasNext()) {
-            int i = 1;
-            for (P p : parames) {
-                query.setParameter(i, p);
-                i++;
-            }
+        Query query;
+        if (resultClass != null) {
+            query = this.em.createQuery(jpql, resultClass);
+        } else {
+            query = this.em.createQuery(jpql);
         }
-        return query.getResultList();
-    }
-
-    @Override
-    public <T, P> Iterable<T> query(String jpql, Map<String, P> parames) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = em.createQuery(jpql);
-        if (parames != null && parames.keySet() != null) {
-            for (String name : parames.keySet()) {
-                query.setParameter(name, parames.get(name));
-            }
-        }
-        return query.getResultList();
-    }
-
-    @Override
-    public <T> Page<T> pagingQuery(String jpql, Pageable page) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = em.createQuery(jpql);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, jpql));
     }
 
     @Override
-    public <T, P> Iterable<T> pagingQuery(String jpql, Iterable<P> parames, Pageable page) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = em.createQuery(jpql);
-        if (parames != null && parames.iterator().hasNext()) {
-            int i = 1;
-            for (P p : parames) {
-                query.setParameter(i, p);
-                i++;
-            }
-        }
-        return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query,page, jpql, parames));
+    public <T> Page<T> pagingQuery(FlexibleQueryBuilder builder, Class<T> resultClass, Pageable page) {
+        Assert.notNull(builder, "The FlexibleQueryBuilder must not be null!");
+        Query query = this.covertQueryFromFlexibleQueryBuilder(builder, resultClass);
+        return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, builder));
     }
-
-    @Override
-    public <T, P> Iterable<T> pagingQuery(String jpql, Map<String, P> parames, Pageable page) {
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = em.createQuery(jpql);
-        if (parames != null && parames.keySet() != null) {
-            for (String name : parames.keySet()) {
-                query.setParameter(name, parames.get(name));
-            }
-        }
-        return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, jpql, parames));
-    }
-
 }

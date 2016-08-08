@@ -17,8 +17,10 @@ package com.cola.libs.jpa.test;
 
 import com.cola.libs.jpa.entities.Language;
 import com.cola.libs.jpa.entities.Role;
+import com.cola.libs.jpa.entities.Rolelp;
 import com.cola.libs.jpa.services.FlexibleSearchService;
 import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -26,12 +28,19 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -76,9 +85,39 @@ public class FlexibleSearchServiceTest {
     }
 
     @Test
-    @Transactional
-    public void findAllTest(){
+    @Transactional(readOnly = true)
+    public void complexTest(){
 
+        long count = flexibleSearchService.count(Rolelp.class);
+
+        Map<String, Object> condition = new HashMap<>();
+        condition.put("code", "d207ba8f-d4f6-4d84-9");
+
+        Role role = flexibleSearchService.uniqueQuery(Role.class, condition);
+
+        Collection<Rolelp> rolelps = role.getRolelps();
+
+        condition = new HashMap<>();
+        condition.put("role", role);
+        count  = flexibleSearchService.count(Rolelp.class, condition);
+
+        condition = new HashMap<>();
+        condition.put("name", "ABC");
+        Iterable<Rolelp> query = flexibleSearchService.query(Rolelp.class, condition, null);
+
+        String jpql = "select max(name) from Rolelp lp where lp.role=?";
+        FlexibleQueryBuilder builder = new FlexibleQueryBuilder(jpql);
+        builder.addParameter(role);
+        String s = flexibleSearchService.uniqueQuery(builder, String.class);
+
+        Pageable pageable = new PageRequest(0, 10, null);
+        Page<String> strings = flexibleSearchService.pagingQuery(builder, String.class, pageable);
+
+        jpql = "select max(code) from Role";
+        Object o = flexibleSearchService.uniqueQuery(jpql, null);
+
+        jpql = "select lp.name, r.code, l.isoCode from Rolelp lp left join lp.role r left join lp.language l";
+        Iterable<Object> query1 = flexibleSearchService.query(jpql, Object.class);
     }
 
 }

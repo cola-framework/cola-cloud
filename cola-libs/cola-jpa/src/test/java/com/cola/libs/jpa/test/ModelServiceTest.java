@@ -19,7 +19,6 @@ import com.cola.libs.jpa.entities.Order;
 import com.cola.libs.jpa.entities.OrderItem;
 import com.cola.libs.jpa.entities.Product;
 import com.cola.libs.jpa.entities.Role;
-import com.cola.libs.jpa.entities.Rolelp;
 import com.cola.libs.jpa.services.ModelService;
 
 import org.hamcrest.Matchers;
