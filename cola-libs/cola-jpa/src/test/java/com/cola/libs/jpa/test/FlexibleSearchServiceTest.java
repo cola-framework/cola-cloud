@@ -87,7 +87,6 @@ public class FlexibleSearchServiceTest {
     @Test
     @Transactional(readOnly = true)
     public void complexTest(){
-
         long count = flexibleSearchService.count(Rolelp.class);
 
         Map<String, Object> condition = new HashMap<>();
@@ -116,8 +115,15 @@ public class FlexibleSearchServiceTest {
         jpql = "select max(code) from Role";
         Object o = flexibleSearchService.uniqueQuery(jpql, null);
 
-        jpql = "select lp.name, r.code, l.isoCode from Rolelp lp left join lp.role r left join lp.language l";
-        Iterable<Object> query1 = flexibleSearchService.query(jpql, Object.class);
+        jpql = "select lp from Rolelp lp left join lp.role r left join lp.language l";
+        Iterable<Rolelp> query2 = flexibleSearchService.query(jpql, Rolelp.class);
+
+        jpql = "select lp.name as name, r.code as code, l.isoCode as isoCode from Rolelp lp left join lp.role r left join lp.language l";
+        Iterable<Map> query1 = flexibleSearchService.query(jpql, Map.class);
+
+        Iterable<List> query3 = flexibleSearchService.query(jpql, List.class);
+
+        Iterable<TestBean> query4 = flexibleSearchService.query(jpql, TestBean.class);
     }
 
 }

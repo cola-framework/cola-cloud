@@ -30,6 +30,7 @@
         <powermock.version>1.6.5</powermock.version>
         <raven.version>6.0.0</raven.version>
         <spring-retry.version>1.1.2.RELEASE</spring-retry.version>
+        <spring-session.version>1.2.1.RELEASE</spring-session.version>
         <spring-data-commons.version>1.10.2.RELEASE</spring-data-commons.version>
         <drools-version>6.4.0.Final</drools-version>
         <hikariCP-version>2.4.7</hikariCP-version>
@@ -66,7 +67,7 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- DROOLS -->
+            <!-- Drools -->
             <dependency>
                 <groupId>org.drools</groupId>
                 <artifactId>drools-core</artifactId>
@@ -78,7 +79,7 @@
                 <version>${drools-version}</version>
             </dependency>
 
-            <!-- APACHA COMMONS -->
+            <!-- Apache Commons -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
@@ -86,7 +87,7 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- POWERMOCK -->
+            <!-- Powermock -->
             <dependency>
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-api-mockito</artifactId>
@@ -101,7 +102,7 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- HIBERNATE -->
+            <!-- Hibernate Core -->
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
@@ -109,7 +110,7 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- LOGBACK FOR SENTRY -->
+            <!-- Logback for Sentry -->
             <dependency>
                 <groupId>net.kencochrane.raven</groupId>
                 <artifactId>raven-logback</artifactId>
@@ -117,7 +118,7 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- SPRING SECURITY -->
+            <!-- Spring Security -->
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-config</artifactId>
@@ -137,13 +138,22 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- SPRING RETRY -->
+            <!-- Spring Retry -->
             <dependency>
                 <groupId>org.springframework.retry</groupId>
                 <artifactId>spring-retry</artifactId>
                 <version>${spring-retry.version}</version>
                 <scope>compile</scope>
             </dependency>
+
+            <!-- Spring Session For Redis -->
+            <dependency>
+                <groupId>org.springframework.session</groupId>
+                <artifactId>spring-session-data-redis</artifactId>
+                <version>${spring-session.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

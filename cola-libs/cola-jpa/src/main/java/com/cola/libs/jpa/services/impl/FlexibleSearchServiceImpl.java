@@ -20,13 +20,15 @@ import com.cola.libs.jpa.services.FlexibleSearchService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
 
+import org.hibernate.Session;
+import org.hibernate.jpa.HibernateQuery;
+import org.hibernate.transform.Transformers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
-import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -52,6 +54,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -64,7 +67,6 @@ import javax.persistence.metamodel.EntityType;
  * cola
  * Created by jiachen.shi on 7/20/2016.
  */
-@Service("flexibleSearchService")
 @Transactional(readOnly = true)
 public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
@@ -94,6 +96,40 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         public void setRelationType(RelationType relationType) {
             this.relationType = relationType;
         }
+    }
+
+    private <T> Query createQuery(String jpql, Class<T> tClass){
+        if(tClass == null){
+            return this.em.createQuery(jpql);
+        }else{
+            if(!Object[].class.equals(tClass) && !Tuple.class.equals(tClass)){
+                Query query = this.em.createQuery(jpql);
+                if(Map.class.isAssignableFrom(tClass)){
+                    HibernateQuery hibernateQuery = query.unwrap(HibernateQuery.class);
+                    if(hibernateQuery != null){
+                        hibernateQuery.getHibernateQuery().setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+                    }
+                }else if(List.class.isAssignableFrom(tClass)){
+                    HibernateQuery hibernateQuery = query.unwrap(HibernateQuery.class);
+                    if(hibernateQuery != null){
+                        hibernateQuery.getHibernateQuery().setResultTransformer(Transformers.TO_LIST);
+                    }
+                }else{
+                    Session session = (Session)this.em.getDelegate();
+                    if(session != null){
+                        org.hibernate.Query hqlQuery = session.createQuery(jpql);
+                        if(hqlQuery != null && hqlQuery.getReturnTypes().length > 1){
+                            HibernateQuery hibernateQuery = query.unwrap(HibernateQuery.class);
+                            if(hibernateQuery != null){
+                                hibernateQuery.getHibernateQuery().setResultTransformer(Transformers.aliasToBean(tClass));
+                            }
+                        }
+                    }
+                }
+                return query;
+            }
+        }
+        return this.em.createQuery(jpql, tClass);
     }
 
     private <T extends AbstractEntity> RelationShip getRelationShip(Class<T> tClass, AccessibleObject accessibleObject) {
@@ -139,12 +175,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
-        Query query;
-        if (resultClass != null) {
-            query = this.em.createQuery(builder.toJPQL(), resultClass);
-        } else {
-            query = this.em.createQuery(builder.toJPQL());
-        }
+        Query query = this.createQuery(builder.toJPQL(), resultClass);
         if (builder.getParamList().size() > 0) {
             int i = 1;
             for (Object p : builder.getParamList()) {
@@ -360,12 +391,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     @Override
     public <T> Iterable<T> query(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query;
-        if (resultClass != null) {
-            query = this.em.createQuery(jpql, resultClass);
-        } else {
-            query = this.em.createQuery(jpql);
-        }
+        Query query = this.createQuery(jpql, resultClass);
         return query.getResultList();
     }
 
@@ -394,12 +420,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     @Override
     public <T> Page<T> pagingQuery(String jpql, Class<T> resultClass, Pageable page) {
         Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query;
-        if (resultClass != null) {
-            query = this.em.createQuery(jpql, resultClass);
-        } else {
-            query = this.em.createQuery(jpql);
-        }
+        Query query = this.createQuery(jpql, resultClass);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, jpql));
     }
 

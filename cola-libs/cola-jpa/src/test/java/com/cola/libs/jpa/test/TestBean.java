@@ -15,27 +15,42 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
 /**
  * cola
- * Created by jiachen.shi on 7/22/2016.
+ * Created by jiachen.shi on 8/8/2016.
  */
-public class RetryOnOptimisticLockingFailureTest {
+public class TestBean {
 
-    @Autowired
-    private OptimisticLockingFailueTest optimisticLockingFailueTest;
+    private String name;
+    private String code;
+    private String isoCode;
 
-    private int retryNum = -1;
+    public TestBean(){
+        super();
+    }
 
-    @RetryOnOptimisticLockingFailure
-    public void test(){
-        this.retryNum++;
-        System.out.println("retryNum:"+retryNum);
-        optimisticLockingFailueTest.test();
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
+    }
+
+    public String getIsoCode() {
+        return isoCode;
+    }
+
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
     }
 
 }

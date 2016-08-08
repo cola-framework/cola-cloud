@@ -13,26 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.configuration;
+package com.cola.libs.cache.configuration;
 
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import javax.sql.DataSource;
+import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
 /**
  * cola
- * Created by jiachen.shi on 8/4/2016.
+ * Created by jiachen.shi on 8/8/2016.
  */
 @Configuration
-public class DBConfiguration{
-
-    @Bean(destroyMethod = "close")
-    @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource dataSource(){
-        return DataSourceBuilder.create().build();
-    }
-
+@EnableRedisHttpSession
+public class HttpSessionCacheConfiguration {
 }

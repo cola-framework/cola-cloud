@@ -39,7 +39,6 @@ import java.util.UUID;
  * cola
  * Created by jiachen.shi on 8/3/2016.
  */
-@Component
 public class LazyLoadingTest {
 
     @Autowired

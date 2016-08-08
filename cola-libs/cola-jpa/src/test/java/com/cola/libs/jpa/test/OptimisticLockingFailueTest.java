@@ -31,7 +31,6 @@ import java.util.Map;
  * cola
  * Created by jiachen.shi on 7/22/2016.
  */
-@Component
 public class OptimisticLockingFailueTest {
 
     @Autowired
