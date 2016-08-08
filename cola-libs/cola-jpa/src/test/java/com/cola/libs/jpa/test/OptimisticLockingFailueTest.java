@@ -37,6 +37,7 @@ public class OptimisticLockingFailueTest {
     private ModelService modelService;
 
     @Transactional
+    @RetryOnOptimisticLockingFailure
     public void test(){
 
         Role role = new Role();

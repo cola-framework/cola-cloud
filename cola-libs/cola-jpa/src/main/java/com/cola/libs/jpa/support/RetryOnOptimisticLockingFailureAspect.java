@@ -36,6 +36,7 @@ import javax.persistence.OptimisticLockException;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
+@Order(-10)
 @Configuration
 public class RetryOnOptimisticLockingFailureAspect {
 

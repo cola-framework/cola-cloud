@@ -31,7 +31,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
  */
 @Configuration
 @PropertySource("classpath:test.properties")
-@EnableAutoConfiguration(exclude = DataSourceAutoConfiguration.class)
+@EnableAutoConfiguration
 @EntityScan(basePackages = {"com.cola.libs.jpa.entities"})
 public class TestConfiguration {
 
