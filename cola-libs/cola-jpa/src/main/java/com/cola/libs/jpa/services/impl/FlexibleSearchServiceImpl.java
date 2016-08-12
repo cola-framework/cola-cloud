@@ -355,25 +355,41 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
     @Override
     public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
-        return (T) this.getQuery(tClass, this.covertSpecificationFromMap(condition), null).getSingleResult();
+        List<T> resultList = this.getQuery(tClass, this.covertSpecificationFromMap(condition), null).getResultList();
+        if(resultList != null && resultList.size() > 0){
+            return resultList.get(0);
+        }
+        return null;
     }
 
     @Override
     public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec) {
-        return this.getQuery(tClass, spec, null).getSingleResult();
+        List<T> resultList = this.getQuery(tClass, spec, null).getResultList();
+        if(resultList != null && resultList.size() > 0){
+            return resultList.get(0);
+        }
+        return null;
     }
 
     @Override
     public <T> T uniqueQuery(FlexibleQueryBuilder builder, Class<T> resultClass) {
         Assert.notNull(builder, "The FlexibleQueryBuilder must not be null!");
-        return (T) this.covertQueryFromFlexibleQueryBuilder(builder, resultClass).getSingleResult();
+        List<T> resultList = this.covertQueryFromFlexibleQueryBuilder(builder, resultClass).getResultList();
+        if(resultList != null && resultList.size() > 0){
+            return resultList.get(0);
+        }
+        return null;
     }
 
     @Override
     public <T> T uniqueQuery(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.em.createQuery(jpql);
-        return (T) query.getSingleResult();
+        List<T> resultList = query.getResultList();
+        if(resultList != null && resultList.size() > 0){
+            return resultList.get(0);
+        }
+        return null;
     }
 
     @Override

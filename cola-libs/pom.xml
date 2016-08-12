@@ -24,7 +24,6 @@
         <module>cola-file</module>
         <module>cola-medias</module>
         <module>cola-ruleengine</module>
-        <module>../cola-pool</module>
     </modules>
 
     <dependencies>

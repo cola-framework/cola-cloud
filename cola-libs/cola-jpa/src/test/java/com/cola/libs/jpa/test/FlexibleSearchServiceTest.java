@@ -87,6 +87,8 @@ public class FlexibleSearchServiceTest {
     @Test
     @Transactional(readOnly = true)
     public void complexTest(){
+        String jpql = "select max(name) from Rolelp lp where lp.role=?";
+        FlexibleQueryBuilder builder = new FlexibleQueryBuilder(jpql);
         long count = flexibleSearchService.count(Rolelp.class);
 
         Map<String, Object> condition = new HashMap<>();
@@ -94,23 +96,23 @@ public class FlexibleSearchServiceTest {
 
         Role role = flexibleSearchService.uniqueQuery(Role.class, condition);
 
-        Collection<Rolelp> rolelps = role.getRolelps();
+        if(role != null){
+            Collection<Rolelp> rolelps = role.getRolelps();
 
-        condition = new HashMap<>();
-        condition.put("role", role);
-        count  = flexibleSearchService.count(Rolelp.class, condition);
+            condition = new HashMap<>();
+            condition.put("role", role);
+            count  = flexibleSearchService.count(Rolelp.class, condition);
+
+            builder.addParameter(role);
+            String s = flexibleSearchService.uniqueQuery(builder, String.class);
+
+            Pageable pageable = new PageRequest(0, 10, null);
+            Page<String> strings = flexibleSearchService.pagingQuery(builder, String.class, pageable);
+        }
 
         condition = new HashMap<>();
         condition.put("name", "ABC");
         Iterable<Rolelp> query = flexibleSearchService.query(Rolelp.class, condition, null);
-
-        String jpql = "select max(name) from Rolelp lp where lp.role=?";
-        FlexibleQueryBuilder builder = new FlexibleQueryBuilder(jpql);
-        builder.addParameter(role);
-        String s = flexibleSearchService.uniqueQuery(builder, String.class);
-
-        Pageable pageable = new PageRequest(0, 10, null);
-        Page<String> strings = flexibleSearchService.pagingQuery(builder, String.class, pageable);
 
         jpql = "select max(code) from Role";
         Object o = flexibleSearchService.uniqueQuery(jpql, null);

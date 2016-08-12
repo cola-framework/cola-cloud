@@ -102,14 +102,6 @@
                 <scope>compile</scope>
             </dependency>
 
-            <!-- Hibernate Core -->
-            <dependency>
-                <groupId>org.hibernate</groupId>
-                <artifactId>hibernate-core</artifactId>
-                <version>${hibernate.version}</version>
-                <scope>compile</scope>
-            </dependency>
-
             <!-- Logback for Sentry -->
             <dependency>
                 <groupId>net.kencochrane.raven</groupId>

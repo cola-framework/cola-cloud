@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.support;
+package com.cola.libs.jpa.aspects;
 
 import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
 
@@ -24,8 +24,6 @@ import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
-import org.springframework.dao.OptimisticLockingFailureException;
-import org.springframework.orm.ObjectOptimisticLockingFailureException;
 
 import java.lang.reflect.Method;
 

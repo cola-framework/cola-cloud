@@ -58,9 +58,6 @@ public class ModelServiceTest {
     private OptimisticLockingFailueTest optimisticLockingFailueTest;
 
     @Autowired
-    private RetryOnOptimisticLockingFailureTest retryOnOptimisticLockingFailureTest;
-
-    @Autowired
     private LazyLoadingTest lazyLoadingTest;
 
     @Rule
@@ -155,7 +152,7 @@ public class ModelServiceTest {
     }
 
     @Test
-    public void optimisticLockingFailureTest(){
+    public void retryOnOptimisticLockingFailureTest(){
         try {
             optimisticLockingFailueTest.test();
         }catch (Exception e){
@@ -163,16 +160,6 @@ public class ModelServiceTest {
             Assert.assertTrue(e instanceof OptimisticLockException);
         }
         Assert.assertThat(capture.toString(), Matchers.containsString("catchOptimisticLockingFailure"));
-    }
-
-    @Test
-    public void retryOnOptimisticLockingFailureTest(){
-        try{
-            retryOnOptimisticLockingFailureTest.test();
-        }catch (Exception e){
-            Assert.assertTrue(e instanceof OptimisticLockException);
-        }
-        Assert.assertThat(capture.toString(), Matchers.containsString("retryNum:3"));
     }
 
     @Test
