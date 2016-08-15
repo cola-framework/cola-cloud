@@ -66,7 +66,7 @@ public interface FlexibleSearchService {
      * @param condition the condition
      * @return the t
      */
-    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition);
+    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition, Map<String ,Object> properties);
 
     /**
      * Unique query t.
@@ -75,7 +75,7 @@ public interface FlexibleSearchService {
      * @param spec   the spec
      * @return the t
      */
-    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec);
+    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec, Map<String ,Object> properties);
 
     /**
      * Aggregated query t.
@@ -103,7 +103,7 @@ public interface FlexibleSearchService {
      * @param sort   the sort
      * @return the iterable
      */
-    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort);
+    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort, Map<String ,Object> properties);
 
     /**
      * Query iterable.
@@ -114,7 +114,7 @@ public interface FlexibleSearchService {
      * @param sort      the sort
      * @return the iterable
      */
-    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort);
+    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort, Map<String ,Object> properties);
 
     /**
      * Query iterable.
@@ -142,7 +142,7 @@ public interface FlexibleSearchService {
      * @param page   the page
      * @return the iterable
      */
-    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page);
+    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page, Map<String ,Object> properties);
 
     /**
      * Paging query iterable.
@@ -153,7 +153,7 @@ public interface FlexibleSearchService {
      * @param page      the page
      * @return the iterable
      */
-    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page);
+    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page, Map<String ,Object> properties);
 
     /**
      * Query page.

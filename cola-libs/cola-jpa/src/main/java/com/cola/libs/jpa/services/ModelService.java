@@ -17,10 +17,14 @@ package com.cola.libs.jpa.services;
 
 import com.cola.libs.jpa.entities.AbstractEntity;
 
+import org.springframework.cache.annotation.Cacheable;
+import org.springframework.util.Assert;
+
 import java.io.Serializable;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.LockModeType;
 
 /**
@@ -28,6 +32,26 @@ import javax.persistence.LockModeType;
  * Created by jiachen.shi on 7/18/2016.
  */
 public interface ModelService {
+
+    /**
+     * Clear.
+     */
+    public void clear();
+
+    /**
+     * Gets entity graph.
+     * @param str the str
+     * @return the entity graph
+     */
+    public EntityGraph getEntityGraph(String str);
+
+    /**
+     * Create entity graph entity graph.
+     * @param <T>    the type parameter
+     * @param tClass the t class
+     * @return the entity graph
+     */
+    public <T> EntityGraph<T> createEntityGraph(Class<T> tClass);
 
     /**
      * Save t.
@@ -102,6 +126,40 @@ public interface ModelService {
      * @return the t
      */
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType lockModeType);
+
+    /**
+     * Load t.
+     * @param <T>             the type parameter
+     * @param <ID>            the type parameter
+     * @param tClass          the t class
+     * @param id              the id
+     * @param entityGraphName the entity graph name
+     * @return the t
+     */
+    public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, String entityGraphName);
+
+    /**
+     * Load t.
+     * @param <T>        the type parameter
+     * @param <ID>       the type parameter
+     * @param tClass     the t class
+     * @param id         the id
+     * @param properties the properties
+     * @return the t
+     */
+    public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, Map<String, Object> properties);
+
+    /**
+     * Load t.
+     * @param <T>        the type parameter
+     * @param <ID>       the type parameter
+     * @param tClass     the t class
+     * @param id         the id
+     * @param type       the type
+     * @param properties the properties
+     * @return the t
+     */
+    public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type, Map<String, Object> properties);
 
     /**
      * Get t.

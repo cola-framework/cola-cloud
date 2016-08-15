@@ -15,13 +15,15 @@
  */
 package com.cola.libs.jpa.entities;
 
-import java.util.Collection;
 import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -32,6 +34,10 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
+@NamedEntityGraphs(value = {
+        @NamedEntityGraph(name = "role.rolelps",
+                attributeNodes = @NamedAttributeNode(value = "rolelps", subgraph = "rolelps.language"),
+                subgraphs = {@NamedSubgraph(name = "rolelps.language", attributeNodes = {@NamedAttributeNode("language")})})})
 public class Role extends AbstractEntity{
 
     @Column(length = 20, nullable = false)

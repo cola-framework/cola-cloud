@@ -20,8 +20,12 @@ import java.math.BigDecimal;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 
 /**
@@ -30,9 +34,11 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "t_order_items")
+@NamedEntityGraphs(value = {
+        @NamedEntityGraph(name = "orderItem.order", attributeNodes = @NamedAttributeNode(value = "order"))})
 public class OrderItem extends AbstractEntity{
 
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false)
+    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="order_id", nullable = false)
     private Order order;
 

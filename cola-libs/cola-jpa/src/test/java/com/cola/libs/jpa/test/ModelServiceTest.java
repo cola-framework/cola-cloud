@@ -19,6 +19,7 @@ import com.cola.libs.jpa.entities.Order;
 import com.cola.libs.jpa.entities.OrderItem;
 import com.cola.libs.jpa.entities.Product;
 import com.cola.libs.jpa.entities.Role;
+import com.cola.libs.jpa.entities.Rolelp;
 import com.cola.libs.jpa.services.ModelService;
 
 import org.hamcrest.Matchers;
@@ -114,6 +115,8 @@ public class ModelServiceTest {
         Role newRole = modelService.save(role);
         Role loadRole = modelService.load(Role.class, newRole.getId());
         Assert.assertEquals(newRole.getCode(), loadRole.getCode());
+
+        List<Rolelp> rolelps = loadRole.getRolelps();
 
         //Via Save method to update entity
         loadRole.setCode("OTg3NjU0MzIx");

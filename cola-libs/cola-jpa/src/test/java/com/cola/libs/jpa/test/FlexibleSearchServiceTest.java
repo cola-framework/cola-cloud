@@ -31,6 +31,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -59,6 +60,38 @@ public class FlexibleSearchServiceTest {
 
     @Autowired
     private FlexibleSearchService flexibleSearchService;
+
+    @Test
+    @Transactional(readOnly = true)
+    public void entityGraphTest(){
+        Map<String,Object> properties = new HashMap<>();
+        properties.put("javax.persistence.fetchgraph", modelService.getEntityGraph("role.rolelps"));
+        Role load = modelService.load(Role.class, 9L, properties);
+        List<Rolelp> rolelps = load.getRolelps();
+
+        properties.put("javax.persistence.fetchgraph", modelService.getEntityGraph("rolelp.all"));
+        Rolelp load1 = modelService.load(Rolelp.class, 6L, properties);
+        Role role = load1.getRole();
+        Language language = load1.getLanguage();
+
+
+        properties.put("javax.persistence.fetchgraph", modelService.getEntityGraph("role.rolelps"));
+        Iterable query = flexibleSearchService.query(Role.class, (Specification) null, null, properties);
+        Iterator iterator = query.iterator();
+        while(iterator.hasNext()){
+            Role next = (Role)iterator.next();
+            List<Rolelp> rolelps1 = next.getRolelps();
+        }
+
+        Map<String,Object> condition = new HashMap<>();
+        condition.put("role", load);
+        //properties.put("javax.persistence.fetchgraph", modelService.getEntityGraph("rolelp.role"));
+        Iterable query1 = flexibleSearchService.query(Rolelp.class, condition, null, null);
+
+        String jpql = "select r from Rolelp r left join r.language l";
+        Iterable<Rolelp> query2 = flexibleSearchService.query(jpql, Rolelp.class);
+
+    }
 
     @Test
     @Transactional
@@ -94,7 +127,7 @@ public class FlexibleSearchServiceTest {
         Map<String, Object> condition = new HashMap<>();
         condition.put("code", "d207ba8f-d4f6-4d84-9");
 
-        Role role = flexibleSearchService.uniqueQuery(Role.class, condition);
+        Role role = flexibleSearchService.uniqueQuery(Role.class, condition, null);
 
         if(role != null){
             Collection<Rolelp> rolelps = role.getRolelps();
@@ -112,7 +145,7 @@ public class FlexibleSearchServiceTest {
 
         condition = new HashMap<>();
         condition.put("name", "ABC");
-        Iterable<Rolelp> query = flexibleSearchService.query(Rolelp.class, condition, null);
+        Iterable<Rolelp> query = flexibleSearchService.query(Rolelp.class, condition, null, null);
 
         jpql = "select max(code) from Role";
         Object o = flexibleSearchService.uniqueQuery(jpql, null);

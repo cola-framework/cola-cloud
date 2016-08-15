@@ -20,6 +20,9 @@ import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -30,6 +33,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "t_order", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
+@NamedEntityGraphs(value = {@NamedEntityGraph(name = "order.orderItems", attributeNodes = @NamedAttributeNode("orderItems"))})
 public class Order extends AbstractEntity{
 
     @Column(length = 20, nullable = false)

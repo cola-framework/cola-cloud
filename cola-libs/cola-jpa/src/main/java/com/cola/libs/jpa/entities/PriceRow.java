@@ -21,8 +21,12 @@ import java.util.Date;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.NamedAttributeNode;
+import javax.persistence.NamedEntityGraph;
+import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -33,9 +37,11 @@ import javax.persistence.TemporalType;
  */
 @Entity
 @Table(name = "t_price_rows")
+@NamedEntityGraphs(value = {
+        @NamedEntityGraph(name = "priceRow.product", attributeNodes = @NamedAttributeNode(value = "product"))})
 public class PriceRow extends AbstractEntity{
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false)
+    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="product_id", nullable = false)
     private Product product;
 

@@ -15,6 +15,7 @@
  */
 package com.cola.libs.jpa.entities;
 
+import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -31,7 +32,7 @@ import javax.persistence.Version;
  * Created by jiachen.shi on 6/21/2016.
  */
 @MappedSuperclass
-public class AbstractEntity {
+public class AbstractEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

@@ -35,12 +35,6 @@ import javax.sql.DataSource;
 @Configuration
 public class JPAConfiguration {
 
-    @Bean(destroyMethod = "close")
-    @ConfigurationProperties(prefix = "spring.datasource")
-    public DataSource dataSource(){
-        return DataSourceBuilder.create().build();
-    }
-
     @Bean(name = "modelService")
     @ConditionalOnClass(ModelService.class)
     public ModelService modelService(){

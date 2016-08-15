@@ -89,7 +89,7 @@ public class LazyLoadingTest {
     public void destroy(Role role){
         Map<String, Object> condition = new HashMap<>();
         condition.put("role", role);
-        Rolelp rolelp = flexibleSearchService.uniqueQuery(Rolelp.class, condition);
+        Rolelp rolelp = flexibleSearchService.uniqueQuery(Rolelp.class, condition, null);
         if(rolelp != null){
             Language language = rolelp.getLanguage();
             modelService.delete(rolelp);

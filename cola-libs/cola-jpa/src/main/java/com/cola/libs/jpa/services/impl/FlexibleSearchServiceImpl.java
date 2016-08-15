@@ -46,6 +46,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
@@ -59,6 +60,7 @@ import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.JoinType;
+import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import javax.persistence.metamodel.EntityType;
@@ -72,31 +74,6 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
     @PersistenceContext
     private EntityManager em;
-
-    private enum RelationType {
-        ToOne, ToMany
-    }
-
-    private class RelationShip {
-        private FetchType fetchType;
-        private RelationType relationType;
-
-        public FetchType getFetchType() {
-            return fetchType;
-        }
-
-        public void setFetchType(FetchType fetchType) {
-            this.fetchType = fetchType;
-        }
-
-        public RelationType getRelationType() {
-            return relationType;
-        }
-
-        public void setRelationType(RelationType relationType) {
-            this.relationType = relationType;
-        }
-    }
 
     private <T> Query createQuery(String jpql, Class<T> tClass){
         if(tClass == null){
@@ -130,48 +107,6 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
             }
         }
         return this.em.createQuery(jpql, tClass);
-    }
-
-    private <T extends AbstractEntity> RelationShip getRelationShip(Class<T> tClass, AccessibleObject accessibleObject) {
-        Assert.notNull(accessibleObject, "The Field must not be null!");
-        RelationShip relationShip = new RelationShip();
-        try {
-            ManyToOne manyToOne = accessibleObject.getAnnotation(ManyToOne.class);
-            if (manyToOne != null) {
-                relationShip.setFetchType(manyToOne.fetch());
-                relationShip.setRelationType(RelationType.ToOne);
-            } else {
-                OneToOne oneToOne = accessibleObject.getAnnotation(OneToOne.class);
-                if (oneToOne != null) {
-                    relationShip.setFetchType(oneToOne.fetch());
-                    relationShip.setRelationType(RelationType.ToOne);
-                } else {
-                    OneToMany oneToMany = accessibleObject.getAnnotation(OneToMany.class);
-                    if (oneToMany != null) {
-                        relationShip.setFetchType(oneToMany.fetch());
-                        relationShip.setRelationType(RelationType.ToMany);
-                    } else {
-                        ManyToMany manyToMany = accessibleObject.getAnnotation(ManyToMany.class);
-                        if (manyToMany != null) {
-                            relationShip.setFetchType(manyToMany.fetch());
-                            relationShip.setRelationType(RelationType.ToMany);
-                        } else {
-                            if (accessibleObject instanceof Field) {
-                                Field field = (Field) accessibleObject;
-                                PropertyDescriptor pd = new PropertyDescriptor(field.getName(), tClass);
-                                Method getMethod = pd.getReadMethod();
-                                if (getMethod != null) {
-                                    relationShip = this.getRelationShip(tClass, getMethod);
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return relationShip;
     }
 
     private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
@@ -211,36 +146,8 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return covertQueryFromFlexibleQueryBuilder(countBuilder, Long.class);
     }
 
-    private <T extends AbstractEntity> void addFetchJoin(Class<T> tClass, Root root) {
-        Assert.notNull(tClass, "The EntityClass must not be null!");
-        Assert.notNull(root, "The Root must not be null!");
-        EntityType<T> model = root.getModel();
-        Field[] fields = tClass.getDeclaredFields();
-        for (Field field : fields) {
-            RelationShip r = this.getRelationShip(tClass, field);
-            if (FetchType.EAGER.equals(r.getFetchType())) {
-                if (RelationType.ToOne.equals(r.getRelationType())) {
-                    root.fetch(model.getSingularAttribute(field.getName(), field.getType()), JoinType.LEFT);
-                } else if (RelationType.ToMany.equals(r.getRelationType())) {
-                    if (Collection.class.isAssignableFrom(field.getType())) {
-                        Type genericType = field.getGenericType();
-                        if (genericType instanceof ParameterizedType) {
-                            ParameterizedType pt = (ParameterizedType) genericType;
-                            Class genericClazz = (Class) pt.getActualTypeArguments()[0];
-                            if (List.class.isAssignableFrom(field.getType())) {
-                                root.fetch(model.getList(field.getName(), genericClazz), JoinType.LEFT);
-                            } else if (Set.class.isAssignableFrom(field.getType())) {
-                                root.fetch(model.getSet(field.getName(), genericClazz), JoinType.LEFT);
-                            } else {
-                                root.fetch(model.getCollection(field.getName(), genericClazz), JoinType.LEFT);
-                            }
-                        }
-                    } else {
-                        root.fetch(model.getMap(field.getName()), JoinType.LEFT);
-                    }
-                }
-            }
-        }
+    private Path getPath(Path p, String key){
+        return p.get(key);
     }
 
     private <P> Specification covertSpecificationFromMap(Map<String, P> condition) {
@@ -252,7 +159,14 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                     Iterator<String> var = condition.keySet().iterator();
                     while (var.hasNext()) {
                         String key = var.next();
-                        list.add(criteriaBuilder.equal(root.get(key).as(condition.get(key).getClass()), condition.get(key)));
+                        String[] split = key.split(JpqlAnalysisConstant.SPLIT_ALIAS_REFRENCE);
+                        Path p = root.get(split[0]);
+                        if(split.length > 1){
+                            for(int i=1;i<split.length;i++){
+                                p = getPath(p, split[i]);
+                            }
+                        }
+                        list.add(criteriaBuilder.equal(p.as(condition.get(key).getClass()), condition.get(key)));
                     }
                 }
                 if (list.size() > 0) {
@@ -293,12 +207,11 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return this.em.createQuery(query);
     }
 
-    protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Specification<T> spec, Sort sort) {
+    protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Specification<T> spec, Sort sort, Map<String, Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         CriteriaBuilder builder = this.em.getCriteriaBuilder();
         CriteriaQuery query = builder.createQuery(tClass);
         Root root = query.from(tClass);
-        this.addFetchJoin(tClass, root);
         query.select(root);
         if (spec != null) {
             Predicate predicate = spec.toPredicate(root, query, builder);
@@ -309,7 +222,13 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         if (sort != null) {
             query.orderBy(QueryUtils.toOrders(sort, root, builder));
         }
-        return this.em.createQuery(query);
+        TypedQuery<T> t = this.em.createQuery(query);
+        if(properties != null && properties.keySet() != null && properties.keySet().size() > 0){
+            for(String key:properties.keySet()){
+                t.setHint(key, properties.get(key));
+            }
+        }
+        return t;
     }
 
     protected <T extends AbstractEntity> Page readPage(Query query, Pageable pageable, Class<T> tClass) {
@@ -345,7 +264,6 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     @Override
     public <T extends AbstractEntity, V> long count(Class<T> tClass, Map<String, V> condition) {
         return ((Long) this.getCountQuery(tClass, condition).getSingleResult()).longValue();
-
     }
 
     @Override
@@ -354,8 +272,8 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition) {
-        List<T> resultList = this.getQuery(tClass, this.covertSpecificationFromMap(condition), null).getResultList();
+    public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition, Map<String ,Object> properties) {
+        List<T> resultList = this.getQuery(tClass, this.covertSpecificationFromMap(condition), null, properties).getResultList();
         if(resultList != null && resultList.size() > 0){
             return resultList.get(0);
         }
@@ -363,8 +281,8 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec) {
-        List<T> resultList = this.getQuery(tClass, spec, null).getResultList();
+    public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec, Map<String ,Object> properties) {
+        List<T> resultList = this.getQuery(tClass, spec, null, properties).getResultList();
         if(resultList != null && resultList.size() > 0){
             return resultList.get(0);
         }
@@ -393,15 +311,15 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort) {
+    public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort, Map<String ,Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
-        return this.getQuery(tClass, spec, sort).getResultList();
+        return this.getQuery(tClass, spec, sort, properties).getResultList();
     }
 
     @Override
-    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort) {
+    public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort, Map<String ,Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
-        return this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort).getResultList();
+        return this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort, properties).getResultList();
     }
 
     @Override
@@ -418,18 +336,18 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page) {
+    public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page, Map<String ,Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Sort sort = page == null ? null : page.getSort();
-        TypedQuery query = this.getQuery(tClass, spec, sort);
+        TypedQuery query = this.getQuery(tClass, spec, sort, properties);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, tClass));
     }
 
     @Override
-    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page) {
+    public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page, Map<String ,Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Sort sort = page == null ? null : page.getSort();
-        TypedQuery query = this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort);
+        TypedQuery query = this.getQuery(tClass, this.covertSpecificationFromMap(condition), sort, properties);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, tClass));
     }
 

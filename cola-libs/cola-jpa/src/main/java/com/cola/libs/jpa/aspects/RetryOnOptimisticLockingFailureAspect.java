@@ -52,7 +52,7 @@ public class RetryOnOptimisticLockingFailureAspect {
      * @throws Throwable the throwable
      */
     @Around("retryOnOptFailure()")
-    public Object doConcurrentOperation(ProceedingJoinPoint pjp) throws Throwable {
+    public Object aspect(ProceedingJoinPoint pjp) throws Throwable {
         MethodSignature joinPointObject = (MethodSignature) pjp.getSignature();
         Method method = joinPointObject.getMethod();
         RetryOnOptimisticLockingFailure annotation = method.getAnnotation(RetryOnOptimisticLockingFailure.class);
