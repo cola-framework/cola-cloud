@@ -25,6 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.persistence.EntityGraph;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 
 /**
@@ -52,6 +53,12 @@ public interface ModelService {
      * @return the entity graph
      */
     public <T> EntityGraph<T> createEntityGraph(Class<T> tClass);
+
+    /**
+     * Gets current transacntion.
+     * @return the current transacntion
+     */
+    public EntityTransaction getCurrentTransacntion();
 
     /**
      * Save t.
@@ -193,6 +200,30 @@ public interface ModelService {
      * @return the int
      */
     public int execute(String jpql, Map<String, Object> parames);
+
+    /**
+     * Execute stored procedure t.
+     * @param <T>                 the type parameter
+     * @param <S>                 the type parameter
+     * @param storedProcedureName the stored procedure name
+     * @param params              the params
+     * @param outParamName        the out param name
+     * @param resultClass         the result class
+     * @return the t
+     */
+    public <T, S> T executeStoredProcedure(String storedProcedureName, List<S> params, String outParamName, Class<T> resultClass);
+
+    /**
+     * Execute stored procedure t.
+     * @param <T>                 the type parameter
+     * @param <S>                 the type parameter
+     * @param storedProcedureName the stored procedure name
+     * @param params              the params
+     * @param outParamName        the out param name
+     * @param resultClass         the result class
+     * @return the t
+     */
+    public <T, S> T executeStoredProcedure(String storedProcedureName, Map<String, S> params, String outParamName, Class<T> resultClass);
 
     /**
      * Exists boolean.

@@ -20,6 +20,7 @@ import com.cola.libs.jpa.services.FlexibleSearchService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
 
+import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateQuery;
 import org.hibernate.transform.Transformers;
@@ -29,6 +30,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
+import org.springframework.expression.spel.ast.Selection;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -109,6 +111,34 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return this.em.createQuery(jpql, tClass);
     }
 
+    private <T> Query createNativeQuery(String sql, Class<T> tClass){
+        if(tClass == null){
+            return this.em.createNativeQuery(sql);
+        }else{
+            if(!Object[].class.equals(tClass)){
+                Query query = this.em.createNativeQuery(sql);
+                if(Map.class.isAssignableFrom(tClass)){
+                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
+                    if(sqlQuery != null){
+                        sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
+                    }
+                }else if(List.class.isAssignableFrom(tClass)){
+                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
+                    if(sqlQuery != null){
+                        sqlQuery.setResultTransformer(Transformers.TO_LIST);
+                    }
+                }else{
+                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
+                    if(sqlQuery != null){
+                        sqlQuery.setResultTransformer(Transformers.aliasToBean(tClass));
+                    }
+                }
+                return query;
+            }
+        }
+        return this.em.createNativeQuery(sql, tClass);
+    }
+
     private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
         Query query = this.createQuery(builder.toJPQL(), resultClass);
         if (builder.getParamList().size() > 0) {
@@ -144,6 +174,20 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         countBuilder.addParameters(builder.getParamList());
         countBuilder.setParameters(builder.getParamMap());
         return covertQueryFromFlexibleQueryBuilder(countBuilder, Long.class);
+    }
+
+    private CriteriaQuery coverCountQuery(CriteriaQuery query){
+        CriteriaBuilder builder = this.em.getCriteriaBuilder();
+        Set<Root<?>> roots = query.getRoots();
+        if(roots != null){
+            Root<?> next = roots.iterator().next();
+            if (query.isDistinct()) {
+                query.select(builder.countDistinct(next));
+            } else {
+                query.select(builder.count(next));
+            }
+        }
+        return query;
     }
 
     private Path getPath(Path p, String key){
@@ -231,6 +275,14 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         return t;
     }
 
+    protected <T extends AbstractEntity> Page readNativePage(Query query, Pageable pageable, String sql) {
+        query.setFirstResult(pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+        Long total = (Long)this.em.createNativeQuery(this.covertCountQuery(sql), Long.class).getSingleResult();
+        List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
+        return new PageImpl(content, pageable, total.longValue());
+    }
+
     protected <T extends AbstractEntity> Page readPage(Query query, Pageable pageable, Class<T> tClass) {
         query.setFirstResult(pageable.getOffset());
         query.setMaxResults(pageable.getPageSize());
@@ -245,7 +297,6 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         Long total = this.em.createQuery(this.covertCountQuery(jpql), Long.class).getSingleResult();
         List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl(content, pageable, total.longValue());
-
     }
 
     protected <T extends AbstractEntity, P> Page readPage(Query query, Pageable pageable, FlexibleQueryBuilder builder) {
@@ -254,6 +305,19 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         Long total = (Long) this.coverCountQuery(builder).getSingleResult();
         List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
         return new PageImpl(content, pageable, total.longValue());
+    }
+
+    protected <T extends AbstractEntity> Page readPage(Query query, Pageable pageable, CriteriaQuery builder) {
+        query.setFirstResult(pageable.getOffset());
+        query.setMaxResults(pageable.getPageSize());
+        Long total = (Long)this.em.createQuery(this.coverCountQuery(builder)).getSingleResult();
+        List content = total.longValue() > (long) pageable.getOffset() ? query.getResultList() : Collections.emptyList();
+        return new PageImpl(content, pageable, total.longValue());
+    }
+
+    @Override
+    public CriteriaBuilder getCriteriaBuilder(){
+        return this.em.getCriteriaBuilder();
     }
 
     @Override
@@ -336,6 +400,19 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
+    public <T> Iterable<T> query(CriteriaQuery<T> query, Class<T> resultClass){
+        Assert.notNull(query, "The Criteria Query must not be null!");
+        return this.em.createQuery(query).getResultList();
+    }
+
+    @Override
+    public <T> Iterable<T> nativeQuery(String sql, Class<T> resultClass) {
+        Assert.notNull(sql, "The SQL must not be null!");
+        Query query = this.createNativeQuery(sql, resultClass);
+        return query.getResultList();
+    }
+
+    @Override
     public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page, Map<String ,Object> properties) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Sort sort = page == null ? null : page.getSort();
@@ -364,4 +441,19 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
         Query query = this.covertQueryFromFlexibleQueryBuilder(builder, resultClass);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, builder));
     }
+
+    @Override
+    public <T> Page<T> pagingNativeQuery(String sql, Class<T> resultClass, Pageable page){
+        Assert.notNull(sql, "The SQL must not be null!");
+        Query nativeQuery = this.createNativeQuery(sql, resultClass);
+        return (Page<T>) (page == null ? new PageImpl<T>(nativeQuery.getResultList()) : this.readNativePage(nativeQuery, page, sql));
+    }
+
+    @Override
+    public <T> Page<T> pagingQuery(CriteriaQuery<T> builder, Pageable page) {
+        Assert.notNull(builder, "The Criteria Query must not be null!");
+        TypedQuery<T> query = this.em.createQuery(builder);
+        return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, builder));
+    }
+
 }

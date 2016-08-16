@@ -25,11 +25,20 @@ import org.springframework.data.jpa.domain.Specification;
 
 import java.util.Map;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+
 /**
  * cola
  * Created by jiachen.shi on 7/20/2016.
  */
 public interface FlexibleSearchService {
+
+    /**
+     * Gets criteria builder.
+     * @return the criteria builder
+     */
+    public CriteriaBuilder getCriteriaBuilder();
 
     /**
      * Count long.
@@ -60,19 +69,21 @@ public interface FlexibleSearchService {
 
     /**
      * Unique query t.
-     * @param <T>       the type parameter
-     * @param <V>       the type parameter
-     * @param tClass    the t class
-     * @param condition the condition
+     * @param <T>        the type parameter
+     * @param <V>        the type parameter
+     * @param tClass     the t class
+     * @param condition  the condition
+     * @param properties the properties
      * @return the t
      */
     public <T extends AbstractEntity, V> T uniqueQuery(Class<T> tClass, Map<String, V> condition, Map<String ,Object> properties);
 
     /**
      * Unique query t.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @param spec   the spec
+     * @param <T>        the type parameter
+     * @param tClass     the t class
+     * @param spec       the spec
+     * @param properties the properties
      * @return the t
      */
     public <T extends AbstractEntity> T uniqueQuery(Class<T> tClass, Specification<T> spec, Map<String ,Object> properties);
@@ -97,21 +108,23 @@ public interface FlexibleSearchService {
 
     /**
      * Query iterable.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @param spec   the spec
-     * @param sort   the sort
+     * @param <T>        the type parameter
+     * @param tClass     the t class
+     * @param spec       the spec
+     * @param sort       the sort
+     * @param properties the properties
      * @return the iterable
      */
     public <T extends AbstractEntity> Iterable<T> query(Class<T> tClass, Specification<T> spec, Sort sort, Map<String ,Object> properties);
 
     /**
      * Query iterable.
-     * @param <T>       the type parameter
-     * @param <P>       the type parameter
-     * @param tClass    the t class
-     * @param condition the condition
-     * @param sort      the sort
+     * @param <T>        the type parameter
+     * @param <P>        the type parameter
+     * @param tClass     the t class
+     * @param condition  the condition
+     * @param sort       the sort
+     * @param properties the properties
      * @return the iterable
      */
     public <T extends AbstractEntity, P> Iterable<T> query(Class<T> tClass, Map<String, P> condition, Sort sort, Map<String ,Object> properties);
@@ -135,22 +148,42 @@ public interface FlexibleSearchService {
     public <T> Iterable<T> query(String jpql, Class<T> resultClass);
 
     /**
+     * Query iterable.
+     * @param <T>         the type parameter
+     * @param query       the query
+     * @param resultClass the result class
+     * @return the iterable
+     */
+    public <T> Iterable<T> query(CriteriaQuery<T> query, Class<T> resultClass);
+
+    /**
+     * Native query iterable.
+     * @param <T>         the type parameter
+     * @param sql         the sql
+     * @param resultClass the result class
+     * @return the iterable
+     */
+    public <T> Iterable<T> nativeQuery(String sql, Class<T> resultClass);
+
+    /**
      * Paging query iterable.
-     * @param <T>    the type parameter
-     * @param tClass the t class
-     * @param spec   the spec
-     * @param page   the page
+     * @param <T>        the type parameter
+     * @param tClass     the t class
+     * @param spec       the spec
+     * @param page       the page
+     * @param properties the properties
      * @return the iterable
      */
     public <T extends AbstractEntity> Page<T> pagingQuery(Class<T> tClass, Specification<T> spec, Pageable page, Map<String ,Object> properties);
 
     /**
      * Paging query iterable.
-     * @param <T>       the type parameter
-     * @param <P>       the type parameter
-     * @param tClass    the t class
-     * @param condition the condition
-     * @param page      the page
+     * @param <T>        the type parameter
+     * @param <P>        the type parameter
+     * @param tClass     the t class
+     * @param condition  the condition
+     * @param page       the page
+     * @param properties the properties
      * @return the iterable
      */
     public <T extends AbstractEntity, P> Page<T> pagingQuery(Class<T> tClass, Map<String, P> condition, Pageable page, Map<String ,Object> properties);
@@ -174,5 +207,24 @@ public interface FlexibleSearchService {
      * @return the iterable
      */
     public <T> Page<T> pagingQuery(FlexibleQueryBuilder builder, Class<T> resultClass, Pageable page);
+
+    /**
+     * Paging native query page.
+     * @param <T>         the type parameter
+     * @param sql         the sql
+     * @param resultClass the result class
+     * @param page        the page
+     * @return the page
+     */
+    public <T> Page<T> pagingNativeQuery(String sql, Class<T> resultClass, Pageable page);
+
+    /**
+     * Paging query page.
+     * @param <T>     the type parameter
+     * @param builder the builder
+     * @param page    the page
+     * @return the page
+     */
+    public <T> Page<T> pagingQuery(CriteriaQuery<T> builder, Pageable page);
 
 }

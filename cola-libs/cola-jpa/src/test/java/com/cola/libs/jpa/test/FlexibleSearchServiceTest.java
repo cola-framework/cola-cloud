@@ -91,6 +91,9 @@ public class FlexibleSearchServiceTest {
         String jpql = "select r from Rolelp r left join r.language l";
         Iterable<Rolelp> query2 = flexibleSearchService.query(jpql, Rolelp.class);
 
+        String sql = "select r.code, rl.name from t_role_lp rl left join t_role r on (rl.role_id=r.id)";
+        Iterable<List> lists = flexibleSearchService.nativeQuery(sql, List.class);
+
     }
 
     @Test

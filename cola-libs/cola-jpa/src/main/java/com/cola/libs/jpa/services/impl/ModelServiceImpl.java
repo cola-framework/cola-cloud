@@ -41,9 +41,11 @@ import java.util.Map;
 
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
+import javax.persistence.StoredProcedureQuery;
 import javax.persistence.TypedQuery;
 
 /**
@@ -66,6 +68,11 @@ public class ModelServiceImpl implements ModelService {
     public <T> EntityGraph<T> createEntityGraph(Class<T> tClass){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         return this.em.createEntityGraph(tClass);
+    }
+
+    @Override
+    public EntityTransaction getCurrentTransacntion(){
+        return this.em.getTransaction();
     }
 
     @Override
@@ -196,6 +203,40 @@ public class ModelServiceImpl implements ModelService {
             }
         }
         return query.executeUpdate();
+    }
+
+    @Override
+    public <T, S> T executeStoredProcedure(String storedProcedureName, List<S> params, String outParamName, Class<T> resultClass){
+        Assert.notNull(storedProcedureName, "The Stored Procedure Name must not be null!");
+        StoredProcedureQuery namedStoredProcedureQuery = this.em.createNamedStoredProcedureQuery(storedProcedureName);
+        if(params != null && params.size() > 0){
+            int i = 0;
+            for(S s:params){
+                namedStoredProcedureQuery.setParameter(i, s);
+                i++;
+            }
+        }
+        if(!StringUtils.isEmpty(outParamName)){
+            return (T)namedStoredProcedureQuery.getOutputParameterValue(outParamName);
+        }else{
+            return (T)Boolean.valueOf(namedStoredProcedureQuery.execute());
+        }
+    }
+
+    @Override
+    public <T, S> T executeStoredProcedure(String storedProcedureName, Map<String, S> params, String outParamName, Class<T> resultClass){
+        Assert.notNull(storedProcedureName, "The Stored Procedure Name must not be null!");
+        StoredProcedureQuery namedStoredProcedureQuery = this.em.createNamedStoredProcedureQuery(storedProcedureName);
+        if(params != null && params.keySet() != null && params.keySet().size() > 0){
+            for(String s:params.keySet()){
+                namedStoredProcedureQuery.setParameter(s, params.get(s));
+            }
+        }
+        if(!StringUtils.isEmpty(outParamName)){
+            return (T)namedStoredProcedureQuery.getOutputParameterValue(outParamName);
+        }else{
+            return (T)Boolean.valueOf(namedStoredProcedureQuery.execute());
+        }
     }
 
     @Override
