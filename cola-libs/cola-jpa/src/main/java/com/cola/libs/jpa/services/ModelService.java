@@ -27,6 +27,8 @@ import java.util.Map;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityTransaction;
 import javax.persistence.LockModeType;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaUpdate;
 
 /**
  * cola
@@ -200,6 +202,20 @@ public interface ModelService {
      * @return the int
      */
     public int execute(String jpql, Map<String, Object> parames);
+
+    /**
+     * Execute int.
+     * @param criteria the criteria
+     * @return the int
+     */
+    public int execute(CriteriaUpdate criteria);
+
+    /**
+     * Execute int.
+     * @param criteria the criteria
+     * @return the int
+     */
+    public int execute(CriteriaDelete criteria);
 
     /**
      * Execute stored procedure t.
