@@ -19,8 +19,14 @@ import java.math.BigDecimal;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
@@ -33,7 +39,10 @@ import javax.persistence.Table;
  * Created by jiachen.shi on 7/25/2016.
  */
 @Entity
-@Table(name = "t_order_items")
+@Table(name = "t_order_items", indexes = {@Index(name = "index_order", columnList = "table_type, order_id")})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
+@DiscriminatorValue("order_items")
 @NamedEntityGraphs(value = {
         @NamedEntityGraph(name = "orderItem.order", attributeNodes = @NamedAttributeNode(value = "order"))})
 public class OrderItem extends AbstractEntity{

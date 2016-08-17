@@ -19,7 +19,12 @@ import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
@@ -33,7 +38,10 @@ import javax.persistence.UniqueConstraint;
  * Created by jiachen.shi on 6/21/2016.
  */
 @Entity
-@Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"code"})})
+@Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "code"})})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
+@DiscriminatorValue("role")
 @NamedEntityGraphs(value = {
         @NamedEntityGraph(name = "role.rolelps",
                 attributeNodes = @NamedAttributeNode(value = "rolelps", subgraph = "rolelps.language"),

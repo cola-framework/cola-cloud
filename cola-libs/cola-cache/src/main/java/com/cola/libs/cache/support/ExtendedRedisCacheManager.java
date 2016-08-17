@@ -15,21 +15,34 @@
  */
 package com.cola.libs.cache.support;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.transaction.AbstractTransactionSupportingCacheManager;
+import org.springframework.data.redis.cache.DefaultRedisCachePrefix;
+import org.springframework.data.redis.cache.RedisCache;
+import org.springframework.data.redis.cache.RedisCacheManager;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Iterator;
 
 /**
  * cola
  * Created by jiachen.shi on 8/15/2016.
  */
-public class RedisCacheManager extends AbstractTransactionSupportingCacheManager {
+public class ExtendedRedisCacheManager extends RedisCacheManager {
 
+    public ExtendedRedisCacheManager(RedisTemplate template) {
+        super(template, Collections.emptyList());
+    }
 
-    @Override
-    protected Collection<? extends Cache> loadCaches() {
-        return null;
+    protected RedisCache createCache(String cacheName) {
+        long expiration = this.computeExpiration(cacheName);
+        return new ExtendedRedisCache(cacheName, super.getTemplate(), expiration);
     }
 
 }

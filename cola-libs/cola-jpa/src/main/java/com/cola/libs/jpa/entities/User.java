@@ -18,7 +18,12 @@ package com.cola.libs.jpa.entities;
 import java.util.Date;
 
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.Table;
 
 /**
@@ -27,6 +32,9 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "t_user")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
+@DiscriminatorValue("user")
 public class User extends AbstractEntity{
 
     @Column(length = 20)

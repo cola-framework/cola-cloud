@@ -20,8 +20,14 @@ import java.util.Date;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
@@ -36,7 +42,10 @@ import javax.persistence.TemporalType;
  * Created by jiachen.shi on 7/25/2016.
  */
 @Entity
-@Table(name = "t_price_rows")
+@Table(name = "t_price_rows", indexes = {@Index(name="index_table_type", columnList = "table_type")})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
+@DiscriminatorValue("price_rows")
 @NamedEntityGraphs(value = {
         @NamedEntityGraph(name = "priceRow.product", attributeNodes = @NamedAttributeNode(value = "product"))})
 public class PriceRow extends AbstractEntity{

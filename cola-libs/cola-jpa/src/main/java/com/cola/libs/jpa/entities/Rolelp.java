@@ -17,8 +17,14 @@ package com.cola.libs.jpa.entities;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
+import javax.persistence.DiscriminatorColumn;
+import javax.persistence.DiscriminatorType;
+import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Index;
+import javax.persistence.Inheritance;
+import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
@@ -33,7 +39,10 @@ import javax.persistence.UniqueConstraint;
  * Created by jiachen.shi on 8/3/2016.
  */
 @Entity
-@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"lang_id", "role_id"})})
+@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "lang_id", "role_id"})}, indexes = {@Index(name="index_role", columnList = "table_type, role_id")})
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
+@DiscriminatorValue("role_lp")
 @NamedEntityGraphs(value = {
         @NamedEntityGraph(name = "rolelp.language", attributeNodes = @NamedAttributeNode(value = "language")),
         @NamedEntityGraph(name = "rolelp.role", attributeNodes = @NamedAttributeNode(value = "role")),

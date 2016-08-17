@@ -15,13 +15,15 @@
  */
 package com.cola.libs.cache.configuration;
 
+import com.cola.libs.cache.support.ExtendedRedisCacheManager;
+
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.serializer.StringRedisSerializer;
 
 /**
  * cola
@@ -33,7 +35,7 @@ public class RedisCacheConfiguration {
 
     @Bean
     public CacheManager cacheManager(RedisTemplate<?,?> redisTemplate) {
-        CacheManager cacheManager = new RedisCacheManager(redisTemplate);
+        CacheManager cacheManager = new ExtendedRedisCacheManager(redisTemplate);
         return cacheManager;
     }
 
@@ -41,6 +43,7 @@ public class RedisCacheConfiguration {
     public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<String, String>();
         redisTemplate.setConnectionFactory(factory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
         return redisTemplate;
     }
 

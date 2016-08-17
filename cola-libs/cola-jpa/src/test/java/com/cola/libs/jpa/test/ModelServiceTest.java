@@ -66,6 +66,35 @@ public class ModelServiceTest {
 
     @Test
     @Transactional
+    public void cacheTest(){
+        Role role = new Role();
+        role.setCode("MTIzNDU2Nzg5");
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        Role newRole = modelService.save(role);
+
+        Role load = modelService.load(Role.class, 12L);
+
+        Role load1 = modelService.load(Role.class, newRole.getId());
+
+        modelService.save(load1);
+
+        load1 = modelService.load(Role.class, newRole.getId());
+
+        List<Role> list = new ArrayList<>();
+        list.add(load1);
+        modelService.save(list);
+
+        modelService.delete(newRole);
+
+        modelService.deleteAll(Rolelp.class);
+        modelService.deleteAll(Role.class);
+
+        List<Rolelp> rolelps = load.getRolelps();
+    }
+
+    @Test
+    @Transactional
     public void cascadeTest(){
 
         Role role = lazyLoadingTest.init();

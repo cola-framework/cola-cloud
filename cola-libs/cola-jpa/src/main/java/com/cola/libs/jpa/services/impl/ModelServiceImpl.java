@@ -20,6 +20,8 @@ import com.cola.libs.jpa.services.ModelService;
 import com.cola.libs.jpa.support.QueryHintConstant;
 import com.cola.libs.jpa.support.QueryTranslatorHelper;
 
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -86,6 +88,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(value="dbcache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
     public <T extends AbstractEntity> T save(T entity){
         Assert.notNull(entity, "The entity must not be null!");
         JpaEntityInformation<T, ?> entityInformation = JpaEntityInformationSupport.getMetadata((Class<T>) entity.getClass(), em);
@@ -119,11 +122,13 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id){
         return load(tClass, id, null, null);
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -131,6 +136,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, String entityGraphName){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -143,6 +149,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -150,6 +157,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -157,6 +165,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
+    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
     public <T extends AbstractEntity, ID extends Serializable> T get(Class<T> tClass, ID id){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -187,6 +196,20 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    public int execute(String jpql, Map<String, Object> parames){
+        Assert.notNull(jpql, "The JPQL must not be null!");
+        jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
+        Query query = em.createQuery(jpql);
+        if(parames != null && parames.keySet() != null ){
+            for(String name:parames.keySet()){
+                query.setParameter(name, parames.get(name));
+            }
+        }
+        return query.executeUpdate();
+    }
+
+    @Override
+    @Transactional
     public int execute(CriteriaUpdate criteria){
         Assert.notNull(criteria, "The CriteriaUpdate must not be null!");
         Query query = this.em.createQuery(criteria);
@@ -198,20 +221,6 @@ public class ModelServiceImpl implements ModelService {
     public int execute(CriteriaDelete criteria){
         Assert.notNull(criteria, "The CriteriaDelete must not be null!");
         Query query = this.em.createQuery(criteria);
-        return query.executeUpdate();
-    }
-
-    @Override
-    @Transactional
-    public int execute(String jpql, Map<String, Object> parames){
-        Assert.notNull(jpql, "The JPQL must not be null!");
-        jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
-        Query query = em.createQuery(jpql);
-        if(parames != null && parames.keySet() != null ){
-            for(String name:parames.keySet()){
-                query.setParameter(name, parames.get(name));
-            }
-        }
         return query.executeUpdate();
     }
 
@@ -253,6 +262,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(value="dbcache", key = "#tClass.getName()+ ':' + #id", beforeInvocation = true)
     public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -266,6 +276,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(value="dbcache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
     public <T extends AbstractEntity> void delete(T entity) {
         Assert.notNull(entity, "The entity must not be null!");
         this.em.remove(this.em.contains(entity)?entity:this.em.merge(entity));
@@ -273,6 +284,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(value="dbcache", key = "#tClass.getName() + ':*'", beforeInvocation = true)
     public <T extends AbstractEntity> void deleteAll(Class<T> tClass) {
         this.em.createQuery(this.getDeleteAllQueryString(tClass)).executeUpdate();
     }
