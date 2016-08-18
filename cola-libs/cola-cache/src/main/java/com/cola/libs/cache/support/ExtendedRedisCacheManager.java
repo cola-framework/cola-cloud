@@ -15,20 +15,13 @@
  */
 package com.cola.libs.cache.support;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.cache.Cache;
-import org.springframework.cache.transaction.AbstractTransactionSupportingCacheManager;
-import org.springframework.data.redis.cache.DefaultRedisCachePrefix;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.cache.RedisCacheManager;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.util.Assert;
+import org.springframework.util.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 
 /**
  * cola
@@ -36,13 +29,31 @@ import java.util.Iterator;
  */
 public class ExtendedRedisCacheManager extends RedisCacheManager {
 
+    private Long expiration = 0L;
+
     public ExtendedRedisCacheManager(RedisTemplate template) {
         super(template, Collections.emptyList());
     }
 
+    public ExtendedRedisCacheManager(RedisTemplate template, Long expiration) {
+        super(template, Collections.emptyList());
+        if(expiration != null){
+            this.expiration = expiration;
+        }
+    }
+
+    public Cache getCache(String cacheName) {
+        if(StringUtils.isEmpty(cacheName)){
+            cacheName = "Cache";
+        }
+        return super.getCache(cacheName);
+    }
+
     protected RedisCache createCache(String cacheName) {
-        long expiration = this.computeExpiration(cacheName);
-        return new ExtendedRedisCache(cacheName, super.getTemplate(), expiration);
+        if(StringUtils.isEmpty(cacheName)){
+            cacheName = "Cache";
+        }
+        return new ExtendedRedisCache(cacheName, super.getTemplate(), this.expiration);
     }
 
 }

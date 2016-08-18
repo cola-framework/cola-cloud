@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.services.impl;
+package com.cola.libs.jpa.service.impl;
 
-import com.cola.libs.jpa.entities.AbstractEntity;
-import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.cache.annotation.CacheEvict;
+import com.cola.libs.cache.annotation.Cacheable;
+import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.support.QueryHintConstant;
 import com.cola.libs.jpa.support.QueryTranslatorHelper;
 
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.data.jpa.repository.support.JpaEntityInformation;
@@ -88,7 +89,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    @CacheEvict(value="dbcache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
+    @CacheEvict(keys = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
     public <T extends AbstractEntity> T save(T entity){
         Assert.notNull(entity, "The entity must not be null!");
         JpaEntityInformation<T, ?> entityInformation = JpaEntityInformationSupport.getMetadata((Class<T>) entity.getClass(), em);
@@ -96,6 +97,7 @@ public class ModelServiceImpl implements ModelService {
         entity.setLastModifiedTime(now);
         if(entityInformation.isNew(entity)) {
             entity.setCreateTime(now);
+            entity.setDeleted(Boolean.FALSE);
             em.persist(entity);
             return entity;
         } else {
@@ -111,7 +113,6 @@ public class ModelServiceImpl implements ModelService {
             return result;
         } else {
             Iterator var3 = entities.iterator();
-
             while(var3.hasNext()) {
                 T entity = (T) var3.next();
                 result.add(this.save(entity));
@@ -122,13 +123,13 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id){
         return load(tClass, id, null, null);
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -136,7 +137,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, String entityGraphName){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -149,7 +150,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -157,7 +158,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -165,7 +166,7 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    @Cacheable(value = "dbcache", key = "#tClass.getName()+ ':' + #id")
+    @Cacheable(key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T get(Class<T> tClass, ID id){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -174,12 +175,14 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(keysGenerator = "jpqlKeyGenerator", beforeInvocation = true)
     public int  execute(String jpql){
         return execute(jpql, new HashMap<String, Object>());
     }
 
     @Override
     @Transactional
+    @CacheEvict(keysGenerator = "jpqlKeyGenerator", beforeInvocation = true)
     public int execute(String jpql, Iterable<Object> parames) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
@@ -196,6 +199,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(keysGenerator = "jpqlKeyGenerator", beforeInvocation = true)
     public int execute(String jpql, Map<String, Object> parames){
         Assert.notNull(jpql, "The JPQL must not be null!");
         jpql = QueryTranslatorHelper.appendVersionIncrementForUpdate(jpql);
@@ -210,6 +214,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(keys = "#criteria.getRoot().getJavaType().getName()+ ':*'", beforeInvocation = true)
     public int execute(CriteriaUpdate criteria){
         Assert.notNull(criteria, "The CriteriaUpdate must not be null!");
         Query query = this.em.createQuery(criteria);
@@ -218,6 +223,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
+    @CacheEvict(keys = "#criteria.getRoot().getJavaType().getName()+ ':*'", beforeInvocation = true)
     public int execute(CriteriaDelete criteria){
         Assert.notNull(criteria, "The CriteriaDelete must not be null!");
         Query query = this.em.createQuery(criteria);
@@ -262,7 +268,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    @CacheEvict(value="dbcache", key = "#tClass.getName()+ ':' + #id", beforeInvocation = true)
+    @CacheEvict(keys = "#tClass.getName()+ ':' + #id", beforeInvocation = true)
     public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
@@ -276,7 +282,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    @CacheEvict(value="dbcache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
+    @CacheEvict(keys = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
     public <T extends AbstractEntity> void delete(T entity) {
         Assert.notNull(entity, "The entity must not be null!");
         this.em.remove(this.em.contains(entity)?entity:this.em.merge(entity));
@@ -284,7 +290,7 @@ public class ModelServiceImpl implements ModelService {
 
     @Override
     @Transactional
-    @CacheEvict(value="dbcache", key = "#tClass.getName() + ':*'", beforeInvocation = true)
+    @CacheEvict(keys = "#tClass.getName() + ':*'", beforeInvocation = true)
     public <T extends AbstractEntity> void deleteAll(Class<T> tClass) {
         this.em.createQuery(this.getDeleteAllQueryString(tClass)).executeUpdate();
     }
@@ -297,12 +303,13 @@ public class ModelServiceImpl implements ModelService {
 
         while(var2.hasNext()) {
             T entity = (T) var2.next();
-            this.delete(entity);
+            ((ModelServiceImpl)AopContext.currentProxy()).delete(entity);
         }
     }
 
     @Override
     @Transactional
+    @CacheEvict(keysGenerator = "entitiesKeyGenerator", beforeInvocation = true)
     public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities) {
         Assert.notNull(entities, "The given Iterable of entities not be null!");
         if(entities.iterator().hasNext()) {

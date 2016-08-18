@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.aspects;
+package com.cola.libs.jpa.aspect;
 
-import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
+import com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -41,7 +41,7 @@ public class RetryOnOptimisticLockingFailureAspect {
     /**
      * Retry on opt failure.
      */
-    @Pointcut("@annotation(com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure)")
+    @Pointcut("@annotation(com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure)")
     public void retryOnOptFailure() {
     }
 
@@ -53,9 +53,9 @@ public class RetryOnOptimisticLockingFailureAspect {
      */
     @Around("retryOnOptFailure()")
     public Object aspect(ProceedingJoinPoint pjp) throws Throwable {
-        MethodSignature joinPointObject = (MethodSignature) pjp.getSignature();
-        Method method = joinPointObject.getMethod();
-        RetryOnOptimisticLockingFailure annotation = method.getAnnotation(RetryOnOptimisticLockingFailure.class);
+        Method proxyMethod = ((MethodSignature)pjp.getSignature()).getMethod();
+        Method soruceMethod = pjp.getTarget().getClass().getMethod(proxyMethod.getName(), proxyMethod.getParameterTypes());
+        RetryOnOptimisticLockingFailure annotation = soruceMethod.getAnnotation(RetryOnOptimisticLockingFailure.class);
         int maxRetries = annotation.maxRetries();
         int numAttempts = 0;
         do {

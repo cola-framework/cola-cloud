@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.services;
+package com.cola.libs.jpa.service;
 
-import com.cola.libs.jpa.entities.AbstractEntity;
+import com.cola.libs.jpa.entity.AbstractEntity;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 
 import org.springframework.data.domain.Page;

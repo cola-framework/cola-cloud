@@ -15,13 +15,12 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.annotations.RetryOnOptimisticLockingFailure;
-import com.cola.libs.jpa.entities.Role;
-import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure;
+import com.cola.libs.jpa.entity.Role;
+import com.cola.libs.jpa.service.ModelService;
 
 import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;

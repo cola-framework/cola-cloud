@@ -15,12 +15,12 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entities.Order;
-import com.cola.libs.jpa.entities.OrderItem;
-import com.cola.libs.jpa.entities.Product;
-import com.cola.libs.jpa.entities.Role;
-import com.cola.libs.jpa.entities.Rolelp;
-import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.jpa.entity.Order;
+import com.cola.libs.jpa.entity.OrderItem;
+import com.cola.libs.jpa.entity.Product;
+import com.cola.libs.jpa.entity.Role;
+import com.cola.libs.jpa.entity.Rolelp;
+import com.cola.libs.jpa.service.ModelService;
 
 import org.hamcrest.Matchers;
 import org.junit.Assert;
@@ -90,7 +90,7 @@ public class ModelServiceTest {
         modelService.deleteAll(Rolelp.class);
         modelService.deleteAll(Role.class);
 
-        List<Rolelp> rolelps = load.getRolelps();
+        List<Rolelp> rolelps = load1.getRolelps();
     }
 
     @Test

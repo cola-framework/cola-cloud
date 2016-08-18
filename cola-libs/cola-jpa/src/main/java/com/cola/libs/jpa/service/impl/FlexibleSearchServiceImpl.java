@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.services.impl;
+package com.cola.libs.jpa.service.impl;
 
-import com.cola.libs.jpa.entities.AbstractEntity;
-import com.cola.libs.jpa.services.FlexibleSearchService;
+import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
 
@@ -30,42 +30,26 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.query.QueryUtils;
-import org.springframework.expression.spel.ast.Selection;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.beans.PropertyDescriptor;
-import java.lang.reflect.AccessibleObject;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToMany;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.JoinType;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import javax.persistence.metamodel.EntityType;
 
 /**
  * cola

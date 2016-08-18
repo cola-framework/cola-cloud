@@ -13,12 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.services;
+package com.cola.libs.jpa.service;
 
-import com.cola.libs.jpa.entities.AbstractEntity;
-
-import org.springframework.cache.annotation.Cacheable;
-import org.springframework.util.Assert;
+import com.cola.libs.jpa.entity.AbstractEntity;
 
 import java.io.Serializable;
 import java.util.List;

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entities;
+package com.cola.libs.jpa.entity;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -30,7 +30,6 @@ import javax.persistence.ManyToOne;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 

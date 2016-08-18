@@ -15,23 +15,18 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entities.Language;
-import com.cola.libs.jpa.entities.Role;
-import com.cola.libs.jpa.entities.Rolelp;
-import com.cola.libs.jpa.services.FlexibleSearchService;
-import com.cola.libs.jpa.services.ModelService;
+import com.cola.libs.jpa.entity.Language;
+import com.cola.libs.jpa.entity.Role;
+import com.cola.libs.jpa.entity.Rolelp;
+import com.cola.libs.jpa.service.FlexibleSearchService;
+import com.cola.libs.jpa.service.ModelService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
-import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 

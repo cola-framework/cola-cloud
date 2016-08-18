@@ -17,6 +17,7 @@ package com.cola.libs.cache.configuration;
 
 import com.cola.libs.cache.support.ExtendedRedisCacheManager;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -33,9 +34,12 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching
 public class RedisCacheConfiguration {
 
+    @Value("${spring.redis.expire}")
+    public Long expiration;
+
     @Bean
     public CacheManager cacheManager(RedisTemplate<?,?> redisTemplate) {
-        CacheManager cacheManager = new ExtendedRedisCacheManager(redisTemplate);
+        CacheManager cacheManager = new ExtendedRedisCacheManager(redisTemplate, expiration);
         return cacheManager;
     }
 

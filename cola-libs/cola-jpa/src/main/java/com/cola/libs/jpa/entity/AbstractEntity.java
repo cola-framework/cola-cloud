@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entities;
+package com.cola.libs.jpa.entity;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -51,6 +51,9 @@ public class AbstractEntity implements Serializable{
 
     @Column(name = "last_modified_by", nullable = false)
     private Long lastModifiedBy;
+
+    @Column(name = "deleted", nullable = false)
+    private Boolean deleted;
 
     @Version
     @Column(nullable = false)
@@ -150,5 +153,21 @@ public class AbstractEntity implements Serializable{
      */
     public void setLastModifiedBy(Long lastModifiedBy) {
         this.lastModifiedBy = lastModifiedBy;
+    }
+
+    /**
+     * Gets deleted.
+     * @return the deleted
+     */
+    public Boolean getDeleted() {
+        return deleted;
+    }
+
+    /**
+     * Sets deleted.
+     * @param deleted the deleted
+     */
+    public void setDeleted(Boolean deleted) {
+        this.deleted = deleted;
     }
 }

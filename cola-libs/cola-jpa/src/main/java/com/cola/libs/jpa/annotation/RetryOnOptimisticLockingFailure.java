@@ -1,4 +1,4 @@
-package com.cola.libs.jpa.annotations;
+package com.cola.libs.jpa.annotation;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

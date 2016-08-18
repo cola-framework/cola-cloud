@@ -15,18 +15,17 @@
  */
 package com.cola.libs.jpa.configuration;
 
-import com.cola.libs.jpa.services.FlexibleSearchService;
-import com.cola.libs.jpa.services.ModelService;
-import com.cola.libs.jpa.services.impl.FlexibleSearchServiceImpl;
-import com.cola.libs.jpa.services.impl.ModelServiceImpl;
+import com.cola.libs.jpa.service.FlexibleSearchService;
+import com.cola.libs.jpa.service.ModelService;
+import com.cola.libs.jpa.service.impl.FlexibleSearchServiceImpl;
+import com.cola.libs.jpa.service.impl.ModelServiceImpl;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
-import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import javax.sql.DataSource;
+import java.lang.reflect.Method;
 
 /**
  * cola
@@ -34,6 +33,22 @@ import javax.sql.DataSource;
  */
 @Configuration
 public class JPAConfiguration {
+
+    @Bean
+    public KeyGenerator jpqlKeyGenerator(){
+        return new KeyGenerator() {
+            @Override
+            public Object generate(Object target, Method method, Object... params) {
+                StringBuilder sb = new StringBuilder();
+                sb.append(target.getClass().getName());
+                sb.append(method.getName());
+                for (Object obj : params) {
+                    sb.append(obj.toString());
+                }
+                return sb.toString();
+            }
+        };
+    }
 
     @Bean(name = "modelService")
     @ConditionalOnClass(ModelService.class)
