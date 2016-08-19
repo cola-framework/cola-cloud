@@ -24,6 +24,8 @@ import org.hibernate.SQLQuery;
 import org.hibernate.Session;
 import org.hibernate.jpa.HibernateQuery;
 import org.hibernate.transform.Transformers;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -57,6 +59,8 @@ import javax.persistence.criteria.Root;
  */
 @Transactional(readOnly = true)
 public class FlexibleSearchServiceImpl implements FlexibleSearchService {
+
+    private static Logger logger = LoggerFactory.getLogger(FlexibleSearchServiceImpl.class);
 
     @PersistenceContext
     private EntityManager em;

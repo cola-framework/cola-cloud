@@ -24,5 +24,5 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  */
 @Configuration
 @EnableRedisHttpSession
-public class HttpSessionCacheConfiguration {
+public class HttpSessionRedisCacheConfiguration {
 }

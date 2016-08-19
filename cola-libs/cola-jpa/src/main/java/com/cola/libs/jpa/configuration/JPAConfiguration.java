@@ -20,16 +20,22 @@ import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.service.impl.FlexibleSearchServiceImpl;
 import com.cola.libs.jpa.service.impl.ModelServiceImpl;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+import org.springframework.util.StringUtils;
 
 import java.lang.reflect.Method;
+
+import javax.sql.DataSource;
 
 /**
  * cola
@@ -38,6 +44,25 @@ import java.lang.reflect.Method;
 @Configuration
 @EnableTransactionManagement(mode = AdviceMode.ASPECTJ, order = 2048)
 public class JPAConfiguration {
+
+    private static Logger logger = LoggerFactory.getLogger(JPAConfiguration.class);
+
+    @Value("${spring.datasource.type:null}")
+    private String dataSourceType;
+
+    @Bean
+    @ConfigurationProperties(prefix = "spring.datasource")
+    public DataSource dataSource() {
+        Class<? extends DataSource> dataSourceClass = null;
+        if(!StringUtils.isEmpty(dataSourceType)){
+            try {
+                dataSourceClass = (Class<? extends DataSource>)Class.forName(dataSourceType);
+            } catch (Exception e) {
+                logger.warn("not find Datasource Type:" + e.getMessage(),e);
+            }
+        }
+        return DataSourceBuilder.create().type(dataSourceClass).build();
+    }
 
     @Bean
     public KeyGenerator jpqlKeyGenerator(){

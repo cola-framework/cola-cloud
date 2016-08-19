@@ -20,14 +20,13 @@ import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
 
 /**
  * cola
  * Created by jiachen.shi on 7/18/2016.
  */
 @Configuration
-@PropertySource("classpath:test.properties")
+@PropertySource("classpath:druid.properties")
 @EnableAutoConfiguration
 @EntityScan(basePackages = {"com.cola.libs.jpa.entity"})
 public class TestConfiguration {

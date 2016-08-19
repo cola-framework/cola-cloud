@@ -20,6 +20,8 @@ import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.support.QueryHintConstant;
 import com.cola.libs.jpa.support.QueryTranslatorHelper;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -55,6 +57,8 @@ import javax.persistence.criteria.CriteriaUpdate;
  */
 @Transactional(readOnly = true)
 public class ModelServiceImpl implements ModelService {
+
+    private static Logger logger = LoggerFactory.getLogger(ModelServiceImpl.class);
 
     @PersistenceContext
     private EntityManager em;

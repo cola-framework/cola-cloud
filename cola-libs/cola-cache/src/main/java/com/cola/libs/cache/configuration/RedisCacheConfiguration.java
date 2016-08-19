@@ -37,7 +37,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @EnableCaching(mode = AdviceMode.ASPECTJ, order = 4096)
 public class RedisCacheConfiguration extends CachingConfigurerSupport {
 
-    @Value("${spring.redis.expire}")
+    @Value("${spring.redis.expire:0}")
     public Long expiration;
 
     @Bean
