@@ -30,7 +30,6 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
-import org.springframework.core.annotation.Order;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
@@ -43,7 +42,6 @@ import java.lang.reflect.Method;
  * Created by jiachen.shi on 8/17/2016.
  */
 @Aspect
-@Order(4096)
 public class ExtendedCacheEvictAspect implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;

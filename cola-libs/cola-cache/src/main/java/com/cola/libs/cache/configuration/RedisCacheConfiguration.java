@@ -25,7 +25,6 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.EnableLoadTimeWeaving;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -35,7 +34,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
  * Created by jiachen.shi on 8/12/2016.
  */
 @Configuration
-@EnableCaching(mode = AdviceMode.ASPECTJ, order = -10)
+@EnableCaching(mode = AdviceMode.ASPECTJ, order = 4096)
 public class RedisCacheConfiguration extends CachingConfigurerSupport {
 
     @Value("${spring.redis.expire}")
