@@ -1,5 +1,7 @@
 package com.cola.libs.cache.annotation;
 
+import org.springframework.cache.annotation.CacheEvict;
+
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -13,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.METHOD})
 @Documented
-public @interface CacheEvict {
+public @interface ExtendedCacheEvict{
 
     String value() default "";
     String[] keys() default {};

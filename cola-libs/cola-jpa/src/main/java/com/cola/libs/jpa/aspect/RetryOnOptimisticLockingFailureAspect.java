@@ -20,9 +20,9 @@ import com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.aspectj.lang.annotation.DeclarePrecedence;
 import org.aspectj.lang.annotation.Pointcut;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.annotation.Order;
 
 import java.lang.reflect.Method;
@@ -34,15 +34,18 @@ import javax.persistence.OptimisticLockException;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
-@Order(-10)
-@Configuration
+@DeclarePrecedence("com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
 public class RetryOnOptimisticLockingFailureAspect {
 
     /**
      * Retry on opt failure.
      */
-    @Pointcut("@annotation(com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure)")
-    public void retryOnOptFailure() {
+    @Pointcut("execution(@com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure * *(..))")
+    public void executionOfROLFMethod() {
+    }
+
+    @Pointcut("(execution(public * ((@com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure *)+).*(..)) && @within(com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure))")
+    public void executionOfAnyPublicMethodInAtROLFType() {
     }
 
     /**
@@ -51,8 +54,8 @@ public class RetryOnOptimisticLockingFailureAspect {
      * @return the object
      * @throws Throwable the throwable
      */
-    @Around("retryOnOptFailure()")
-    public Object aspect(ProceedingJoinPoint pjp) throws Throwable {
+    @Around("executionOfROLFMethod() || executionOfAnyPublicMethodInAtROLFType()")
+    public Object aspectROLFMethod(ProceedingJoinPoint pjp) throws Throwable {
         Method proxyMethod = ((MethodSignature)pjp.getSignature()).getMethod();
         Method soruceMethod = pjp.getTarget().getClass().getMethod(proxyMethod.getName(), proxyMethod.getParameterTypes());
         RetryOnOptimisticLockingFailure annotation = soruceMethod.getAnnotation(RetryOnOptimisticLockingFailure.class);

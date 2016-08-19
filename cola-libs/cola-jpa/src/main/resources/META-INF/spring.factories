@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.cola.libs.jpa.configuration.JPAConfiguration,\
-  com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect
+  com.cola.libs.jpa.configuration.JPAConfiguration

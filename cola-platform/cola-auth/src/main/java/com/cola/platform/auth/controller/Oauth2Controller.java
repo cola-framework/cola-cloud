@@ -15,9 +15,9 @@
  */
 package com.cola.platform.auth.controller;
 
-import com.cola.libs.beans.enums.ResponseCode;
 import com.cola.libs.beans.ResponseHeader;
 import com.cola.libs.beans.ResponseMessage;
+import com.cola.libs.beans.enums.ResponseCode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -62,5 +62,4 @@ public class Oauth2Controller {
 
         return responseMessage;
     }
-
 }

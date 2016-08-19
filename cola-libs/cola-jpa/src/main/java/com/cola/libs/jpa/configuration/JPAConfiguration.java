@@ -22,8 +22,12 @@ import com.cola.libs.jpa.service.impl.ModelServiceImpl;
 
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.cache.interceptor.KeyGenerator;
+import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.EnableAspectJAutoProxy;
+import org.springframework.context.annotation.aspectj.EnableSpringConfigured;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.lang.reflect.Method;
 
@@ -32,6 +36,7 @@ import java.lang.reflect.Method;
  * Created by jiachen.shi on 8/4/2016.
  */
 @Configuration
+@EnableTransactionManagement(mode = AdviceMode.ASPECTJ, order = 2048)
 public class JPAConfiguration {
 
     @Bean

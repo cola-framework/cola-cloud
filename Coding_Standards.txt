@@ -1,6 +1,5 @@
 注意事项：
-1. 不建议Service类内部方法的直接调用；如果非要调用，调用方法必须加事务注解； 原因：类内部方法的直接调用，被调用方法无法享受事务及事务传播；
-2. 对Entity类的操作只能在Service层处理，并且必须加事务注解（至少是readOnly=true），Controller层只能处理VO数据；原因：fetch=FetchType.LAZY的Entity，事务外调用会抛no session错误；
-3. 对于fetch=FetchType.EAGER的Entity关系，在写HQL时必须使用join fetch；原因：会出现1+N问题；
-4. 多表复杂查询，查询的字段需要取别名；原因：否则无法转换成指定的bean；
-5. 多表查询指定返回Bean时，指定的Bean必须存在无参数的构造函数；原因：否则newInstance无法实例化对象；
+1. 对Entity类的操作只能在Service层处理，并且必须加事务注解（至少是readOnly=true），Controller层只能处理VO数据；原因：fetch=FetchType.LAZY的Entity，事务外调用会抛no session错误；
+2. 表和表之间的FetchType统一使用FetchType.LAZY, 需要直接抓取的可使用EntityGraph方式；
+3. 多表复杂查询，查询的字段需要取别名；原因：否则无法转换成指定的bean；
+4. 多表查询指定返回Bean时，指定的Bean必须存在无参数的构造函数；原因：否则newInstance无法实例化对象；

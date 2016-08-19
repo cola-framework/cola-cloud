@@ -11,7 +11,7 @@ import java.lang.annotation.Target;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Retention(RetentionPolicy.RUNTIME)
-@Target({ElementType.METHOD})
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Documented
 public @interface RetryOnOptimisticLockingFailure {
     /**

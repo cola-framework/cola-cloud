@@ -42,7 +42,7 @@ public class LazyLoadingTest {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional
     public Role init(){
 
         UUID uuid = UUID.randomUUID();
@@ -93,6 +93,10 @@ public class LazyLoadingTest {
             }
         }
         modelService.delete(role);
+    }
+
+    public Role pre_init(){
+        return this.init();
     }
 
 }

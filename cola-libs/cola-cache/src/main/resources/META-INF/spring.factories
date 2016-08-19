@@ -1,4 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.cola.libs.cache.configuration.RedisCacheConfiguration,\
-  com.cola.libs.cache.aspect.CacheableAspect,\
-  com.cola.libs.cache.aspect.CacheEvictAspect
+  com.cola.libs.cache.configuration.RedisCacheConfiguration

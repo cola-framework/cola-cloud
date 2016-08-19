@@ -157,6 +157,9 @@ public class ExtendedRedisCache extends RedisCache implements Cache {
                     } else {
                         try {
                             connection.set(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.cacheLockName);
+                            if(ExtendedRedisCache.this.expiration > 0L) {
+                                connection.expire(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.expiration);
+                            }
 
                             Set<byte[]> keys = connection.keys(k);
                             if(keys != null && keys.size() > 0){

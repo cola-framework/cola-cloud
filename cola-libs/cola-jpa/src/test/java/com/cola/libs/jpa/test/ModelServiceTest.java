@@ -77,6 +77,7 @@ public class ModelServiceTest {
 
         Role load1 = modelService.load(Role.class, newRole.getId());
 
+        List<Rolelp> rolelps1 = load1.getRolelps();
         modelService.save(load1);
 
         load1 = modelService.load(Role.class, newRole.getId());
@@ -85,7 +86,7 @@ public class ModelServiceTest {
         list.add(load1);
         modelService.save(list);
 
-        modelService.delete(newRole);
+        modelService.delete(list);
 
         modelService.deleteAll(Rolelp.class);
         modelService.deleteAll(Role.class);
@@ -94,10 +95,9 @@ public class ModelServiceTest {
     }
 
     @Test
-    @Transactional
     public void cascadeTest(){
 
-        Role role = lazyLoadingTest.init();
+        Role role = lazyLoadingTest.pre_init();
         Role newRole = lazyLoadingTest.test(role.getId());
         lazyLoadingTest.destroy(role);
 
@@ -188,6 +188,7 @@ public class ModelServiceTest {
         try {
             optimisticLockingFailueTest.test();
         }catch (Exception e){
+            e.printStackTrace();
             System.out.println("catchOptimisticLockingFailure");
             Assert.assertTrue(e instanceof OptimisticLockException);
         }

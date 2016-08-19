@@ -1,0 +1,9 @@
+<!DOCTYPE aspectj PUBLIC "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+    <weaver options="-XnoInline -Xset:weaveJavaPackages=true,weaveJavaxPackages=true">
+        <include within="com.cola..*"/>
+    </weaver>
+    <aspects>
+        <aspect name="com.cola.libs.cache.aspect.ExtendedCacheEvictAspect"/>
+    </aspects>
+</aspectj>

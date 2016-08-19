@@ -15,7 +15,8 @@
  */
 package com.cola.libs.cache.aspect;
 
-import com.cola.libs.cache.annotation.Cacheable;
+import com.cola.libs.cache.annotation.ExtendedCacheEvict;
+import com.cola.libs.cache.support.KeysGenerator;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -25,10 +26,8 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.beans.BeansException;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.core.ParameterNameDiscoverer;
 import org.springframework.core.annotation.Order;
@@ -44,24 +43,23 @@ import java.lang.reflect.Method;
  * Created by jiachen.shi on 8/17/2016.
  */
 @Aspect
-@Order(-10)
-@Configuration
-public class CacheableAspect implements ApplicationContextAware {
+@Order(4096)
+public class ExtendedCacheEvictAspect implements ApplicationContextAware {
 
     private ApplicationContext applicationContext;
 
-    @Pointcut("@annotation(com.cola.libs.cache.annotation.Cacheable)")
-    public void cacheable() {
+    @Pointcut("execution(@com.cola.libs.cache.annotation.ExtendedCacheEvict * *(..))")
+    public void cacheEvict() {
     }
 
-    @Around("cacheable()")
+    @Around("cacheEvict()")
     public Object aspect(ProceedingJoinPoint joinPoint) throws Throwable {
 
         Object[] arguments = joinPoint.getArgs();
         Method proxyMethod = ((MethodSignature)joinPoint.getSignature()).getMethod();
         Method soruceMethod = joinPoint.getTarget().getClass().getMethod(proxyMethod.getName(), proxyMethod.getParameterTypes());
 
-        Cacheable annotation = soruceMethod.getAnnotation(Cacheable.class);
+        ExtendedCacheEvict annotation = soruceMethod.getAnnotation(ExtendedCacheEvict.class);
         String cacheManagerName = annotation.cacheManager();
         CacheManager cacheManager = null;
         Cache cache = null;
@@ -86,15 +84,20 @@ public class CacheableAspect implements ApplicationContextAware {
             i++;
         }
 
-        Object key = null;
-        String keyGenerator = annotation.keyGenerator();
-        if(!StringUtils.isEmpty(keyGenerator)){
-            KeyGenerator bean = this.applicationContext.getBean(keyGenerator, KeyGenerator.class);
-            key = bean.generate(joinPoint.getTarget(), soruceMethod, arguments);
+        Object[] keys = null;
+        String keysGeneratorName = annotation.keysGenerator();
+        if(!StringUtils.isEmpty(keysGeneratorName)){
+            KeysGenerator keysGenerator = this.applicationContext.getBean(keysGeneratorName, KeysGenerator.class);
+            keys = keysGenerator.generate(joinPoint.getTarget(), soruceMethod, arguments);
         }else{
-            String keyExpression = annotation.key();
-            if(!StringUtils.isEmpty(keyExpression)){
-                key = parser.parseExpression(keyExpression).getValue(context, Object.class);
+            String[] keysExpression = annotation.keys();
+            if(keysExpression != null){
+                keys = new Object[keysExpression.length];
+                i = 0;
+                for(String keyExpression:keysExpression){
+                    keys[i] = parser.parseExpression(keyExpression).getValue(context, Object.class);
+                    i++;
+                }
             }
         }
 
@@ -104,25 +107,22 @@ public class CacheableAspect implements ApplicationContextAware {
             condition = parser.parseExpression(conditionExpression).getValue(context, boolean.class);
         }
 
-        if(cache != null && key != null && condition){
-            Object o = cache.get(key, soruceMethod.getReturnType());
-            if(o != null){
-                return o;
+        boolean beforeInvocation = annotation.beforeInvocation();
+        if(cache != null && keys != null && condition && beforeInvocation){
+            for(Object o:keys){
+                cache.evict(o);
             }
         }
 
         Object result = joinPoint.proceed();
 
-        boolean unless = true;
-        String unlessExpression = annotation.unless();
-        if(!StringUtils.isEmpty(unlessExpression)){
-            context.setVariable("result", result);
-            unless = parser.parseExpression(unlessExpression).getValue(context, boolean.class);
-        }
-        if(cache != null && !unless){
-            cache.put(key, result);
+        if(cache != null && keys != null && condition && !beforeInvocation){
+            for(Object o:keys){
+                cache.evict(o);
+            }
         }
         return result;
+
     }
 
     @Override
