@@ -19,14 +19,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.Cache;
 import org.springframework.cache.support.SimpleValueWrapper;
-import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.cache.RedisCache;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.RedisSerializer;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -103,17 +104,15 @@ public class ExtendedRedisCache extends RedisCache implements Cache {
         final byte[] keyBytes = this.computeKey(key);
         final byte[] valueBytes = this.convertToBytesIfNecessary(this.template.getValueSerializer(), value);
         try {
-            this.template.execute(new RedisCallback() {
-                public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                    ExtendedRedisCache.this.waitForLock(connection);
-                    connection.multi();
-                    connection.set(keyBytes, valueBytes);
-                    if(ExtendedRedisCache.this.expiration > 0L) {
-                        connection.expire(keyBytes, ExtendedRedisCache.this.expiration);
-                    }
-                    connection.exec();
-                    return null;
+            this.template.execute(connection -> {
+                ExtendedRedisCache.this.waitForLock(connection);
+                connection.multi();
+                connection.set(keyBytes, valueBytes);
+                if(ExtendedRedisCache.this.expiration > 0L) {
+                    connection.expire(keyBytes, ExtendedRedisCache.this.expiration);
                 }
+                connection.exec();
+                return null;
             }, true);
         } catch (Exception e) {
             logger.error("Redis Cache put Method is error:" + e.getMessage(), e);
@@ -125,20 +124,18 @@ public class ExtendedRedisCache extends RedisCache implements Cache {
         final byte[] keyBytes = this.computeKey(key);
         final byte[] valueBytes = this.convertToBytesIfNecessary(this.template.getValueSerializer(), value);
         try{
-            return this.toWrapper(this.template.execute(new RedisCallback() {
-                public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                    ExtendedRedisCache.this.waitForLock(connection);
-                    Object resultValue = value;
-                    boolean valueWasSet = connection.setNX(keyBytes, valueBytes).booleanValue();
-                    if(valueWasSet) {
-                        if(ExtendedRedisCache.this.expiration > 0L) {
-                            connection.expire(keyBytes, ExtendedRedisCache.this.expiration);
-                        }
-                    } else {
-                        resultValue = ExtendedRedisCache.this.deserializeIfNecessary(ExtendedRedisCache.this.template.getValueSerializer(), connection.get(keyBytes));
+            return this.toWrapper(this.template.execute(connection -> {
+                ExtendedRedisCache.this.waitForLock(connection);
+                Object resultValue = value;
+                boolean valueWasSet = connection.setNX(keyBytes, valueBytes).booleanValue();
+                if(valueWasSet) {
+                    if(ExtendedRedisCache.this.expiration > 0L) {
+                        connection.expire(keyBytes, ExtendedRedisCache.this.expiration);
                     }
-                    return resultValue;
+                } else {
+                    resultValue = ExtendedRedisCache.this.deserializeIfNecessary(ExtendedRedisCache.this.template.getValueSerializer(), connection.get(keyBytes));
                 }
+                return resultValue;
             }, true));
         }catch (Exception e){
             logger.error("Redis Cache putIfAbsent Method is error:" + e.getMessage(), e);
@@ -149,30 +146,40 @@ public class ExtendedRedisCache extends RedisCache implements Cache {
     @Override
     public void evict(Object key) {
         try{
-            final byte[] k = this.computeKey(key);
-            this.template.execute(new RedisCallback() {
-                public Object doInRedis(RedisConnection connection) throws DataAccessException {
-                    if(connection.exists(ExtendedRedisCache.this.cacheLockName).booleanValue()) {
-                        return null;
-                    } else {
-                        try {
-                            connection.set(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.cacheLockName);
-                            if(ExtendedRedisCache.this.expiration > 0L) {
-                                connection.expire(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.expiration);
-                            }
+            this.template.execute(connection -> {
+                if(connection.exists(ExtendedRedisCache.this.cacheLockName).booleanValue()) {
+                    return null;
+                } else {
+                    try {
+                        connection.set(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.cacheLockName);
+                        if(ExtendedRedisCache.this.expiration > 0L) {
+                            connection.expire(ExtendedRedisCache.this.cacheLockName, ExtendedRedisCache.this.expiration);
+                        }
 
+                        List<byte[]> kList = new ArrayList<byte[]>();
+                        if(key != null){
+                            if(key instanceof Collection){
+                                for(Object k:(Collection)key){
+                                    kList.add(ExtendedRedisCache.this.computeKey(k));
+                                }
+                            }else{
+                                kList.add(ExtendedRedisCache.this.computeKey(key));
+                            }
+                        }
+
+                        for(byte[] k : kList){
                             Set<byte[]> keys = connection.keys(k);
                             if(keys != null && keys.size() > 0){
                                 for(byte[] b:keys){
                                     connection.del(new byte[][]{b});
                                 }
                             }
-                        } finally {
-                            connection.del(new byte[][]{ExtendedRedisCache.this.cacheLockName});
                         }
+                    } finally {
+                        connection.del(new byte[][]{ExtendedRedisCache.this.cacheLockName});
                     }
-                    return null;
                 }
+                return null;
             }, true);
         }catch (Exception e){
             logger.error("Redis Cache evict Method is error:" + e.getMessage(), e);

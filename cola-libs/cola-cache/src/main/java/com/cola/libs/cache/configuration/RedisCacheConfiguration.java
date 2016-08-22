@@ -15,7 +15,6 @@
  */
 package com.cola.libs.cache.configuration;
 
-import com.cola.libs.cache.aspect.ExtendedCacheEvictAspect;
 import com.cola.libs.cache.support.ExtendedRedisCacheManager;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -52,11 +51,6 @@ public class RedisCacheConfiguration extends CachingConfigurerSupport {
         redisTemplate.setConnectionFactory(factory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         return redisTemplate;
-    }
-
-    @Bean
-    public ExtendedCacheEvictAspect extendedCacheEvictAspect(){
-        return new ExtendedCacheEvictAspect();
     }
 
 }

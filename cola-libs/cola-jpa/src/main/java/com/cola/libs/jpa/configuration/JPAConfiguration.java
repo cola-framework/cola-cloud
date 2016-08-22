@@ -15,6 +15,8 @@
  */
 package com.cola.libs.jpa.configuration;
 
+import com.cola.libs.jpa.keygen.EntitiesKeyGenerator;
+import com.cola.libs.jpa.keygen.JpqlKeyGenerator;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.service.impl.FlexibleSearchServiceImpl;
@@ -66,18 +68,12 @@ public class JPAConfiguration {
 
     @Bean
     public KeyGenerator jpqlKeyGenerator(){
-        return new KeyGenerator() {
-            @Override
-            public Object generate(Object target, Method method, Object... params) {
-                StringBuilder sb = new StringBuilder();
-                sb.append(target.getClass().getName());
-                sb.append(method.getName());
-                for (Object obj : params) {
-                    sb.append(obj.toString());
-                }
-                return sb.toString();
-            }
-        };
+        return new JpqlKeyGenerator();
+    }
+
+    @Bean
+    public KeyGenerator entitiesKeyGenerator(){
+        return new EntitiesKeyGenerator();
     }
 
     @Bean(name = "modelService")

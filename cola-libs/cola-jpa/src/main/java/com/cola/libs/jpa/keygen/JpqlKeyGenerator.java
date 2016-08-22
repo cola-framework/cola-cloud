@@ -13,7 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.support;
+package com.cola.libs.jpa.keygen;
+
+import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.lang.reflect.Method;
 
@@ -21,8 +23,11 @@ import java.lang.reflect.Method;
  * cola
  * Created by jiachen.shi on 8/17/2016.
  */
-public interface KeysGenerator {
+public class JpqlKeyGenerator implements KeyGenerator{
 
-    Object[] generate(Object var1, Method var2, Object... var3);
+    @Override
+    public Object generate(Object o, Method method, Object... objects) {
+        return null;
+    }
 
 }
