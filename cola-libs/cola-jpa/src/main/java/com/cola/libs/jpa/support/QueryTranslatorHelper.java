@@ -17,7 +17,9 @@ package com.cola.libs.jpa.support;
 
 import org.springframework.util.Assert;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -39,6 +41,33 @@ public class QueryTranslatorHelper {
             return JpqlAnalysisConstant.StatementType.DELETE;
         }
         throw new IllegalArgumentException("Invalid Statement.");
+    }
+
+    public static List<String> getTableNames(String jpql){
+        List<String> tableNames = new ArrayList<>();
+        JpqlAnalysisConstant.StatementType statementType = getStatementType(jpql);
+        if(JpqlAnalysisConstant.StatementType.UPDATE.equals(statementType)){
+
+        }else if(JpqlAnalysisConstant.StatementType.DELETE.equals(statementType)){
+
+        }
+        return null;
+    }
+
+    public static List<String> getTableAndAliasNameForUpdate(String jpql){
+        String temp = jpql.toUpperCase().trim();
+        int setIndex = temp.indexOf(JpqlAnalysisConstant.Clause.SET.name());
+        String sub = null;
+        if(setIndex > 0){
+            sub = jpql.substring(6, setIndex);
+        }
+
+        if (null == sub) {
+            throw new IllegalArgumentException("Invalid Update Statement.");
+        }
+
+        sub = sub.replaceAll(JpqlAnalysisConstant.SEPARATOR, "");
+        return null;
     }
 
     public static String appendVersionIncrementForUpdate(String jpql){

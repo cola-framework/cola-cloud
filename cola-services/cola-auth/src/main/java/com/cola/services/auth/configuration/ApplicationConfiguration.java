@@ -13,35 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.test;
+package com.cola.services.auth.configuration;
 
-import com.cola.libs.cache.annotatiion.EnableRedisCache;
-
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.support.ReloadableResourceBundleMessageSource;
 
 /**
  * cola
  * Created by jiachen.shi on 7/18/2016.
  */
 @Configuration
-@PropertySource("classpath:druid.properties")
-@EnableAutoConfiguration
-@EnableRedisCache
-@EntityScan(basePackages = {"com.cola.libs.jpa.entity"})
-public class TestConfiguration {
+@ComponentScan(basePackages = {"com.cola"})
+@EntityScan(basePackages = {"com.cola"})
+public class ApplicationConfiguration {
 
-    @Bean
-    public OptimisticLockingFailueTest optimisticLockingFailueTest(){
-        return new OptimisticLockingFailueTest();
-    }
-
-    @Bean
-    public LazyLoadingTest lazyLoadingTest(){
-        return new LazyLoadingTest();
+    @Bean( name = {"defaultMessageSource"} )
+    protected ReloadableResourceBundleMessageSource defaultMessageSource()
+    {
+        final ReloadableResourceBundleMessageSource messageSource = new ReloadableResourceBundleMessageSource();
+        messageSource.setBasenames( "classpath:messages" );
+        messageSource.setDefaultEncoding( "UTF-8" );
+        messageSource.setCacheSeconds( 60 );
+        messageSource.setFallbackToSystemLocale( false );
+        return messageSource;
     }
 
 }

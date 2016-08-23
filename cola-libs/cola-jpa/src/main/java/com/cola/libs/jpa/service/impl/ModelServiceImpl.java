@@ -104,6 +104,7 @@ public class ModelServiceImpl implements ModelService {
             em.persist(entity);
         } else {
             entity = em.merge(entity);
+            em.flush();
         }
         em.clear();
         return entity;
@@ -121,7 +122,6 @@ public class ModelServiceImpl implements ModelService {
                 T entity = (T) var3.next();
                 result.add(this.save(entity));
             }
-            em.flush();
             return result;
         }
     }

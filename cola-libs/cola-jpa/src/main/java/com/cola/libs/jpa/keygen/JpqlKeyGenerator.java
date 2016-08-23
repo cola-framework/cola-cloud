@@ -15,6 +15,11 @@
  */
 package com.cola.libs.jpa.keygen;
 
+import antlr.RecognitionException;
+import antlr.TokenStreamException;
+import antlr.collections.AST;
+
+import org.hibernate.hql.internal.ast.HqlParser;
 import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.lang.reflect.Method;
@@ -26,8 +31,22 @@ import java.lang.reflect.Method;
 public class JpqlKeyGenerator implements KeyGenerator{
 
     @Override
-    public Object generate(Object o, Method method, Object... objects) {
-        return null;
+    public Object generate(Object target, Method method, Object... args) {
+        Object key = null;
+        if(args != null){
+            String jpql = (String)args[0];
+            HqlParser parser = HqlParser.getInstance(jpql);
+            try {
+                parser.statement();
+            } catch (RecognitionException e) {
+                e.printStackTrace();
+            } catch (TokenStreamException e) {
+                e.printStackTrace();
+            }
+            parser.getTokenNames();
+            AST ast = parser.getAST();
+        }
+        return key;
     }
 
 }
