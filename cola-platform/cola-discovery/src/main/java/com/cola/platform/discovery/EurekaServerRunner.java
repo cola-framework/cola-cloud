@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.servers.discovery;
+package com.cola.platform.discovery;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

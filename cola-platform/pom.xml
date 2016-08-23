@@ -16,9 +16,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>cola-auth</module>
-        <module>cola-promotion</module>
-        <module>cola-oms</module>
+        <module>cola-discovery</module>
+        <module>cola-configuration</module>
+        <module>cola-monitor</module>
     </modules>
 
     <build>
@@ -30,18 +30,7 @@
             </plugin>
         </plugins>
     </build>
-
     <dependencies>
-        <dependency>
-            <groupId>com.cola.libs.beans</groupId>
-            <artifactId>cola-beans</artifactId>
-            <version>${cola.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.cola.libs.jpa</groupId>
-            <artifactId>cola-jpa</artifactId>
-            <version>${cola.version}</version>
-        </dependency>
         <dependency>
             <groupId>com.cola.libs.logging</groupId>
             <artifactId>cola-logging</artifactId>
@@ -49,23 +38,15 @@
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-web</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-config</artifactId>
         </dependency>
         <dependency>
             <groupId>org.springframework.retry</groupId>
             <artifactId>spring-retry</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.data</groupId>
+            <artifactId>spring-data-commons</artifactId>
         </dependency>
     </dependencies>
 </project>

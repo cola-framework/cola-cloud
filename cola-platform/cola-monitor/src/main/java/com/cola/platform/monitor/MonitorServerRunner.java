@@ -13,32 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.servers.configuration;
+package com.cola.platform.monitor;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.config.server.EnableConfigServer;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.netflix.hystrix.dashboard.EnableHystrixDashboard;
+import org.springframework.cloud.netflix.turbine.EnableTurbine;
 
 /**
  * cola
  * Created by jiachen.shi on 6/16/2016.
  */
 @SpringBootApplication
-@EnableConfigServer
 @EnableEurekaClient
-public class ConfigurationServerRunner {
+@EnableHystrixDashboard
+@EnableTurbine
+public class MonitorServerRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(ConfigurationServerRunner.class);
+    private static Logger logger = LoggerFactory.getLogger(MonitorServerRunner.class);
 
     public static void main(String[] args) {
-        logger.info("************ Cola Configuration Server Start *************");
-        SpringApplication app = new SpringApplication(ConfigurationServerRunner.class);
+        logger.info("************ Cola Monitor Server Start *************");
+        SpringApplication app = new SpringApplication(MonitorServerRunner.class);
         //app.setShowBanner(false);
         app.run(args);
-        logger.info("************ Cola Configuration Server End *************");
+        logger.info("************* Cola Monitor Server End **************");
     }
-
 }

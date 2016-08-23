@@ -16,8 +16,8 @@
     <name>cola</name>
 
     <modules>
-        <module>cola-servers</module>
         <module>cola-libs</module>
+        <module>cola-services</module>
         <module>cola-platform</module>
     </modules>
 
@@ -35,6 +35,7 @@
         <drools-version>6.4.0.Final</drools-version>
         <hikariCP-version>2.4.7</hikariCP-version>
         <druid-version>1.0.23</druid-version>
+        <ignite.version>1.7.0</ignite.version>
     </properties>
 
     <build>
@@ -51,6 +52,24 @@
 
     <dependencyManagement>
         <dependencies>
+
+            <!-- ignite -->
+            <dependency>
+                <groupId>org.apache.ignite</groupId>
+                <artifactId>ignite-core</artifactId>
+                <version>${ignite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ignite</groupId>
+                <artifactId>ignite-spring</artifactId>
+                <version>${ignite.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.ignite</groupId>
+                <artifactId>ignite-indexing</artifactId>
+                <version>${ignite.version}</version>
+            </dependency>
+
             <!-- Druid -->
             <dependency>
                 <groupId>com.alibaba</groupId>
