@@ -35,8 +35,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
-
 import javax.sql.DataSource;
 
 /**

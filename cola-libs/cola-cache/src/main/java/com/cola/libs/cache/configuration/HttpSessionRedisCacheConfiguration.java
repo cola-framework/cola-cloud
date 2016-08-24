@@ -15,6 +15,7 @@
  */
 package com.cola.libs.cache.configuration;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.session.data.redis.config.annotation.web.http.EnableRedisHttpSession;
 
@@ -23,6 +24,7 @@ import org.springframework.session.data.redis.config.annotation.web.http.EnableR
  * Created by jiachen.shi on 8/8/2016.
  */
 @Configuration
+@ConditionalOnWebApplication
 @EnableRedisHttpSession
 public class HttpSessionRedisCacheConfiguration {
 }

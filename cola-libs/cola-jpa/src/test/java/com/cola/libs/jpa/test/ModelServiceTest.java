@@ -84,12 +84,12 @@ public class ModelServiceTest {
 
         List<Role> list = new ArrayList<>();
         list.add(load1);
-        modelService.save(list);
+        list = modelService.save(list);
 
-        modelService.delete(list);
+        modelService.delete(list, true);
 
-        modelService.deleteAll(Rolelp.class);
-        modelService.deleteAll(Role.class);
+        modelService.deleteAll(Rolelp.class, true);
+        modelService.deleteAll(Role.class, true);
 
         List<Rolelp> rolelps = load1.getRolelps();
     }
@@ -128,7 +128,7 @@ public class ModelServiceTest {
         order.setOrderItems(orderItems);
         order = modelService.save(order);
 
-        modelService.delete(order);
+        modelService.delete(order, true);
     }
 
     @Test
@@ -166,7 +166,7 @@ public class ModelServiceTest {
         Assert.assertTrue(exists);
 
         //For delete(Class<T> tClass, ID id) method test
-        modelService.delete(Role.class, newRole.getId());
+        modelService.delete(Role.class, newRole.getId(), true);
         Role deletedRole = modelService.load(Role.class, newRole.getId());
         Assert.assertNull(deletedRole);
 
@@ -178,7 +178,7 @@ public class ModelServiceTest {
         Role renewRole = modelService.save(role);
         exists = modelService.exists(Role.class, renewRole.getId());
         Assert.assertTrue(exists);
-        modelService.delete(renewRole);
+        modelService.delete(renewRole, true);
         exists = modelService.exists(Role.class, renewRole.getId());
         Assert.assertFalse(exists);
     }
@@ -229,7 +229,7 @@ public class ModelServiceTest {
         updatedRole = modelService.load(Role.class, updatedRole.getId());
         Assert.assertEquals(updatedRole.getVersion().longValue(), 3L);
 
-        modelService.delete(updatedRole);
+        modelService.delete(updatedRole, true);
     }
 
     @Test
@@ -259,13 +259,13 @@ public class ModelServiceTest {
         Assert.assertNotNull(newRoleList);
         Assert.assertEquals(newRoleList.size(), 3);
 
-        modelService.deleteInBatch(newRoleList);
+        modelService.deleteInBatch(newRoleList, true);
 
         newRoleList = modelService.save(roleList);
-        modelService.delete(newRoleList);
+        modelService.delete(newRoleList, true);
 
         newRoleList = modelService.save(roleList);
-        modelService.deleteAll(Role.class);
+        modelService.deleteAll(Role.class, true);
 
     }
 

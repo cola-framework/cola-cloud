@@ -1,0 +1,3 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.cola.libs.cache.configuration.CacheConfiguration,\
+  com.cola.libs.cache.configuration.HttpSessionRedisCacheConfiguration

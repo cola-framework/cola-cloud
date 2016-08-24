@@ -33,11 +33,6 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.beans</groupId>
-            <artifactId>cola-beans</artifactId>
-            <version>${cola.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.cola.libs.jpa</groupId>
             <artifactId>cola-jpa</artifactId>
             <version>${cola.version}</version>

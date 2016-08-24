@@ -15,8 +15,6 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.cache.annotatiion.EnableRedisCache;
-
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.orm.jpa.EntityScan;
 import org.springframework.context.annotation.Bean;
@@ -30,7 +28,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @PropertySource("classpath:druid.properties")
 @EnableAutoConfiguration
-@EnableRedisCache
 @EntityScan(basePackages = {"com.cola.libs.jpa.entity"})
 public class TestConfiguration {
 

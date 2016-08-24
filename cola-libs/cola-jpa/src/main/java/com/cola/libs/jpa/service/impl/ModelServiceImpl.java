@@ -23,6 +23,7 @@ import com.cola.libs.jpa.support.QueryTranslatorHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.jpa.repository.query.QueryUtils;
@@ -63,9 +64,14 @@ public class ModelServiceImpl implements ModelService {
     @PersistenceContext
     private EntityManager em;
 
-    private <T extends AbstractEntity> String getDeleteAllQueryString(Class<T> tClass) {
+    private <T extends AbstractEntity> String getPhysicalDelQueryString(Class<T> tClass) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         return QueryUtils.getQueryString("delete from %s x", tClass.getSimpleName());
+    }
+
+    private <T extends AbstractEntity> String getLogicalDelQueryString(Class<T> tClass) {
+        Assert.notNull(tClass, "The EntityClass must not be null!");
+        return QueryUtils.getQueryString("update %s x set x.deleted = true", tClass.getSimpleName());
     }
 
     @Override
@@ -86,13 +92,8 @@ public class ModelServiceImpl implements ModelService {
     }
 
     @Override
-    public void clear(){
-        this.em.clear();
-    }
-
-    @Override
     @Transactional
-    @CacheEvict(value="dbCache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
+    @CachePut(value = "dbCache", key = "#entity.getClass().getName()+ ':' + #entity.getId()")
     public <T extends AbstractEntity> T save(T entity){
         Assert.notNull(entity, "The entity must not be null!");
         JpaEntityInformation<T, ?> entityInformation = JpaEntityInformationSupport.getMetadata((Class<T>) entity.getClass(), em);
@@ -106,7 +107,7 @@ public class ModelServiceImpl implements ModelService {
             entity = em.merge(entity);
             em.flush();
         }
-        em.clear();
+        em.refresh(entity);
         return entity;
     }
 
@@ -273,52 +274,66 @@ public class ModelServiceImpl implements ModelService {
     @Override
     @Transactional
     @CacheEvict(value="dbCache", key = "#tClass.getName()+ ':' + #id", beforeInvocation = true)
-    public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id) {
+    public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id, Boolean physicalDelete) {
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
         T entity = this.load(tClass, id);
         if(entity == null) {
             throw new EmptyResultDataAccessException(String.format("No %s entity with id %s exists!", new Object[]{tClass, id}), 1);
         } else {
-            this.delete(entity);
+            this.delete(entity, physicalDelete);
         }
     }
 
     @Override
     @Transactional
     @CacheEvict(value="dbCache", key = "#entity.getClass().getName()+ ':' + #entity.getId()", beforeInvocation = true)
-    public <T extends AbstractEntity> void delete(T entity) {
+    public <T extends AbstractEntity> void delete(T entity, Boolean physicalDelete) {
         Assert.notNull(entity, "The entity must not be null!");
-        this.em.remove(this.em.contains(entity)?entity:this.em.merge(entity));
-    }
-
-    @Override
-    @Transactional
-    @CacheEvict(value="dbCache", key = "#tClass.getName() + ':*'", beforeInvocation = true)
-    public <T extends AbstractEntity> void deleteAll(Class<T> tClass) {
-        this.em.createQuery(this.getDeleteAllQueryString(tClass)).executeUpdate();
-    }
-
-    @Override
-    @Transactional
-    public <T extends AbstractEntity> void delete(Iterable<? extends T> entities) {
-        Assert.notNull(entities, "The given Iterable of entities not be null!");
-        Iterator var2 = entities.iterator();
-
-        while(var2.hasNext()) {
-            T entity = (T) var2.next();
-            this.delete(entity);
+        entity = this.em.contains(entity) ? entity : this.load((Class<T>) entity.getClass(), entity.getId());
+        if (physicalDelete == null || !physicalDelete) {
+            entity.setDeleted(true);
+            em.merge(entity);
+        } else {
+            this.em.remove(entity);
         }
     }
 
     @Override
     @Transactional
-    @CacheEvict(keyGenerator = "entitiesKeyGenerator", beforeInvocation = true)
-    public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities) {
+    public <T extends AbstractEntity> void delete(Iterable<? extends T> entities, Boolean physicalDelete) {
+        Assert.notNull(entities, "The given Iterable of entities not be null!");
+        Iterator var2 = entities.iterator();
+
+        while(var2.hasNext()) {
+            T entity = (T) var2.next();
+            this.delete(entity, physicalDelete);
+        }
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value="dbCache", key = "#tClass.getName() + ':*'", beforeInvocation = true)
+    public <T extends AbstractEntity> void deleteAll(Class<T> tClass, Boolean physicalDelete) {
+        if(physicalDelete == null || !physicalDelete){
+            this.em.createQuery(this.getLogicalDelQueryString(tClass)).executeUpdate();
+        }else{
+            this.em.createQuery(this.getPhysicalDelQueryString(tClass)).executeUpdate();
+        }
+    }
+
+    @Override
+    @Transactional
+    @CacheEvict(value = "dbCache", keyGenerator = "entitiesKeyGenerator", beforeInvocation = true)
+    public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities, Boolean physicalDelete) {
         Assert.notNull(entities, "The given Iterable of entities not be null!");
         if(entities.iterator().hasNext()) {
             T next = entities.iterator().next();
-            QueryUtils.applyAndBind(QueryUtils.getQueryString("delete from %s x", next.getClass().getSimpleName()), entities, this.em).executeUpdate();
+            if(physicalDelete == null || !physicalDelete){
+                QueryUtils.applyAndBind(this.getLogicalDelQueryString(next.getClass()), entities, this.em).executeUpdate();
+            }else{
+                QueryUtils.applyAndBind(this.getPhysicalDelQueryString(next.getClass()), entities, this.em).executeUpdate();
+            }
         }
     }
 

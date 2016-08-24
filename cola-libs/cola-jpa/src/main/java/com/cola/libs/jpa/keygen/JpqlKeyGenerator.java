@@ -45,6 +45,7 @@ public class JpqlKeyGenerator implements KeyGenerator{
             }
             parser.getTokenNames();
             AST ast = parser.getAST();
+            AST firstChild = ast.getFirstChild();
         }
         return key;
     }

@@ -16,8 +16,8 @@
 package com.cola.services.auth.controller;
 
 import com.cola.libs.beans.enums.ResponseCode;
-import com.cola.libs.beans.ResponseHeader;
-import com.cola.libs.beans.ResponseMessage;
+import com.cola.libs.beans.web.restful.ResponseHeader;
+import com.cola.libs.beans.web.restful.ResponseMessage;
 import com.cola.libs.beans.vo.UserLogin;
 
 import org.springframework.web.bind.annotation.RequestBody;

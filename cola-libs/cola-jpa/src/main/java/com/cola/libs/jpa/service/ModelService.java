@@ -34,11 +34,6 @@ import javax.persistence.criteria.CriteriaUpdate;
 public interface ModelService {
 
     /**
-     * Clear.
-     */
-    public void clear();
-
-    /**
      * Gets entity graph.
      * @param str the str
      * @return the entity graph
@@ -77,40 +72,45 @@ public interface ModelService {
 
     /**
      * Delete.
-     * @param <T>    the type parameter
-     * @param <ID>   the type parameter
-     * @param tClass the t class
-     * @param id     the id
+     * @param <T>            the type parameter
+     * @param <ID>           the type parameter
+     * @param tClass         the t class
+     * @param id             the id
+     * @param physicalDelete the physical delete
      */
-    public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id);
+    public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id, Boolean physicalDelete);
 
     /**
      * Delete.
-     * @param <T>    the type parameter
-     * @param entity the entity
+     * @param <T>            the type parameter
+     * @param entity         the entity
+     * @param physicalDelete the physical delete
      */
-    public <T extends AbstractEntity> void delete(T entity);
+    public <T extends AbstractEntity> void delete(T entity, Boolean physicalDelete);
 
     /**
      * Delete.
-     * @param <T>      the type parameter
-     * @param entities the entities
+     * @param <T>            the type parameter
+     * @param entities       the entities
+     * @param physicalDelete the physical delete
      */
-    public <T extends AbstractEntity> void delete(Iterable<? extends T> entities);
+    public <T extends AbstractEntity> void delete(Iterable<? extends T> entities, Boolean physicalDelete);
 
     /**
      * Delete all.
-     * @param <T>         the type parameter
-     * @param entityClass the entity class
+     * @param <T>            the type parameter
+     * @param entityClass    the entity class
+     * @param physicalDelete the physical delete
      */
-    public <T extends AbstractEntity> void deleteAll(Class<T> entityClass);
+    public <T extends AbstractEntity> void deleteAll(Class<T> entityClass, Boolean physicalDelete);
 
     /**
      * Delete in batch.
-     * @param <T>      the type parameter
-     * @param entities the entities
+     * @param <T>            the type parameter
+     * @param entities       the entities
+     * @param physicalDelete the physical delete
      */
-    public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities);
+    public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities, Boolean physicalDelete);
 
     /**
      * Load t.

@@ -13,12 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.beans;
+package com.cola.libs.beans.web.restful;
 
 /**
  * cola
- * Created by jiachen.shi on 7/25/2016.
+ * Created by jiachen.shi on 6/20/2016.
  */
-public class ApplicationContext {
+public class ResponseMessage<T> {
 
+    private ResponseHeader header;
+    private T body;
+
+    public ResponseHeader getHeader() {
+        return header;
+    }
+
+    public void setHeader(ResponseHeader header) {
+        this.header = header;
+    }
+
+    public T getBody() {
+        return body;
+    }
+
+    public void setBody(T body) {
+        this.body = body;
+    }
 }

@@ -87,12 +87,12 @@ public class LazyLoadingTest {
         Rolelp rolelp = flexibleSearchService.uniqueQuery(Rolelp.class, condition, null);
         if(rolelp != null){
             Language language = rolelp.getLanguage();
-            modelService.delete(rolelp);
+            modelService.delete(rolelp, true);
             if(language !=  null){
-                modelService.delete(language);
+                modelService.delete(language, true);
             }
         }
-        modelService.delete(role);
+        modelService.delete(role, true);
     }
 
     public Role pre_init(){
