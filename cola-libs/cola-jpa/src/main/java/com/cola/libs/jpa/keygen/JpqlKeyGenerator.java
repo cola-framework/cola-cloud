@@ -19,10 +19,24 @@ import antlr.RecognitionException;
 import antlr.TokenStreamException;
 import antlr.collections.AST;
 
+import com.cola.libs.jpa.support.QueryTranslatorHelper;
+
+import org.hibernate.MappingException;
+import org.hibernate.Session;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.hql.internal.ast.HqlParser;
+import org.hibernate.hql.internal.classic.ParserHelper;
+import org.hibernate.internal.util.StringHelper;
 import org.springframework.cache.interceptor.KeyGenerator;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 
 /**
  * cola
@@ -30,24 +44,27 @@ import java.lang.reflect.Method;
  */
 public class JpqlKeyGenerator implements KeyGenerator{
 
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public Object generate(Object target, Method method, Object... args) {
-        Object key = null;
+        List<String> keys = new ArrayList<>();
         if(args != null){
             String jpql = (String)args[0];
-            HqlParser parser = HqlParser.getInstance(jpql);
-            try {
-                parser.statement();
-            } catch (RecognitionException e) {
-                e.printStackTrace();
-            } catch (TokenStreamException e) {
-                e.printStackTrace();
+            List<String> strings = QueryTranslatorHelper.findTableClassNameFromJpql(jpql, this.getSessionFactory());
+            if(strings != null){
+                for(String str:strings){
+                    keys.add(str += ":*");
+                }
             }
-            parser.getTokenNames();
-            AST ast = parser.getAST();
-            AST firstChild = ast.getFirstChild();
         }
-        return key;
+        return keys;
+    }
+
+    private SessionFactoryImplementor getSessionFactory(){
+        Session session = (Session)em.getDelegate();
+        return (SessionFactoryImplementor) session.getSessionFactory();
     }
 
 }

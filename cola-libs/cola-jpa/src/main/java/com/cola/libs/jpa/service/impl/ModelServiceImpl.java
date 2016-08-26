@@ -103,11 +103,11 @@ public class ModelServiceImpl implements ModelService {
             entity.setCreateTime(now);
             entity.setDeleted(Boolean.FALSE);
             em.persist(entity);
+            em.refresh(entity);
         } else {
             entity = em.merge(entity);
             em.flush();
         }
-        em.refresh(entity);
         return entity;
     }
 

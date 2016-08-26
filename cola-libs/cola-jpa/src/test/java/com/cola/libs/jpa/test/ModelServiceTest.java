@@ -219,7 +219,7 @@ public class ModelServiceTest {
         Assert.assertEquals(updatedRole.getVersion().longValue(), 2L);
 
         //Test execute method
-        String jpql = "update Role set code=:code where id=:id";
+        String jpql = "update Role r set r.code=:code where r.id=:id";
         Map<String, Object> params = new HashMap<>();
         params.put("code", "KjMyMzIzMjMy");
         params.put("id", updatedRole.getId());

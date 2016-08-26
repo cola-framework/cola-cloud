@@ -15,6 +15,10 @@
  */
 package com.cola.libs.jpa.support;
 
+import org.hibernate.MappingException;
+import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.hql.internal.classic.ParserHelper;
+import org.hibernate.internal.util.StringHelper;
 import org.springframework.util.Assert;
 
 import java.util.ArrayList;
@@ -27,6 +31,84 @@ import java.util.Set;
  * Created by jiachen.shi on 7/21/2016.
  */
 public class QueryTranslatorHelper {
+
+    private static final Set<String> BEFORE_CLASS_TOKENS = new HashSet();
+    private static final Set<String> NOT_AFTER_CLASS_TOKENS = new HashSet();
+
+    static {
+        BEFORE_CLASS_TOKENS.add(JpqlAnalysisConstant.Clause.FROM.name());
+        BEFORE_CLASS_TOKENS.add(JpqlAnalysisConstant.StatementType.DELETE.name());
+        BEFORE_CLASS_TOKENS.add(JpqlAnalysisConstant.StatementType.UPDATE.name());
+        BEFORE_CLASS_TOKENS.add(",");
+        NOT_AFTER_CLASS_TOKENS.add(JpqlAnalysisConstant.Clause.IN.name());
+        NOT_AFTER_CLASS_TOKENS.add(JpqlAnalysisConstant.Clause.FROM.name());
+        NOT_AFTER_CLASS_TOKENS.add(")");
+    }
+
+    private static boolean isPossiblyClassName(String last, String next) {
+        return "class".equals(last) || BEFORE_CLASS_TOKENS.contains(last) && !NOT_AFTER_CLASS_TOKENS.contains(next);
+    }
+
+    private static boolean isJavaIdentifier(String token) {
+        return Character.isJavaIdentifierStart(token.charAt(0));
+    }
+
+    private static String nextNonWhite(String[] tokens, int start) {
+        for(int i = start + 1; i < tokens.length; ++i) {
+            if(!ParserHelper.isWhitespace(tokens[i])) {
+                return tokens[i];
+            }
+        }
+
+        return tokens[tokens.length - 1];
+    }
+
+    private static int getStartingPositionFor(String[] tokens) {
+        if(!JpqlAnalysisConstant.StatementType.SELECT.name().equals(tokens[0].toUpperCase()) || !JpqlAnalysisConstant.StatementType.DELETE.name().equals(tokens[0].toUpperCase())) {
+            return 1;
+        } else {
+            for(int i = 1; i < tokens.length; ++i) {
+                if(JpqlAnalysisConstant.Clause.FROM.name().equals(tokens[i].toUpperCase())) {
+                    return i;
+                }
+            }
+            return tokens.length;
+        }
+    }
+
+    public static String getImportedClass(String name, SessionFactoryImplementor factory) {
+        return factory.getImportedClassName(name);
+    }
+
+    public static List<String> findTableClassNameFromJpql(String jpql, SessionFactoryImplementor factory) throws MappingException {
+        List<String> tableClassNames = new ArrayList<>();
+        String[] tokens = StringHelper.split(" \n\r\f\t(),", jpql, true);
+        if(tokens.length == 0) {
+            return null;
+        } else {
+            int start = getStartingPositionFor(tokens);
+            String last = tokens[start-1].toUpperCase();
+
+            for(int results = start; results < tokens.length; ++results) {
+                String token = tokens[results];
+                if(!ParserHelper.isWhitespace(token)) {
+                    String next = nextNonWhite(tokens, results).toUpperCase();
+                    boolean process = isJavaIdentifier(token) && isPossiblyClassName(last, next);
+                    last = token.toUpperCase();
+                    if(process) {
+                        String importedClassName = getImportedClass(token, factory);
+                        if(importedClassName != null) {
+                            String[] implementors = factory.getImplementors(importedClassName);
+                            if(implementors != null) {
+                                tableClassNames.add(implementors[0]);
+                            }
+                        }
+                    }
+                }
+            }
+            return tableClassNames;
+        }
+    }
 
     public static JpqlAnalysisConstant.StatementType getStatementType(String jpql){
         Assert.notNull(jpql, "The JPQL must not be null!");

@@ -35,6 +35,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.StringUtils;
 
+import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 /**
@@ -65,8 +66,9 @@ public class JPAConfiguration {
     }
 
     @Bean
-    public KeyGenerator jpqlKeyGenerator(){
-        return new JpqlKeyGenerator();
+    public KeyGenerator jpqlKeyGenerator(EntityManager entityManager){
+        JpqlKeyGenerator jpqlKeyGenerator = new JpqlKeyGenerator();
+        return jpqlKeyGenerator;
     }
 
     @Bean
