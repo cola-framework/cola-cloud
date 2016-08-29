@@ -17,6 +17,7 @@ package com.cola.libs.jpa.entity;
 
 import java.util.List;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -37,6 +38,7 @@ import javax.persistence.UniqueConstraint;
  * Created by jiachen.shi on 6/21/2016.
  */
 @Entity
+@Cacheable
 @Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type","code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)

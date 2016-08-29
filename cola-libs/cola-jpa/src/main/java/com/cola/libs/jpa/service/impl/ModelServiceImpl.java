@@ -41,6 +41,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.persistence.CacheRetrieveMode;
+import javax.persistence.CacheStoreMode;
 import javax.persistence.EntityGraph;
 import javax.persistence.EntityManager;
 import javax.persistence.EntityTransaction;
@@ -60,6 +62,12 @@ import javax.persistence.criteria.CriteriaUpdate;
 public class ModelServiceImpl implements ModelService {
 
     private static Logger logger = LoggerFactory.getLogger(ModelServiceImpl.class);
+    private static Map<String, Object> properties = new HashMap<>();
+
+    static{
+        properties.put(QueryHintConstant.CACHE_RETRIEVE_MODE, CacheRetrieveMode.USE);
+        properties.put(QueryHintConstant.CACHE_STORE_MODE, CacheStoreMode.USE);
+    }
 
     @PersistenceContext
     private EntityManager em;
@@ -77,7 +85,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     public EntityGraph getEntityGraph(String str){
         Assert.notNull(str, "The entityGraph name must not be null!");
-        return this.em.getEntityGraph(str);
+        return this.getEntityGraph(str);
     }
 
     @Override
@@ -130,7 +138,7 @@ public class ModelServiceImpl implements ModelService {
     @Override
     @Cacheable(value="dbCache", key = "#tClass.getName()+ ':' + #id", unless = "#result == null")
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id){
-        return load(tClass, id, null, null);
+        return load(tClass, id, null, this.properties);
     }
 
     @Override
@@ -138,7 +146,7 @@ public class ModelServiceImpl implements ModelService {
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
-        return this.em.find(tClass, id, type);
+        return load(tClass, id, type, this.properties);
     }
 
     @Override
@@ -146,12 +154,10 @@ public class ModelServiceImpl implements ModelService {
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, String entityGraphName){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
-        Map<String, Object> properties = null;
         if(!StringUtils.isEmpty(entityGraphName)){
-            properties = new HashMap<>();
-            properties.put(QueryHintConstant.FETCH_GRAPH, this.em.getEntityGraph(entityGraphName));
+            this.properties.put(QueryHintConstant.FETCH_GRAPH, this.em.getEntityGraph(entityGraphName));
         }
-        return this.em.find(tClass, id, properties);
+        return load(tClass, id, null, this.properties);
     }
 
     @Override
@@ -159,7 +165,12 @@ public class ModelServiceImpl implements ModelService {
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
-        return this.em.find(tClass, id, properties);
+        if(properties != null){
+            for(String key:properties.keySet()){
+                this.properties.put(key, properties.get(key));
+            }
+        }
+        return load(tClass, id, null, this.properties);
     }
 
     @Override
@@ -167,7 +178,12 @@ public class ModelServiceImpl implements ModelService {
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, LockModeType type, Map<String, Object> properties){
         Assert.notNull(tClass, "The EntityClass must not be null!");
         Assert.notNull(id, "The given id must not be null!");
-        return this.em.find(tClass, id, type, properties);
+        if(properties != null){
+            for(String key:properties.keySet()){
+                this.properties.put(key, properties.get(key));
+            }
+        }
+        return this.em.find(tClass, id, type, this.properties);
     }
 
     @Override

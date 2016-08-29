@@ -15,8 +15,9 @@
  */
 package com.cola.libs.cache.configuration;
 
+import com.cola.libs.cache.support.CacheManagerFactory;
 import com.cola.libs.cache.support.ExtendedIgniteCacheManager;
-import com.cola.libs.cache.support.ExtendedRedisCacheManager;
+import com.cola.libs.cache.support.RedisCacheManager;
 
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.logger.slf4j.Slf4jLogger;
@@ -56,11 +57,20 @@ public class CacheConfiguration {
     public String igniteGridName;
 
     @Bean
+    @ConditionalOnClass(CacheManagerFactory.class)
+    @ConditionalOnBean(CacheManager.class)
+    public CacheManagerFactory cacheManagerFactory(CacheManager cacheManager){
+        CacheManagerFactory cacheManagerFactory = new CacheManagerFactory();
+        cacheManagerFactory.setCacheManager(cacheManager);
+        return cacheManagerFactory;
+    }
+
+    @Bean
     @ConditionalOnClass(CacheManager.class)
     @ConditionalOnBean(RedisTemplate.class)
     @ConditionalOnProperty(name = "spring.cache.type", havingValue = "redis")
-    public CacheManager cacheManager(RedisTemplate<?,?> redisTemplate) {
-        CacheManager cacheManager = new ExtendedRedisCacheManager(redisTemplate, expiration);
+    public CacheManager redisCacheManager(RedisTemplate<?,?> redisTemplate) {
+        CacheManager cacheManager = new RedisCacheManager(redisTemplate, expiration);
         return cacheManager;
     }
 
@@ -84,9 +94,9 @@ public class CacheConfiguration {
     @Bean
     @ConditionalOnClass(RedisTemplate.class)
     @ConditionalOnBean(RedisConnectionFactory.class)
-    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory factory) {
+    public RedisTemplate<String, String> redisTemplate(RedisConnectionFactory redisConnectionFactory) {
         RedisTemplate<String, String> redisTemplate = new RedisTemplate<String, String>();
-        redisTemplate.setConnectionFactory(factory);
+        redisTemplate.setConnectionFactory(redisConnectionFactory);
         redisTemplate.setKeySerializer(new StringRedisSerializer());
         return redisTemplate;
     }

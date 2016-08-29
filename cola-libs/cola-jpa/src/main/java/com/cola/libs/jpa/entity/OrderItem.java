@@ -17,6 +17,7 @@ package com.cola.libs.jpa.entity;
 
 import java.math.BigDecimal;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -39,6 +40,7 @@ import javax.persistence.Table;
  * Created by jiachen.shi on 7/25/2016.
  */
 @Entity
+@Cacheable
 @Table(name = "t_order_items", indexes = {@Index(name = "index_order", columnList = "table_type, order_id")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)

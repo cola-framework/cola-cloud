@@ -15,6 +15,7 @@
  */
 package com.cola.libs.jpa.entity;
 
+import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -38,6 +39,7 @@ import javax.persistence.UniqueConstraint;
  * Created by jiachen.shi on 8/3/2016.
  */
 @Entity
+@Cacheable
 @Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "lang_id", "role_id"})}, indexes = {@Index(name="index_role", columnList = "table_type, role_id")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
