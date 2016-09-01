@@ -23,11 +23,18 @@ import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.logger.slf4j.Slf4jLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
+import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilder;
+import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
+import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.autoconfigure.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -35,9 +42,18 @@ import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
+import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
+import org.springframework.transaction.jta.JtaTransactionManager;
+
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import javax.sql.DataSource;
 
 /**
  * cola
@@ -46,7 +62,7 @@ import org.springframework.data.redis.serializer.StringRedisSerializer;
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
 @EnableCaching(mode = AdviceMode.ASPECTJ, order = 4096)
-public class CacheConfiguration {
+public class CacheConfiguration extends HibernateJpaAutoConfiguration{
 
     private static Logger logger = LoggerFactory.getLogger(CacheConfiguration.class);
 
@@ -57,8 +73,18 @@ public class CacheConfiguration {
     public String igniteGridName;
 
     @Bean
+    @Primary
+    @DependsOn("cacheManagerFactory")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            EntityManagerFactoryBuilder factoryBuilder, DataSource dataSource) {
+        Map<String, Object> vendorProperties = getVendorProperties();
+        customizeVendorProperties(vendorProperties);
+        return factoryBuilder.dataSource(dataSource).packages(getPackagesToScan())
+                .properties(vendorProperties).jta(isJta()).build();
+    }
+
+    @Bean
     @ConditionalOnClass(CacheManagerFactory.class)
-    @ConditionalOnBean(CacheManager.class)
     public CacheManagerFactory cacheManagerFactory(CacheManager cacheManager){
         CacheManagerFactory cacheManagerFactory = new CacheManagerFactory();
         cacheManagerFactory.setCacheManager(cacheManager);

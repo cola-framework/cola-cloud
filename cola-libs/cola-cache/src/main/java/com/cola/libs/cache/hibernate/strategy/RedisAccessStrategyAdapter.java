@@ -21,10 +21,14 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.CacheKey;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.cfg.Settings;
 import org.jetbrains.annotations.Nullable;
 import org.springframework.cache.Cache;
+import org.springframework.util.StringUtils;
+
+import java.io.Serializable;
 
 /**
  * cola
@@ -43,9 +47,30 @@ public abstract class RedisAccessStrategyAdapter {
         this.settings = settings;
     }
 
+    protected String convertKeyFromCacheKey(CacheKey cacheKey) {
+        String entityOrRoleName = cacheKey.getEntityOrRoleName();
+        Serializable key = cacheKey.getKey();
+        return entityOrRoleName + ":" + key;
+    }
+
+    protected Class<?> convertClassFromCacheKey(CacheKey cacheKey) {
+        String entityOrRoleName = cacheKey.getEntityOrRoleName();
+        Class<?> resultClass = null;
+        if (!StringUtils.isEmpty(entityOrRoleName)) {
+            try {
+                resultClass = Class.forName(entityOrRoleName);
+            } catch (ClassNotFoundException e) {
+                logger.error("Convert Class From CacheKey has error.", e);
+            }
+        }
+        return resultClass;
+    }
+
     @Nullable
     protected Object get(Object key) throws CacheException {
-        return this.cache.get(key);
+        CacheKey cacheKey = (CacheKey) key;
+        logger.debug("RedisAccessStrategyAdapter get method start. key:" + cacheKey);
+        return this.cache.get(convertKeyFromCacheKey(cacheKey), convertClassFromCacheKey(cacheKey));
     }
 
     protected boolean putFromLoad(Object key, Object val) throws CacheException {
@@ -54,47 +79,55 @@ public abstract class RedisAccessStrategyAdapter {
 
     protected boolean putFromLoad(Object key, Object val, boolean minimalPutOverride) throws CacheException {
         IntensiveCache intensiveCache = (IntensiveCache)this.cache;
-        if (minimalPutOverride && intensiveCache.exists(key)) {
+        String convertKeyFromCacheKey = convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisAccessStrategyAdapter putFromLoad method start. key:" + convertKeyFromCacheKey + " val:" + val);
+        if (minimalPutOverride && intensiveCache.exists(convertKeyFromCacheKey)) {
             return false;
         } else {
-            this.putFromLoad(key, val);
+            this.cache.put(convertKeyFromCacheKey, val);
             return true;
         }
     }
 
     @Nullable
     protected SoftLock lockRegion() throws CacheException {
+        logger.debug("RedisAccessStrategyAdapter lockRegion method start.");
         return null;
     }
 
     protected void unlockRegion(SoftLock lock) throws CacheException {
+        logger.debug("RedisAccessStrategyAdapter unlockRegion method start.");
     }
 
     protected final void removeAll() throws CacheException {
+        logger.debug("RedisAccessStrategyAdapter removeAll method start.");
         this.evictAll();
     }
 
     protected void evictAll() throws CacheException {
+        logger.debug("RedisAccessStrategyAdapter evictAll method start.");
         this.cache.clear();
     }
 
     protected void evict(Object key) throws CacheException {
-        this.cache.evict(key);
+        String cacheKey = convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisAccessStrategyAdapter evict method start. key:" + cacheKey);
+        this.cache.evict(cacheKey);
     }
 
     @Nullable
-    public abstract SoftLock lock(Object var1) throws CacheException;
+    public abstract SoftLock lock(Object key) throws CacheException;
 
-    public abstract void unlock(Object var1, SoftLock var2) throws CacheException;
+    public abstract void unlock(Object key, SoftLock lock) throws CacheException;
 
-    public abstract boolean update(Object var1, Object var2) throws CacheException;
+    public abstract boolean update(Object key, Object val) throws CacheException;
 
-    public abstract boolean afterUpdate(Object var1, Object var2, SoftLock var3) throws CacheException;
+    public abstract boolean afterUpdate(Object key, Object val, SoftLock lock) throws CacheException;
 
-    public abstract boolean insert(Object var1, Object var2) throws CacheException;
+    public abstract boolean insert(Object key, Object val) throws CacheException;
 
-    public abstract boolean afterInsert(Object var1, Object var2) throws CacheException;
+    public abstract boolean afterInsert(Object key, Object val) throws CacheException;
 
-    public abstract void remove(Object var1) throws CacheException;
+    public abstract void remove(Object key) throws CacheException;
 
 }

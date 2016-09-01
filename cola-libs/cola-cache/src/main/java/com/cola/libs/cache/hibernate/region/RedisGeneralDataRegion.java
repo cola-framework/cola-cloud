@@ -15,6 +15,8 @@
  */
 package com.cola.libs.cache.hibernate.region;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.GeneralDataRegion;
 import org.hibernate.cfg.Settings;
@@ -28,27 +30,33 @@ import java.util.Properties;
  */
 public class RedisGeneralDataRegion extends AbstractRegion implements GeneralDataRegion {
 
+    protected Log logger = LogFactory.getLog(RedisGeneralDataRegion.class);
+
     public RedisGeneralDataRegion(String regionName, Cache cache, Properties properties, Settings settings) {
         super(regionName, cache, properties, settings);
     }
 
     @Override
     public Object get(Object key) throws CacheException {
+        logger.debug("RedisGeneralDataRegion get method start. key:" + key);
         return this.cache.get(key);
     }
 
     @Override
     public void put(Object key, Object value) throws CacheException {
+        logger.debug("RedisGeneralDataRegion put method start. key:" + key + " value:" + value);
         this.cache.put(key, value);
     }
 
     @Override
     public void evict(Object key) throws CacheException {
+        logger.debug("RedisGeneralDataRegion evict method start. key:" + key);
         this.cache.evict(key);
     }
 
     @Override
     public void evictAll() throws CacheException {
+        logger.debug("RedisGeneralDataRegion evictAll method start.");
         this.cache.clear();
     }
 }

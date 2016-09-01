@@ -20,6 +20,7 @@ import com.cola.libs.jpa.entity.OrderItem;
 import com.cola.libs.jpa.entity.Product;
 import com.cola.libs.jpa.entity.Role;
 import com.cola.libs.jpa.entity.Rolelp;
+import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 
 import org.hamcrest.Matchers;
@@ -29,6 +30,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.OutputCapture;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -56,6 +58,9 @@ public class ModelServiceTest {
     private ModelService modelService;
 
     @Autowired
+    private FlexibleSearchService flexibleSearchService;
+
+    @Autowired
     private OptimisticLockingFailueTest optimisticLockingFailueTest;
 
     @Autowired
@@ -63,6 +68,53 @@ public class ModelServiceTest {
 
     @Rule
     public OutputCapture capture = new OutputCapture();
+
+    @Test
+    @Transactional
+    public void L2CacheTest(){
+
+        UUID uuid = UUID.randomUUID();
+        String code = uuid.toString().substring(0, 20);
+
+        Role role = new Role();
+        role.setCode(code);
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        Role newRole = modelService.save(role);
+
+        Role load = modelService.load(Role.class, 12L);
+
+        List<Rolelp> rolelps = load.getRolelps();
+        int size = rolelps.size();
+
+        uuid = UUID.randomUUID();
+        code = uuid.toString().substring(0, 20);
+        load.setCode(code);
+        modelService.save(load);
+
+        String jpql = "select r.code from Role r";
+        Iterable<Role> query = flexibleSearchService.query(jpql, Role.class);
+
+        jpql = "from Role";
+        query = flexibleSearchService.query(jpql, Role.class);
+
+        jpql = "from Role where id=12";
+        query = flexibleSearchService.query(jpql, Role.class);
+
+        jpql = "delete from Role where id=?";
+        List params = new ArrayList<>();
+        params.add(25L);
+        modelService.execute(jpql, params);
+
+        UUID.randomUUID();
+        code = uuid.toString().substring(0, 20);
+        jpql = "update Role set code=? where id=?";
+        params = new ArrayList<>();
+        params.add(code);
+        params.add(12L);
+        modelService.execute(jpql, params);
+
+    }
 
     @Test
     @Transactional
@@ -75,10 +127,19 @@ public class ModelServiceTest {
 
         Role load = modelService.load(Role.class, 12L);
 
+        List<Rolelp> rolelps2 = load.getRolelps();
+
         Role load1 = modelService.load(Role.class, newRole.getId());
 
         List<Rolelp> rolelps1 = load1.getRolelps();
         modelService.save(load1);
+
+        UUID uuid = UUID.randomUUID();
+        String code = uuid.toString().substring(0, 20);
+        load.setCode(code);
+        modelService.save(load);
+
+        load = modelService.load(Role.class, 12L);
 
         load1 = modelService.load(Role.class, newRole.getId());
 
@@ -124,6 +185,7 @@ public class ModelServiceTest {
         orderItem.setOrder(order);
         orderItem.setCreateTime(new Date());
         orderItem.setLastModifiedTime(new Date());
+        orderItem.setDeleted(false);
         orderItems.add(orderItem);
         order.setOrderItems(orderItems);
         order = modelService.save(order);

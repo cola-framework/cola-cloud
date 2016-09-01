@@ -15,8 +15,11 @@
  */
 package com.cola.libs.cache.hibernate.strategy;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.CacheKey;
 import org.hibernate.cache.spi.access.SoftLock;
 import org.hibernate.cfg.Settings;
 import org.jetbrains.annotations.Nullable;
@@ -28,43 +31,59 @@ import org.springframework.cache.Cache;
  */
 public class RedisReadWriteAccessStrategy extends RedisAccessStrategyAdapter {
 
+    protected Log logger = LogFactory.getLog(RedisReadWriteAccessStrategy.class);
+
     public RedisReadWriteAccessStrategy(Cache cache, Settings settings, CacheDataDescription metaData) {
         super(cache, settings, metaData);
     }
 
     @Nullable
     @Override
-    public SoftLock lock(Object var1) throws CacheException {
+    public SoftLock lock(Object key) throws CacheException {
+        String cacheKey = convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy lock method start. key:" + cacheKey);
         return null;
     }
 
     @Override
-    public void unlock(Object var1, SoftLock var2) throws CacheException {
-
+    public void unlock(Object key, SoftLock lock) throws CacheException {
+        String cacheKey = convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy unlock method start. key:" + cacheKey);
     }
 
     @Override
-    public boolean update(Object var1, Object var2) throws CacheException {
+    public boolean update(Object key, Object value) throws CacheException {
+        String cacheKey = this.convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy update method start. key:" + cacheKey + " val:" + value);
+        this.cache.evict(cacheKey);
         return false;
     }
 
     @Override
-    public boolean afterUpdate(Object var1, Object var2, SoftLock var3) throws CacheException {
+    public boolean afterUpdate(Object key, Object value, SoftLock lock) throws CacheException {
+        String cacheKey = this.convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy afterUpdate method start. key:" + cacheKey + " val:" + value);
         return false;
     }
 
     @Override
-    public boolean insert(Object var1, Object var2) throws CacheException {
+    public boolean insert(Object key, Object value) throws CacheException {
+        String cacheKey = this.convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy insert method start. key:"+cacheKey + " val:"+value);
         return false;
     }
 
     @Override
-    public boolean afterInsert(Object var1, Object var2) throws CacheException {
+    public boolean afterInsert(Object key, Object value) throws CacheException {
+        String cacheKey = this.convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy afterInsert method start. key:"+cacheKey + " val:"+value);
         return false;
     }
 
     @Override
-    public void remove(Object var1) throws CacheException {
-
+    public void remove(Object key) throws CacheException {
+        String cacheKey = this.convertKeyFromCacheKey((CacheKey) key);
+        logger.debug("RedisReadWriteAccessStrategy remove method start. key:"+cacheKey);
+        this.cache.evict(cacheKey);
     }
 }
