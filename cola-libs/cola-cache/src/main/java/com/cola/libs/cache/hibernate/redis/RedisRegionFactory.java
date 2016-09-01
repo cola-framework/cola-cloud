@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate;
+package com.cola.libs.cache.hibernate.redis;
 
-import com.cola.libs.cache.hibernate.region.RedisCollectionRegion;
-import com.cola.libs.cache.hibernate.region.RedisEntityRegion;
-import com.cola.libs.cache.hibernate.region.RedisNaturalIdRegion;
-import com.cola.libs.cache.hibernate.region.RedisQueryResultRegion;
-import com.cola.libs.cache.hibernate.region.RedisTimestampRegion;
+import com.cola.libs.cache.hibernate.redis.region.RedisCollectionRegion;
+import com.cola.libs.cache.hibernate.redis.region.RedisEntityRegion;
+import com.cola.libs.cache.hibernate.redis.region.RedisNaturalIdRegion;
+import com.cola.libs.cache.hibernate.redis.region.RedisQueryResultRegion;
+import com.cola.libs.cache.hibernate.redis.region.RedisTimestampRegion;
 import com.cola.libs.cache.support.CacheManagerFactory;
 
 import org.hibernate.cache.CacheException;

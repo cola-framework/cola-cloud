@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.region;
+package com.cola.libs.cache.hibernate.redis.region;
 
-import com.cola.libs.cache.hibernate.strategy.RedisAccessStrategyAdapter;
-import com.cola.libs.cache.hibernate.strategy.RedisReadWriteAccessStrategy;
+import com.cola.libs.cache.hibernate.redis.strategy.RedisAccessStrategyAdapter;
+import com.cola.libs.cache.hibernate.redis.strategy.RedisReadWriteAccessStrategy;
 
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.TransactionalDataRegion;
