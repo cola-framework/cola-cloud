@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
 import org.hibernate.cache.spi.QueryResultsRegion;
 import org.hibernate.cfg.Settings;
@@ -25,9 +25,9 @@ import java.util.Properties;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class RedisQueryResultRegion extends RedisGeneralDataRegion implements QueryResultsRegion {
+public class QueryResultRegion extends GeneralDataRegion implements QueryResultsRegion {
 
-    public RedisQueryResultRegion(String regionName, Cache cache, Properties properties, Settings settings) {
+    public QueryResultRegion(String regionName, Cache cache, Properties properties, Settings settings) {
         super(regionName, cache, properties, settings);
     }
 

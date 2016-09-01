@@ -13,10 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
-import com.cola.libs.cache.hibernate.redis.strategy.RedisAccessStrategyAdapter;
-import com.cola.libs.cache.hibernate.redis.strategy.RedisReadWriteAccessStrategy;
+import com.cola.libs.cache.hibernate.strategy.AccessStrategyAdapter;
+import com.cola.libs.cache.hibernate.strategy.ReadWriteAccessStrategy;
 
 import org.hibernate.cache.spi.CacheDataDescription;
 import org.hibernate.cache.spi.TransactionalDataRegion;
@@ -49,14 +49,14 @@ public class AbstractTransactionalDataRegion extends AbstractRegion implements T
         return this.metaData;
     }
 
-    protected RedisAccessStrategyAdapter createAccessStrategy(AccessType accessType) {
+    protected AccessStrategyAdapter createAccessStrategy(AccessType accessType) {
         switch(accessType) {
             case READ_ONLY:
                 return null;
             case NONSTRICT_READ_WRITE:
                 return null;
             case READ_WRITE:
-                return new RedisReadWriteAccessStrategy(this.cache, this.settings, metaData);
+                return new ReadWriteAccessStrategy(this.cache, this.settings, metaData);
             case TRANSACTIONAL:
                 return null;
             default:

@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.strategy;
+package com.cola.libs.cache.hibernate.strategy;
 
 import com.cola.libs.cache.hibernate.IntensiveCache;
 
@@ -32,14 +32,14 @@ import org.springframework.util.StringUtils;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public abstract class RedisAccessStrategyAdapter {
+public abstract class AccessStrategyAdapter {
 
-    protected Log logger = LogFactory.getLog(RedisAccessStrategyAdapter.class);
+    protected Log logger = LogFactory.getLog(AccessStrategyAdapter.class);
     protected Cache cache;
     protected final CacheDataDescription metaData;
     protected final Settings settings;
 
-    protected RedisAccessStrategyAdapter(Cache cache, Settings settings, CacheDataDescription metaData) {
+    protected AccessStrategyAdapter(Cache cache, Settings settings, CacheDataDescription metaData) {
         this.cache = cache;
         this.metaData = metaData;
         this.settings = settings;
@@ -75,7 +75,7 @@ public abstract class RedisAccessStrategyAdapter {
     @Nullable
     protected Object get(Object key) throws CacheException {
         Object actualKey = getActualKey(key);
-        logger.debug("RedisAccessStrategyAdapter get method start. key:" + actualKey);
+        logger.debug("AccessStrategyAdapter get method start. key:" + actualKey);
         return this.cache.get(actualKey, getReturnClassFromKey(key));
     }
 
@@ -86,7 +86,7 @@ public abstract class RedisAccessStrategyAdapter {
     protected boolean putFromLoad(Object key, Object val, boolean minimalPutOverride) throws CacheException {
         IntensiveCache intensiveCache = (IntensiveCache)this.cache;
         Object actualKey = getActualKey(key);
-        logger.debug("RedisAccessStrategyAdapter putFromLoad method start. key:" + actualKey + " val:" + val);
+        logger.debug("AccessStrategyAdapter putFromLoad method start. key:" + actualKey + " val:" + val);
         if (minimalPutOverride && intensiveCache.exists(actualKey)) {
             return false;
         } else {
@@ -97,27 +97,27 @@ public abstract class RedisAccessStrategyAdapter {
 
     @Nullable
     protected SoftLock lockRegion() throws CacheException {
-        logger.debug("RedisAccessStrategyAdapter lockRegion method start.");
+        logger.debug("AccessStrategyAdapter lockRegion method start.");
         return null;
     }
 
     protected void unlockRegion(SoftLock lock) throws CacheException {
-        logger.debug("RedisAccessStrategyAdapter unlockRegion method start.");
+        logger.debug("AccessStrategyAdapter unlockRegion method start.");
     }
 
     protected final void removeAll() throws CacheException {
-        logger.debug("RedisAccessStrategyAdapter removeAll method start.");
+        logger.debug("AccessStrategyAdapter removeAll method start.");
         this.evictAll();
     }
 
     protected void evictAll() throws CacheException {
-        logger.debug("RedisAccessStrategyAdapter evictAll method start.");
+        logger.debug("AccessStrategyAdapter evictAll method start.");
         this.cache.clear();
     }
 
     protected void evict(Object key) throws CacheException {
         Object actualKey = getActualKey(key);
-        logger.debug("RedisAccessStrategyAdapter evict method start. key:" + actualKey);
+        logger.debug("AccessStrategyAdapter evict method start. key:" + actualKey);
         this.cache.evict(actualKey);
     }
 

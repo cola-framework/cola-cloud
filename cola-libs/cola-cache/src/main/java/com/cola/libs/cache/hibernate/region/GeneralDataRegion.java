@@ -13,13 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.GeneralDataRegion;
-import org.hibernate.cache.spi.QueryKey;
 import org.hibernate.cfg.Settings;
 import org.springframework.cache.Cache;
 
@@ -29,38 +27,38 @@ import java.util.Properties;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class RedisGeneralDataRegion extends AbstractRegion implements GeneralDataRegion {
+public class GeneralDataRegion extends AbstractRegion implements org.hibernate.cache.spi.GeneralDataRegion {
 
-    protected Log logger = LogFactory.getLog(RedisGeneralDataRegion.class);
+    protected Log logger = LogFactory.getLog(GeneralDataRegion.class);
 
-    public RedisGeneralDataRegion(String regionName, Cache cache, Properties properties, Settings settings) {
+    public GeneralDataRegion(String regionName, Cache cache, Properties properties, Settings settings) {
         super(regionName, cache, properties, settings);
     }
 
     @Override
     public Object get(Object key) throws CacheException {
         Object actualKey = getActualKey(key);
-        logger.debug("RedisGeneralDataRegion get method start. key:" + actualKey);
+        logger.debug("GeneralDataRegion get method start. key:" + actualKey);
         return this.cache.get(actualKey, this.getReturnClassFromKey(key));
     }
 
     @Override
     public void put(Object key, Object value) throws CacheException {
         Object actualKey = getActualKey(key);
-        logger.debug("RedisGeneralDataRegion put method start. key:" + actualKey + " value:" + value);
+        logger.debug("GeneralDataRegion put method start. key:" + actualKey + " value:" + value);
         this.cache.put(actualKey, value);
     }
 
     @Override
     public void evict(Object key) throws CacheException {
         Object actualKey = getActualKey(key);
-        logger.debug("RedisGeneralDataRegion evict method start. key:" + actualKey);
+        logger.debug("GeneralDataRegion evict method start. key:" + actualKey);
         this.cache.evict(actualKey);
     }
 
     @Override
     public void evictAll() throws CacheException {
-        logger.debug("RedisGeneralDataRegion evictAll method start.");
+        logger.debug("GeneralDataRegion evictAll method start.");
         this.cache.clear();
     }
 }

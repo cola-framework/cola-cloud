@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.strategy;
+package com.cola.libs.cache.hibernate.strategy;
 
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.access.RegionAccessStrategy;
@@ -24,11 +24,11 @@ import org.jetbrains.annotations.Nullable;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class AbstractRedisRegionAccessStrategy implements RegionAccessStrategy {
+public class AbstractRegionAccessStrategy implements RegionAccessStrategy {
 
-    protected final RedisAccessStrategyAdapter stgy;
+    protected final AccessStrategyAdapter stgy;
 
-    protected AbstractRedisRegionAccessStrategy(RedisAccessStrategyAdapter stgy) {
+    protected AbstractRegionAccessStrategy(AccessStrategyAdapter stgy) {
         this.stgy = stgy;
     }
 

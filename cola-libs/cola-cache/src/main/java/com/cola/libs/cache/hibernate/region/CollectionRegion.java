@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
-import com.cola.libs.cache.hibernate.redis.strategy.AbstractRedisRegionAccessStrategy;
-import com.cola.libs.cache.hibernate.redis.strategy.RedisAccessStrategyAdapter;
+import com.cola.libs.cache.hibernate.strategy.AbstractRegionAccessStrategy;
+import com.cola.libs.cache.hibernate.strategy.AccessStrategyAdapter;
 
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.CollectionRegion;
 import org.hibernate.cache.spi.access.AccessType;
 import org.hibernate.cache.spi.access.CollectionRegionAccessStrategy;
 import org.hibernate.cfg.Settings;
@@ -32,24 +31,24 @@ import java.util.Properties;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class RedisCollectionRegion extends AbstractTransactionalDataRegion implements CollectionRegion {
+public class CollectionRegion extends AbstractTransactionalDataRegion implements org.hibernate.cache.spi.CollectionRegion {
 
-    public RedisCollectionRegion(String regionName, Cache cache, Properties properties, Settings settings, CacheDataDescription metaData) {
+    public CollectionRegion(String regionName, Cache cache, Properties properties, Settings settings, CacheDataDescription metaData) {
         super(regionName, cache, properties, settings, metaData);
     }
 
     @Override
     public CollectionRegionAccessStrategy buildAccessStrategy(AccessType accessType) throws CacheException {
-        return new RedisCollectionRegion.AccessStrategy(this.createAccessStrategy(accessType));
+        return new CollectionRegion.AccessStrategy(this.createAccessStrategy(accessType));
     }
 
-    private class AccessStrategy extends AbstractRedisRegionAccessStrategy implements CollectionRegionAccessStrategy {
-        private AccessStrategy(RedisAccessStrategyAdapter stgy) {
+    private class AccessStrategy extends AbstractRegionAccessStrategy implements CollectionRegionAccessStrategy {
+        private AccessStrategy(AccessStrategyAdapter stgy) {
             super(stgy);
         }
 
-        public CollectionRegion getRegion() {
-            return RedisCollectionRegion.this;
+        public org.hibernate.cache.spi.CollectionRegion getRegion() {
+            return CollectionRegion.this;
         }
     }
 

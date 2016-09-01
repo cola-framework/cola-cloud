@@ -13,14 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
-import com.cola.libs.cache.hibernate.redis.strategy.AbstractRedisRegionAccessStrategy;
-import com.cola.libs.cache.hibernate.redis.strategy.RedisAccessStrategyAdapter;
+import com.cola.libs.cache.hibernate.strategy.AbstractRegionAccessStrategy;
+import com.cola.libs.cache.hibernate.strategy.AccessStrategyAdapter;
 
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
-import org.hibernate.cache.spi.EntityRegion;
 import org.hibernate.cache.spi.access.AccessType;
 import org.hibernate.cache.spi.access.EntityRegionAccessStrategy;
 import org.hibernate.cache.spi.access.SoftLock;
@@ -33,21 +32,21 @@ import java.util.Properties;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class RedisEntityRegion extends AbstractTransactionalDataRegion implements EntityRegion{
+public class EntityRegion extends AbstractTransactionalDataRegion implements org.hibernate.cache.spi.EntityRegion {
 
 
-    public RedisEntityRegion(String regionName, Cache cache, Properties properties, Settings settings, CacheDataDescription metaData) {
+    public EntityRegion(String regionName, Cache cache, Properties properties, Settings settings, CacheDataDescription metaData) {
         super(regionName, cache, properties, settings, metaData);
     }
 
     @Override
     public EntityRegionAccessStrategy buildAccessStrategy(AccessType accessType) throws CacheException {
-        return new RedisEntityRegion.AccessStrategy(this.createAccessStrategy(accessType));
+        return new EntityRegion.AccessStrategy(this.createAccessStrategy(accessType));
     }
 
-    private class AccessStrategy extends AbstractRedisRegionAccessStrategy implements EntityRegionAccessStrategy {
+    private class AccessStrategy extends AbstractRegionAccessStrategy implements EntityRegionAccessStrategy {
 
-        private AccessStrategy(RedisAccessStrategyAdapter stgy) {
+        private AccessStrategy(AccessStrategyAdapter stgy) {
             super(stgy);
         }
 
@@ -68,8 +67,8 @@ public class RedisEntityRegion extends AbstractTransactionalDataRegion implement
         }
 
         @Override
-        public EntityRegion getRegion() {
-            return RedisEntityRegion.this;
+        public org.hibernate.cache.spi.EntityRegion getRegion() {
+            return EntityRegion.this;
         }
     }
 }

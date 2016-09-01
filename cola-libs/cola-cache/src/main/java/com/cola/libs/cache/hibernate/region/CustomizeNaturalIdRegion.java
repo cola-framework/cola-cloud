@@ -13,9 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.hibernate.redis.region;
+package com.cola.libs.cache.hibernate.region;
 
-import org.hibernate.cache.spi.TimestampsRegion;
+import org.hibernate.cache.CacheException;
+import org.hibernate.cache.spi.CacheDataDescription;
+import org.hibernate.cache.spi.NaturalIdRegion;
+import org.hibernate.cache.spi.access.AccessType;
+import org.hibernate.cache.spi.access.NaturalIdRegionAccessStrategy;
 import org.hibernate.cfg.Settings;
 import org.springframework.cache.Cache;
 
@@ -25,10 +29,14 @@ import java.util.Properties;
  * cola
  * Created by jiachen.shi on 8/29/2016.
  */
-public class RedisTimestampRegion extends RedisGeneralDataRegion implements TimestampsRegion {
+public class CustomizeNaturalIdRegion extends AbstractTransactionalDataRegion implements NaturalIdRegion {
 
-    public RedisTimestampRegion(String regionName, Cache cache, Properties properties, Settings settings) {
-        super(regionName, cache, properties, settings);
+    public CustomizeNaturalIdRegion(String regionName, Cache cache, Properties properties, Settings settings, CacheDataDescription metaData) {
+        super(regionName, cache, properties, settings, metaData);
     }
 
+    @Override
+    public NaturalIdRegionAccessStrategy buildAccessStrategy(AccessType accessType) throws CacheException {
+        return null;
+    }
 }
