@@ -19,6 +19,7 @@ import com.cola.libs.jpa.entity.AbstractEntity;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
+import com.cola.libs.jpa.support.QueryHintConstant;
 
 import org.hibernate.SQLQuery;
 import org.hibernate.Session;
@@ -378,6 +379,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     public <T> Iterable<T> query(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.createQuery(jpql, resultClass);
+        query.setHint(QueryHintConstant.CACHEABLE, true);
         return query.getResultList();
     }
 

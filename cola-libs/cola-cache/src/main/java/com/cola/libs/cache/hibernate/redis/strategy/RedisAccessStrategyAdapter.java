@@ -28,8 +28,6 @@ import org.jetbrains.annotations.Nullable;
 import org.springframework.cache.Cache;
 import org.springframework.util.StringUtils;
 
-import java.io.Serializable;
-
 /**
  * cola
  * Created by jiachen.shi on 8/29/2016.
@@ -47,30 +45,38 @@ public abstract class RedisAccessStrategyAdapter {
         this.settings = settings;
     }
 
-    protected String convertKeyFromCacheKey(CacheKey cacheKey) {
-        String entityOrRoleName = cacheKey.getEntityOrRoleName();
-        Serializable key = cacheKey.getKey();
-        return entityOrRoleName + ":" + key;
-    }
-
-    protected Class<?> convertClassFromCacheKey(CacheKey cacheKey) {
-        String entityOrRoleName = cacheKey.getEntityOrRoleName();
+    protected Class<?> getReturnClassFromKey(Object key) {
         Class<?> resultClass = null;
-        if (!StringUtils.isEmpty(entityOrRoleName)) {
-            try {
-                resultClass = Class.forName(entityOrRoleName);
-            } catch (ClassNotFoundException e) {
-                logger.error("Convert Class From CacheKey has error.", e);
+        if(key instanceof CacheKey){
+            CacheKey cacheKey = (CacheKey)key;
+            String entityOrRoleName = cacheKey.getEntityOrRoleName();
+            if (!StringUtils.isEmpty(entityOrRoleName)) {
+                try {
+                    resultClass = Class.forName(entityOrRoleName);
+                } catch (ClassNotFoundException e) {
+                    logger.error("Convert Class From CacheKey has error.", e);
+                }
             }
+        }else{
+            resultClass = Object.class;
         }
         return resultClass;
     }
 
+    protected Object getActualKey(Object key){
+        if(key instanceof CacheKey){
+            CacheKey cacheKey = (CacheKey) key;
+            String entityOrRoleName = cacheKey.getEntityOrRoleName();
+            return entityOrRoleName + ":" + cacheKey.getKey();
+        }
+        return key;
+    }
+
     @Nullable
     protected Object get(Object key) throws CacheException {
-        CacheKey cacheKey = (CacheKey) key;
-        logger.debug("RedisAccessStrategyAdapter get method start. key:" + cacheKey);
-        return this.cache.get(convertKeyFromCacheKey(cacheKey), convertClassFromCacheKey(cacheKey));
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisAccessStrategyAdapter get method start. key:" + actualKey);
+        return this.cache.get(actualKey, getReturnClassFromKey(key));
     }
 
     protected boolean putFromLoad(Object key, Object val) throws CacheException {
@@ -79,12 +85,12 @@ public abstract class RedisAccessStrategyAdapter {
 
     protected boolean putFromLoad(Object key, Object val, boolean minimalPutOverride) throws CacheException {
         IntensiveCache intensiveCache = (IntensiveCache)this.cache;
-        String convertKeyFromCacheKey = convertKeyFromCacheKey((CacheKey) key);
-        logger.debug("RedisAccessStrategyAdapter putFromLoad method start. key:" + convertKeyFromCacheKey + " val:" + val);
-        if (minimalPutOverride && intensiveCache.exists(convertKeyFromCacheKey)) {
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisAccessStrategyAdapter putFromLoad method start. key:" + actualKey + " val:" + val);
+        if (minimalPutOverride && intensiveCache.exists(actualKey)) {
             return false;
         } else {
-            this.cache.put(convertKeyFromCacheKey, val);
+            this.cache.put(actualKey, val);
             return true;
         }
     }
@@ -110,9 +116,9 @@ public abstract class RedisAccessStrategyAdapter {
     }
 
     protected void evict(Object key) throws CacheException {
-        String cacheKey = convertKeyFromCacheKey((CacheKey) key);
-        logger.debug("RedisAccessStrategyAdapter evict method start. key:" + cacheKey);
-        this.cache.evict(cacheKey);
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisAccessStrategyAdapter evict method start. key:" + actualKey);
+        this.cache.evict(actualKey);
     }
 
     @Nullable

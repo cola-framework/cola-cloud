@@ -18,10 +18,14 @@ package com.cola.libs.cache.hibernate.redis.region;
 import com.cola.libs.cache.hibernate.IntensiveCache;
 
 import org.hibernate.cache.CacheException;
+import org.hibernate.cache.spi.CacheKey;
+import org.hibernate.cache.spi.QueryKey;
 import org.hibernate.cache.spi.Region;
 import org.hibernate.cfg.Settings;
 import org.springframework.cache.Cache;
+import org.springframework.util.StringUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Map;
 import java.util.Properties;
@@ -44,6 +48,23 @@ public class AbstractRegion implements Region {
         this.settings = settings;
     }
 
+    protected Object getActualKey(Object key){
+        if(key instanceof QueryKey){
+            return key.toString();
+        }
+        return key;
+    }
+
+    protected Class<?> getReturnClassFromKey(Object key) {
+        Class<?> resultClass = null;
+        if(key instanceof QueryKey){
+            resultClass = ArrayList.class;
+        }else{
+            resultClass = Object.class;
+        }
+        return resultClass;
+    }
+
     @Override
     public String getName() {
         return this.regionName;
@@ -56,7 +77,7 @@ public class AbstractRegion implements Region {
     @Override
     public boolean contains(Object key) {
         if(this.cache instanceof IntensiveCache){
-            return ((IntensiveCache)cache).exists(key);
+            return ((IntensiveCache)cache).exists(getActualKey(key));
         }
         return false;
     }

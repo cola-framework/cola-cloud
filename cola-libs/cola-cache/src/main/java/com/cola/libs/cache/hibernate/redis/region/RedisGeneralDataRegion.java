@@ -19,6 +19,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.GeneralDataRegion;
+import org.hibernate.cache.spi.QueryKey;
 import org.hibernate.cfg.Settings;
 import org.springframework.cache.Cache;
 
@@ -38,20 +39,23 @@ public class RedisGeneralDataRegion extends AbstractRegion implements GeneralDat
 
     @Override
     public Object get(Object key) throws CacheException {
-        logger.debug("RedisGeneralDataRegion get method start. key:" + key);
-        return this.cache.get(key);
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisGeneralDataRegion get method start. key:" + actualKey);
+        return this.cache.get(actualKey, this.getReturnClassFromKey(key));
     }
 
     @Override
     public void put(Object key, Object value) throws CacheException {
-        logger.debug("RedisGeneralDataRegion put method start. key:" + key + " value:" + value);
-        this.cache.put(key, value);
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisGeneralDataRegion put method start. key:" + actualKey + " value:" + value);
+        this.cache.put(actualKey, value);
     }
 
     @Override
     public void evict(Object key) throws CacheException {
-        logger.debug("RedisGeneralDataRegion evict method start. key:" + key);
-        this.cache.evict(key);
+        Object actualKey = getActualKey(key);
+        logger.debug("RedisGeneralDataRegion evict method start. key:" + actualKey);
+        this.cache.evict(actualKey);
     }
 
     @Override

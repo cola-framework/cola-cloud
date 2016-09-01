@@ -98,6 +98,17 @@ public class ModelServiceTest {
         jpql = "from Role";
         query = flexibleSearchService.query(jpql, Role.class);
 
+        uuid = UUID.randomUUID();
+        code = uuid.toString().substring(0, 19);
+        role = new Role();
+        role.setCode(code);
+        role.setCreateBy(111L);
+        role.setLastModifiedBy(111L);
+        Role save = modelService.save(role);
+
+        jpql = "from Role";
+        query = flexibleSearchService.query(jpql, Role.class);
+
         jpql = "from Role where id=12";
         query = flexibleSearchService.query(jpql, Role.class);
 
@@ -106,13 +117,16 @@ public class ModelServiceTest {
         params.add(25L);
         modelService.execute(jpql, params);
 
-        UUID.randomUUID();
-        code = uuid.toString().substring(0, 20);
+        uuid = UUID.randomUUID();
+        code = uuid.toString().substring(0, 18);
         jpql = "update Role set code=? where id=?";
         params = new ArrayList<>();
         params.add(code);
         params.add(12L);
         modelService.execute(jpql, params);
+
+        jpql = "from Role";
+        query = flexibleSearchService.query(jpql, Role.class);
 
     }
 
