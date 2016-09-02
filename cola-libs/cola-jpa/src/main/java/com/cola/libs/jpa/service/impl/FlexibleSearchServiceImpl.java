@@ -27,6 +27,7 @@ import org.hibernate.jpa.HibernateQuery;
 import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
@@ -63,6 +64,9 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
 
     private static Logger logger = LoggerFactory.getLogger(FlexibleSearchServiceImpl.class);
 
+    @Value("${spring.jpa.properties.hibernate.cache.use_query_cache:false}")
+    private boolean useQueryCache;
+
     @PersistenceContext
     private EntityManager em;
 
@@ -94,10 +98,13 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                         }
                     }
                 }
+                query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
                 return query;
             }
         }
-        return this.em.createQuery(jpql, tClass);
+        TypedQuery<T> query = this.em.createQuery(jpql, tClass);
+        query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
+        return query;
     }
 
     private <T> Query createNativeQuery(String sql, Class<T> tClass){
@@ -122,10 +129,13 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                         sqlQuery.setResultTransformer(Transformers.aliasToBean(tClass));
                     }
                 }
+                query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
                 return query;
             }
         }
-        return this.em.createNativeQuery(sql, tClass);
+        Query nativeQuery = this.em.createNativeQuery(sql, tClass);
+        nativeQuery.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
+        return nativeQuery;
     }
 
     private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
@@ -237,7 +247,9 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                 query.where(predicate);
             }
         }
-        return this.em.createQuery(query);
+        TypedQuery typedQuery = this.em.createQuery(query);
+        typedQuery.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
+        return typedQuery;
     }
 
     protected <T extends AbstractEntity> TypedQuery<T> getQuery(Class<T> tClass, Specification<T> spec, Sort sort, Map<String, Object> properties) {
@@ -256,6 +268,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
             query.orderBy(QueryUtils.toOrders(sort, root, builder));
         }
         TypedQuery<T> t = this.em.createQuery(query);
+        t.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
         if(properties != null && properties.keySet() != null && properties.keySet().size() > 0){
             for(String key:properties.keySet()){
                 t.setHint(key, properties.get(key));
@@ -355,7 +368,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     @Override
     public <T> T uniqueQuery(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
-        Query query = this.em.createQuery(jpql);
+        Query query = this.createQuery(jpql, resultClass);
         List<T> resultList = query.getResultList();
         if(resultList != null && resultList.size() > 0){
             return resultList.get(0);
@@ -379,7 +392,6 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     public <T> Iterable<T> query(String jpql, Class<T> resultClass) {
         Assert.notNull(jpql, "The JPQL must not be null!");
         Query query = this.createQuery(jpql, resultClass);
-        query.setHint(QueryHintConstant.CACHEABLE, true);
         return query.getResultList();
     }
 
@@ -390,9 +402,11 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     }
 
     @Override
-    public <T> Iterable<T> query(CriteriaQuery<T> query, Class<T> resultClass){
+    public <T> Iterable<T> query(CriteriaQuery<T> query){
         Assert.notNull(query, "The Criteria Query must not be null!");
-        return this.em.createQuery(query).getResultList();
+        TypedQuery<T> typedQuery = this.em.createQuery(query);
+        typedQuery.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
+        return typedQuery.getResultList();
     }
 
     @Override
@@ -443,6 +457,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     public <T> Page<T> pagingQuery(CriteriaQuery<T> builder, Pageable page) {
         Assert.notNull(builder, "The Criteria Query must not be null!");
         TypedQuery<T> query = this.em.createQuery(builder);
+        query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
         return (Page<T>) (page == null ? new PageImpl<T>(query.getResultList()) : this.readPage(query, page, builder));
     }
 

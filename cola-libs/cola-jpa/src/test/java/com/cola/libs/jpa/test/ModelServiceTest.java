@@ -109,6 +109,9 @@ public class ModelServiceTest {
         jpql = "from Role";
         query = flexibleSearchService.query(jpql, Role.class);
 
+        jpql = "select r.code, rl.name from Role r, Rolelp rl where r.id=rl.role";
+        Iterable<Map> query1 = flexibleSearchService.query(jpql, Map.class);
+
         jpql = "from Role where id=12";
         query = flexibleSearchService.query(jpql, Role.class);
 

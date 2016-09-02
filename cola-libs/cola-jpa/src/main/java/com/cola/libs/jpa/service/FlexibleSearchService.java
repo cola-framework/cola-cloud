@@ -149,12 +149,11 @@ public interface FlexibleSearchService {
 
     /**
      * Query iterable.
-     * @param <T>         the type parameter
-     * @param query       the query
-     * @param resultClass the result class
+     * @param <T>   the type parameter
+     * @param query the query
      * @return the iterable
      */
-    public <T> Iterable<T> query(CriteriaQuery<T> query, Class<T> resultClass);
+    public <T> Iterable<T> query(CriteriaQuery<T> query);
 
     /**
      * Native query iterable.
