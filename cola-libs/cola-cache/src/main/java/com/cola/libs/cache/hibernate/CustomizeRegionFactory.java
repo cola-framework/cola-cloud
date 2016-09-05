@@ -20,7 +20,7 @@ import com.cola.libs.cache.hibernate.region.EntityRegion;
 import com.cola.libs.cache.hibernate.region.QueryResultRegion;
 import com.cola.libs.cache.hibernate.region.CustomizeNaturalIdRegion;
 import com.cola.libs.cache.hibernate.region.TimestampRegion;
-import com.cola.libs.cache.support.CacheManagerFactory;
+import com.cola.libs.cache.management.CacheManagerFactory;
 
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;

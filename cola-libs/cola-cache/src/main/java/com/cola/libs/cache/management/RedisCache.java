@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.cache.support;
+package com.cola.libs.cache.management;
 
 import com.cola.libs.cache.hibernate.IntensiveCache;
 
+import org.hibernate.cache.spi.access.SoftLock;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.cache.support.SimpleValueWrapper;
@@ -70,7 +71,7 @@ public class RedisCache implements IntensiveCache {
     }
 
     @Override
-    public boolean exists(Object key) {
+    public boolean containsKey(Object key) {
         try {
             Boolean result = (Boolean) this.template.execute(new RedisCallback<Boolean>() {
                 @Override
@@ -82,7 +83,7 @@ public class RedisCache implements IntensiveCache {
                 return result;
             }
         } catch (Exception e) {
-            logger.error("Redis Cache exists Method is error:" + e.getMessage(), e);
+            logger.error("Redis Cache containsKey Method is error:" + e.getMessage(), e);
         }
         return false;
     }
@@ -103,6 +104,15 @@ public class RedisCache implements IntensiveCache {
             logger.error("Redis Cache size Method is error:" + e.getMessage(), e);
         }
         return 0L;
+    }
+
+    @Override
+    public SoftLock lock(Object key) {
+        return null;
+    }
+
+    @Override
+    public void unlock(Object key, SoftLock lock) {
     }
 
     @Override

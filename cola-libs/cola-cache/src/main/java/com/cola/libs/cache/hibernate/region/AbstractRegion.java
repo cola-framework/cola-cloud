@@ -18,12 +18,10 @@ package com.cola.libs.cache.hibernate.region;
 import com.cola.libs.cache.hibernate.IntensiveCache;
 
 import org.hibernate.cache.CacheException;
-import org.hibernate.cache.spi.CacheKey;
 import org.hibernate.cache.spi.QueryKey;
 import org.hibernate.cache.spi.Region;
 import org.hibernate.cfg.Settings;
 import org.springframework.cache.Cache;
-import org.springframework.util.StringUtils;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -77,7 +75,7 @@ public class AbstractRegion implements Region {
     @Override
     public boolean contains(Object key) {
         if(this.cache instanceof IntensiveCache){
-            return ((IntensiveCache)cache).exists(getActualKey(key));
+            return ((IntensiveCache)cache).containsKey(getActualKey(key));
         }
         return false;
     }

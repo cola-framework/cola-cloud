@@ -87,7 +87,7 @@ public abstract class AccessStrategyAdapter {
         IntensiveCache intensiveCache = (IntensiveCache)this.cache;
         Object actualKey = getActualKey(key);
         logger.debug("AccessStrategyAdapter putFromLoad method start. key:" + actualKey + " val:" + val);
-        if (minimalPutOverride && intensiveCache.exists(actualKey)) {
+        if (minimalPutOverride && intensiveCache.containsKey(actualKey)) {
             return false;
         } else {
             this.cache.put(actualKey, val);

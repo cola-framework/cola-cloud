@@ -15,8 +15,6 @@
  */
 package com.cola.libs.jpa.configuration;
 
-import com.cola.libs.jpa.keygen.EntitiesKeyGenerator;
-import com.cola.libs.jpa.keygen.JpqlKeyGenerator;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.service.impl.FlexibleSearchServiceImpl;
@@ -28,14 +26,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.cache.interceptor.KeyGenerator;
 import org.springframework.context.annotation.AdviceMode;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.EntityManager;
 import javax.sql.DataSource;
 
 /**
@@ -63,17 +59,6 @@ public class JPAConfiguration {
             }
         }
         return DataSourceBuilder.create().type(dataSourceClass).build();
-    }
-
-    @Bean
-    public KeyGenerator jpqlKeyGenerator(EntityManager entityManager){
-        JpqlKeyGenerator jpqlKeyGenerator = new JpqlKeyGenerator();
-        return jpqlKeyGenerator;
-    }
-
-    @Bean
-    public KeyGenerator entitiesKeyGenerator(){
-        return new EntitiesKeyGenerator();
     }
 
     @Bean(name = "modelService")

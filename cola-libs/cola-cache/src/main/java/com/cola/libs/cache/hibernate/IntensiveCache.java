@@ -15,6 +15,7 @@
  */
 package com.cola.libs.cache.hibernate;
 
+import org.hibernate.cache.spi.access.SoftLock;
 import org.springframework.cache.Cache;
 
 /**
@@ -23,8 +24,12 @@ import org.springframework.cache.Cache;
  */
 public interface IntensiveCache extends Cache {
 
-    boolean exists(Object key);
+    boolean containsKey(Object key);
 
     long size();
+
+    public SoftLock lock(Object key);
+
+    public void unlock(Object key, SoftLock lock);
 
 }

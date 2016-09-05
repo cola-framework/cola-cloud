@@ -15,26 +15,26 @@
  */
 package com.cola.libs.cache.configuration;
 
-import com.cola.libs.cache.support.CacheManagerFactory;
-import com.cola.libs.cache.support.ExtendedIgniteCacheManager;
-import com.cola.libs.cache.support.RedisCacheManager;
+import com.cola.libs.cache.management.CacheManagerFactory;
+import com.cola.libs.cache.management.IgniteCacheManager;
+import com.cola.libs.cache.management.RedisCacheManager;
 
+import org.apache.ignite.cache.CacheAtomicityMode;
+import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.logger.slf4j.Slf4jLogger;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.autoconfigure.jta.JtaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
-import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
 import org.springframework.boot.autoconfigure.redis.RedisAutoConfiguration;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.cache.CacheManager;
@@ -48,9 +48,11 @@ import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
-import org.springframework.transaction.jta.JtaTransactionManager;
+import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
+import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import javax.sql.DataSource;
@@ -71,6 +73,50 @@ public class CacheConfiguration extends HibernateJpaAutoConfiguration{
 
     @Value("${spring.ignite.gridname:null}")
     public String igniteGridName;
+
+    private org.apache.ignite.configuration.CacheConfiguration[] initIgniteCacheConfig(){
+        List<org.apache.ignite.configuration.CacheConfiguration> list = new ArrayList<>();
+
+        DefaultPersistenceUnitManager internalPersistenceUnitManager = new DefaultPersistenceUnitManager();
+        internalPersistenceUnitManager.setPackagesToScan(getPackagesToScan());
+        internalPersistenceUnitManager.preparePersistenceUnitInfos();
+        List<String> managedClassNames = internalPersistenceUnitManager.obtainDefaultPersistenceUnitInfo().getManagedClassNames();
+
+        //List<String> managedClassNames = this.persistenceUnitManager.obtainDefaultPersistenceUnitInfo().getManagedClassNames();
+
+        org.apache.ignite.configuration.CacheConfiguration cacheConfiguration = new org.apache.ignite.configuration.CacheConfiguration();
+        cacheConfiguration.setCacheMode(CacheMode.PARTITIONED);
+        cacheConfiguration.setAtomicityMode(CacheAtomicityMode.ATOMIC);
+        cacheConfiguration.setName("org.hibernate.cache.spi.UpdateTimestampsCache");
+        list.add(cacheConfiguration);
+
+        cacheConfiguration = new org.apache.ignite.configuration.CacheConfiguration();
+        cacheConfiguration.setCacheMode(CacheMode.PARTITIONED);
+        cacheConfiguration.setAtomicityMode(CacheAtomicityMode.ATOMIC);
+        cacheConfiguration.setName("org.hibernate.cache.internal.StandardQueryCache");
+        list.add(cacheConfiguration);
+
+        List<String> entityClassNames = new ArrayList<>();
+
+        entityClassNames.add("com.cola.libs.jpa.entity.Language");
+        entityClassNames.add("com.cola.libs.jpa.entity.Order");
+        entityClassNames.add("com.cola.libs.jpa.entity.OrderItem");
+        entityClassNames.add("com.cola.libs.jpa.entity.PriceRow");
+        entityClassNames.add("com.cola.libs.jpa.entity.Product");
+        entityClassNames.add("com.cola.libs.jpa.entity.Role");
+        entityClassNames.add("com.cola.libs.jpa.entity.Rolelp");
+        entityClassNames.add("com.cola.libs.jpa.entity.User");
+
+        for(String entityClassName:entityClassNames){
+            cacheConfiguration = new org.apache.ignite.configuration.CacheConfiguration();
+            cacheConfiguration.setCacheMode(CacheMode.PARTITIONED);
+            cacheConfiguration.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
+            cacheConfiguration.setName(entityClassName);
+            list.add(cacheConfiguration);
+        }
+
+        return list.toArray(new org.apache.ignite.configuration.CacheConfiguration[list.size()]);
+    }
 
     @Bean
     @Primary
@@ -102,11 +148,13 @@ public class CacheConfiguration extends HibernateJpaAutoConfiguration{
 
     @Bean
     @ConditionalOnClass(CacheManager.class)
-    @ConditionalOnProperty(name = "spring.cache.type", havingValue = "ignite")
+    @ConditionalOnProperty(name = "spring.cache.type", havingValue = "ignite", matchIfMissing = true)
     public CacheManager igniteCacheManager(IgniteConfiguration igniteConfiguration) {
-        ExtendedIgniteCacheManager cacheManager = new ExtendedIgniteCacheManager();
+        IgniteCacheManager cacheManager = new IgniteCacheManager();
         cacheManager.setGridName(this.igniteGridName);
         igniteConfiguration.setGridLogger(new Slf4jLogger(logger));
+        igniteConfiguration.setGridName(this.igniteGridName);
+        igniteConfiguration.setCacheConfiguration(initIgniteCacheConfig());
         cacheManager.setConfiguration(igniteConfiguration);
         return cacheManager;
     }
