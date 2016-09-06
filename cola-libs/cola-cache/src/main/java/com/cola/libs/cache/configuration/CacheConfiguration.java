@@ -23,16 +23,14 @@ import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.configuration.IgniteConfiguration;
 import org.apache.ignite.logger.slf4j.Slf4jLogger;
+import org.hibernate.internal.util.StringHelper;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
-import org.springframework.boot.autoconfigure.jta.JtaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.redis.RedisAutoConfiguration;
@@ -49,7 +47,6 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
-import org.springframework.orm.jpa.persistenceunit.PersistenceUnitManager;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -69,20 +66,17 @@ public class CacheConfiguration extends HibernateJpaAutoConfiguration{
     private static Logger logger = LoggerFactory.getLogger(CacheConfiguration.class);
 
     @Value("${spring.redis.expire:0}")
-    public Long expiration;
+    private Long expiration;
 
     @Value("${spring.ignite.gridname:null}")
-    public String igniteGridName;
+    private String igniteGridName;
+
+    @Value("${spring.ignite.entity.packages:com.cola}")
+    private String igniteEntityPackages;
 
     private org.apache.ignite.configuration.CacheConfiguration[] initIgniteCacheConfig(){
+
         List<org.apache.ignite.configuration.CacheConfiguration> list = new ArrayList<>();
-
-        DefaultPersistenceUnitManager internalPersistenceUnitManager = new DefaultPersistenceUnitManager();
-        internalPersistenceUnitManager.setPackagesToScan(getPackagesToScan());
-        internalPersistenceUnitManager.preparePersistenceUnitInfos();
-        List<String> managedClassNames = internalPersistenceUnitManager.obtainDefaultPersistenceUnitInfo().getManagedClassNames();
-
-        //List<String> managedClassNames = this.persistenceUnitManager.obtainDefaultPersistenceUnitInfo().getManagedClassNames();
 
         org.apache.ignite.configuration.CacheConfiguration cacheConfiguration = new org.apache.ignite.configuration.CacheConfiguration();
         cacheConfiguration.setCacheMode(CacheMode.PARTITIONED);
@@ -96,18 +90,12 @@ public class CacheConfiguration extends HibernateJpaAutoConfiguration{
         cacheConfiguration.setName("org.hibernate.cache.internal.StandardQueryCache");
         list.add(cacheConfiguration);
 
-        List<String> entityClassNames = new ArrayList<>();
-
-        entityClassNames.add("com.cola.libs.jpa.entity.Language");
-        entityClassNames.add("com.cola.libs.jpa.entity.Order");
-        entityClassNames.add("com.cola.libs.jpa.entity.OrderItem");
-        entityClassNames.add("com.cola.libs.jpa.entity.PriceRow");
-        entityClassNames.add("com.cola.libs.jpa.entity.Product");
-        entityClassNames.add("com.cola.libs.jpa.entity.Role");
-        entityClassNames.add("com.cola.libs.jpa.entity.Rolelp");
-        entityClassNames.add("com.cola.libs.jpa.entity.User");
-
-        for(String entityClassName:entityClassNames){
+        String[] entityPackages = StringHelper.split(" \n\r\f\t,;", igniteEntityPackages, false);
+        DefaultPersistenceUnitManager internalPersistenceUnitManager = new DefaultPersistenceUnitManager();
+        internalPersistenceUnitManager.setPackagesToScan(entityPackages);
+        internalPersistenceUnitManager.preparePersistenceUnitInfos();
+        List<String> managedClassNames = internalPersistenceUnitManager.obtainDefaultPersistenceUnitInfo().getManagedClassNames();
+        for(String entityClassName:managedClassNames){
             cacheConfiguration = new org.apache.ignite.configuration.CacheConfiguration();
             cacheConfiguration.setCacheMode(CacheMode.PARTITIONED);
             cacheConfiguration.setAtomicityMode(CacheAtomicityMode.TRANSACTIONAL);
