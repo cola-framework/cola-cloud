@@ -60,7 +60,6 @@ import javax.sql.DataSource;
  */
 @Configuration
 @AutoConfigureAfter(RedisAutoConfiguration.class)
-@EnableCaching(mode = AdviceMode.ASPECTJ, order = 4096)
 public class CacheConfiguration extends HibernateJpaAutoConfiguration{
 
     private static Logger logger = LoggerFactory.getLogger(CacheConfiguration.class);
