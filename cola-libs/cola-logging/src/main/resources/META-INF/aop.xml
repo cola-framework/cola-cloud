@@ -4,6 +4,6 @@
         <include within="com.cola..*"/>
     </weaver>
     <aspects>
-        <aspect name="com.cola.libs.logging.aspect.LoggingStatistics"/>
+        <aspect name="com.cola.libs.logging.aspect.LoggingStatisticsAspect"/>
     </aspects>
 </aspectj>

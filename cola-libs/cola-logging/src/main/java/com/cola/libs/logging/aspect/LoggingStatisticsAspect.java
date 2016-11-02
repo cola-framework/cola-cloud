@@ -33,8 +33,10 @@ import java.lang.reflect.Parameter;
  * Created by jiachen.shi on 9/6/2016.
  */
 @Aspect
-@DeclarePrecedence("com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect,com.cola.libs.logging.aspect.LoggingStatistics,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
-public class LoggingStatistics {
+@DeclarePrecedence("com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect,com.cola.libs.logging.aspect.LoggingStatisticsAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
+public class LoggingStatisticsAspect {
+
+    private final String DEFAULT_PACKAGE = "com.cola";
 
     private static Logger logger;
 
@@ -82,7 +84,22 @@ public class LoggingStatistics {
         Object proceed = pjp.proceed();
         long endTime = System.currentTimeMillis();
         long time = endTime - startTime;
-        logger.debug("Method:" + builder.toString() + " TotalTime:" + time + " ms.");
+
+        String calledMethod = null;
+        String calledClass = null;
+        Thread thread = Thread.currentThread();
+        StackTraceElement[] stackTraceElements = thread.getStackTrace();
+        if (stackTraceElements != null && stackTraceElements.length > 3) {
+            for (i = 3; i < stackTraceElements.length; i++) {
+                StackTraceElement stackTraceElement = stackTraceElements[i];
+                if(stackTraceElement.getClassName().startsWith(DEFAULT_PACKAGE)){
+                    calledClass = stackTraceElement.getClassName();
+                    calledMethod = stackTraceElement.getMethodName();
+                    break;
+                }
+            }
+        }
+        logger.debug("{threadName:\"" + thread.getName() + "\", methodName:\"" + builder.toString() + "\", totalTime:\"" + time + "ms\", calledClass:\"" + calledClass + "\", calledMethod:\"" + calledMethod + "\"}");
         return proceed;
     }
 }

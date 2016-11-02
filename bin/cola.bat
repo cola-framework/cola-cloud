@@ -63,7 +63,7 @@ echo Looking for "%jarFile:~1%" ....
 
 for /r %COLA_HOME% %%i in (%jarFile%) do (
     set filePath=%%i
-    "%JAVA_EXE%" -server -jar %%i%params%
+    "%JAVA_EXE%" -server -javaagent:%COLA_HOME%/lib/aspectjweaver-1.8.5.jar -Dorg.aspectj.tracing.enabled=false -Daj.weaving.verbose=false -Dorg.aspectj.weaver.showWeaveInfo=false -jar %%i%params%
     set params=
     if not "%ERRORLEVEL%"=="0" (
         goto javaError

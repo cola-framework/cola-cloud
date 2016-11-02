@@ -17,15 +17,14 @@
 
     <modules>
         <module>cola-libs</module>
-        <module>cola-services</module>
+        <module>cola-service</module>
         <module>cola-platform</module>
     </modules>
 
     <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.version>0.0.1-SNAPSHOT</project.version>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <java.version>1.8</java.version>
-        <cola.version>0.0.1-SNAPSHOT</cola.version>
         <commons.lang.version>2.6</commons.lang.version>
         <powermock.version>1.6.5</powermock.version>
         <raven.version>6.0.0</raven.version>
@@ -54,16 +53,6 @@
     <dependencyManagement>
         <dependencies>
             <!-- lucene -->
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-core</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.apache.lucene</groupId>
-                <artifactId>lucene-core</artifactId>
-                <version>${lucene.version}</version>
-            </dependency>
             <dependency>
                 <groupId>org.apache.lucene</groupId>
                 <artifactId>lucene-core</artifactId>

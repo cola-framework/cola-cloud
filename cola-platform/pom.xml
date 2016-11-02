@@ -34,7 +34,7 @@
         <dependency>
             <groupId>com.cola.libs.logging</groupId>
             <artifactId>cola-logging</artifactId>
-            <version>${cola.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>

@@ -33,14 +33,19 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.cola.libs.beans</groupId>
+            <artifactId>cola-beans</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.cola.libs.jpa</groupId>
             <artifactId>cola-jpa</artifactId>
-            <version>${cola.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.cola.libs.logging</groupId>
             <artifactId>cola-logging</artifactId>
-            <version>${cola.version}</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
