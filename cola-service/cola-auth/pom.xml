@@ -13,4 +13,12 @@
     <artifactId>cola-auth</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cola.service.user</groupId>
+            <artifactId>cola-user</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

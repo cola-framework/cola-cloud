@@ -15,6 +15,8 @@
  */
 package com.cola.libs.jpa.entity;
 
+import com.cola.libs.jpa.entity.AbstractEntity;
+
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
@@ -36,7 +38,7 @@ import javax.persistence.UniqueConstraint;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
 @DiscriminatorValue("language")
-public class Language extends AbstractEntity{
+public class Language extends AbstractEntity {
 
     @Column(name="iso_code", length = 20, nullable = false)
     private String isoCode;

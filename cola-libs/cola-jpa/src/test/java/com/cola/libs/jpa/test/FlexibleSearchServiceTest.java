@@ -15,34 +15,15 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entity.Language;
-import com.cola.libs.jpa.entity.Role;
-import com.cola.libs.jpa.entity.Rolelp;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
-import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 
-import org.junit.Assert;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.io.Serializable;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * cola
@@ -60,7 +41,7 @@ public class FlexibleSearchServiceTest {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
 
-    @Test
+/*    @Test
     @Transactional(readOnly = true)
     public void entityGraphTest(){
         Map<String,Object> properties = new HashMap<>();
@@ -161,6 +142,6 @@ public class FlexibleSearchServiceTest {
         Iterable<List> query3 = flexibleSearchService.query(jpql, List.class);
 
         Iterable<TestBean> query4 = flexibleSearchService.query(jpql, TestBean.class);
-    }
+    }*/
 
 }

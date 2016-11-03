@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.oms;
+package com.cola.service.order;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,7 +24,7 @@ import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 
 /**
  * cola
- * Created by jiachen.shi on 6/23/2016.
+ * Created by jiachen.shi on 11/2/2016.
  */
 @SpringBootApplication
 @EnableDiscoveryClient
@@ -34,9 +34,9 @@ public class WebApplicationRunner {
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
 
     public static void main(String[] args) {
-        logger.info("**************** WebApplication Cola-OMS Start *****************");
+        logger.info("**************** WebApplication Cola-Order Start *****************");
         SpringApplication.run(WebApplicationRunner.class, args);
-        logger.info("**************** WebApplication Cola-OMS End ******************");
+        logger.info("***************** WebApplication Cola-Order End ******************");
     }
 
 }

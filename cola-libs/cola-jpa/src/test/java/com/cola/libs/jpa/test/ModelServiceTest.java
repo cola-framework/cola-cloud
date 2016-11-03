@@ -15,11 +15,6 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entity.Order;
-import com.cola.libs.jpa.entity.OrderItem;
-import com.cola.libs.jpa.entity.Product;
-import com.cola.libs.jpa.entity.Role;
-import com.cola.libs.jpa.entity.Rolelp;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 
@@ -30,14 +25,11 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.OutputCapture;
-import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -69,7 +61,7 @@ public class ModelServiceTest {
     @Rule
     public OutputCapture capture = new OutputCapture();
 
-    @Test
+/*    @Test
     @Transactional
     public void L2CacheTest(){
 
@@ -131,9 +123,9 @@ public class ModelServiceTest {
         jpql = "from Role";
         query = flexibleSearchService.query(jpql, Role.class);
 
-    }
+    }*/
 
-    @Test
+/*    @Test
     @Transactional
     public void cacheTest(){
         Role role = new Role();
@@ -170,8 +162,9 @@ public class ModelServiceTest {
         modelService.deleteAll(Role.class, true);
 
         List<Rolelp> rolelps = load1.getRolelps();
-    }
+    }*/
 
+/*
     @Test
     public void cascadeTest(){
 
@@ -209,8 +202,9 @@ public class ModelServiceTest {
 
         modelService.delete(order, true);
     }
+*/
 
-    @Test
+/*    @Test
     @Transactional
     public void singleEntityTest(){
 
@@ -260,9 +254,9 @@ public class ModelServiceTest {
         modelService.delete(renewRole, true);
         exists = modelService.exists(Role.class, renewRole.getId());
         Assert.assertFalse(exists);
-    }
+    }*/
 
-    @Test
+/*    @Test
     public void retryOnOptimisticLockingFailureTest(){
         try {
             optimisticLockingFailueTest.test();
@@ -346,7 +340,7 @@ public class ModelServiceTest {
         newRoleList = modelService.save(roleList);
         modelService.deleteAll(Role.class, true);
 
-    }
+    }*/
 
 
 }

@@ -15,20 +15,10 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entity.Language;
-import com.cola.libs.jpa.entity.Role;
-import com.cola.libs.jpa.entity.Rolelp;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
 
 /**
  * cola
@@ -42,7 +32,7 @@ public class LazyLoadingTest {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
 
-    @Transactional
+/*    @Transactional
     public Role init(){
 
         UUID uuid = UUID.randomUUID();
@@ -68,9 +58,9 @@ public class LazyLoadingTest {
         rolelp = modelService.save(rolelp);
 
         return role;
-    }
+    }*/
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+/*    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public Role test(Long roleId){
         Role role = modelService.load(Role.class, roleId);
         Collection<Rolelp> rolelps = role.getRolelps();
@@ -78,9 +68,9 @@ public class LazyLoadingTest {
         Role role1 = modelService.get(Role.class, roleId);
         Collection<Rolelp> rolelps1 = role1.getRolelps();
         return role;
-    }
+    }*/
 
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+/*    @Transactional(propagation = Propagation.REQUIRES_NEW)
     public void destroy(Role role){
         Map<String, Object> condition = new HashMap<>();
         condition.put("role", role);
@@ -97,6 +87,6 @@ public class LazyLoadingTest {
 
     public Role pre_init(){
         return this.init();
-    }
+    }*/
 
 }

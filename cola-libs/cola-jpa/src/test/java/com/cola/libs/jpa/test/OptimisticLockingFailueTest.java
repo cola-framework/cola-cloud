@@ -16,7 +16,6 @@
 package com.cola.libs.jpa.test;
 
 import com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure;
-import com.cola.libs.jpa.entity.Role;
 import com.cola.libs.jpa.service.ModelService;
 
 import org.junit.Assert;
@@ -35,7 +34,7 @@ public class OptimisticLockingFailueTest {
     @Autowired
     private ModelService modelService;
 
-    @Transactional
+/*    @Transactional
     @RetryOnOptimisticLockingFailure
     public void test(){
 
@@ -59,6 +58,6 @@ public class OptimisticLockingFailueTest {
         modelService.save(newRole);
 
         exists = modelService.exists(Role.class, newRole.getId());
-    }
+    }*/
 
 }

@@ -19,6 +19,10 @@
         <module>cola-auth</module>
         <module>cola-promotion</module>
         <module>cola-oms</module>
+        <module>cola-product</module>
+        <module>cola-order</module>
+        <module>cola-user</module>
+        <module>cola-website</module>
     </modules>
 
     <build>
