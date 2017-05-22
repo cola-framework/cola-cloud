@@ -1,0 +1,36 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <parent>
+        <artifactId>cola-parent</artifactId>
+        <groupId>com.cola</groupId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+
+    <name>cola-lib</name>
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.cola.libs</groupId>
+    <artifactId>cola-lib</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>beans</module>
+        <module>logging</module>
+        <module>cache</module>
+        <module>jpa</module>
+        <module>search</module>
+        <module>integration</module>
+        <module>file</module>
+        <module>medias</module>
+        <module>ruleengine</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-test</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
