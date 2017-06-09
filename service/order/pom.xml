@@ -13,12 +13,4 @@
     <artifactId>cola-order</artifactId>
     <packaging>jar</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.cola.service.product</groupId>
-            <artifactId>cola-product</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-    </dependencies>
-
 </project>

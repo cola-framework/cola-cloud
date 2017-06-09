@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.product.entity;
+package com.cola.libs.jpa.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
 
@@ -31,6 +31,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
+import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -41,18 +42,21 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Cacheable
-@Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type","code"})})
+@Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("product")
-@NamedEntityGraphs(value = {@NamedEntityGraph(name = "product.priceRows", attributeNodes = @NamedAttributeNode("priceRows"))})
-public class Product extends AbstractEntity {
+@DiscriminatorValue("role")
+@NamedEntityGraphs(value = {
+        @NamedEntityGraph(name = "role.rolelps",
+                attributeNodes = @NamedAttributeNode(value = "rolelps", subgraph = "rolelps.language"),
+                subgraphs = {@NamedSubgraph(name = "rolelps.language", attributeNodes = {@NamedAttributeNode("language")})})})
+public class Role extends AbstractEntity {
 
     @Column(length = 20, nullable = false)
     private String code;
 
-    @OneToMany(cascade = { CascadeType.ALL}, mappedBy ="product")
-    private List<PriceRow> priceRows;
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="role")
+    private List<Rolelp> rolelps;
 
     /**
      * Gets code.
@@ -70,11 +74,11 @@ public class Product extends AbstractEntity {
         this.code = code;
     }
 
-    public List<PriceRow> getPriceRows() {
-        return priceRows;
+    public List<Rolelp> getRolelps() {
+        return rolelps;
     }
 
-    public void setPriceRows(List<PriceRow> priceRows) {
-        this.priceRows = priceRows;
+    public void setRolelps(List<Rolelp> rolelps) {
+        this.rolelps = rolelps;
     }
 }

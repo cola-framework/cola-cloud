@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.user.entity;
+package com.cola.libs.jpa.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
 import com.cola.libs.jpa.entity.Language;
+import com.cola.libs.jpa.entity.Role;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;

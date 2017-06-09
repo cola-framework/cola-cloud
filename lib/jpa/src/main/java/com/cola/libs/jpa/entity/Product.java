@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.order.entity;
+package com.cola.libs.jpa.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.libs.jpa.entity.PriceRow;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -38,58 +38,44 @@ import javax.persistence.UniqueConstraint;
 
 /**
  * cola
- * Created by jiachen.shi on 7/25/2016.
+ * Created by jiachen.shi on 6/21/2016.
  */
 @Entity
 @Cacheable
-@Table(name = "t_order", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "code"})})
+@Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type","code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("order")
-@NamedEntityGraphs(value = {@NamedEntityGraph(name = "order.orderItems", attributeNodes = @NamedAttributeNode("orderItems"))})
-public class Order extends AbstractEntity {
+@DiscriminatorValue("product")
+@NamedEntityGraphs(value = {@NamedEntityGraph(name = "product.priceRows", attributeNodes = @NamedAttributeNode("priceRows"))})
+public class Product extends AbstractEntity {
 
     @Column(length = 20, nullable = false)
     private String code;
 
-    @Column(name = "total_price", nullable = false)
-    private BigDecimal totalPrice;
+    @OneToMany(cascade = { CascadeType.ALL}, mappedBy ="product")
+    private List<PriceRow> priceRows;
 
-    @Column(name = "total_discount", nullable = false)
-    private BigDecimal totalDiscount;
-
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="order")
-    private List<OrderItem> orderItems;
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public BigDecimal getTotalDiscount() {
-        return totalDiscount;
-    }
-
-    public void setTotalDiscount(BigDecimal totalDiscount) {
-        this.totalDiscount = totalDiscount;
-    }
-
+    /**
+     * Gets code.
+     * @return the code
+     */
     public String getCode() {
         return code;
     }
 
+    /**
+     * Sets code.
+     * @param code the code
+     */
     public void setCode(String code) {
         this.code = code;
     }
 
-    public List<OrderItem> getOrderItems() {
-        return orderItems;
+    public List<PriceRow> getPriceRows() {
+        return priceRows;
     }
 
-    public void setOrderItems(List<OrderItem> orderItems) {
-        this.orderItems = orderItems;
+    public void setPriceRows(List<PriceRow> priceRows) {
+        this.priceRows = priceRows;
     }
 }
