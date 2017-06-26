@@ -1,6 +1,6 @@
 # Cola
 
-基于SpringCloud搭建的微服务框架
+## 基于SpringCloud搭建的微服务框架
 
 
 --------------------------------------
@@ -48,3 +48,4 @@ cola discovery 0.0.1 start
 
 服务停止命令如下：
 cola discovery 0.0.1 stop
+
