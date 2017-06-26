@@ -1,5 +1,4 @@
 # Cola
-=======
 ### 基于SpringCloud搭建的微服务框架
 
 
@@ -26,7 +25,7 @@ Logging管理框架 -- Logback/ELK<br/>
 数据库 -- MySQL<br/>
 
 ## 服务编译/构建
-本项目为Maven项目，所有第三方jar包都是通过Maven管理，如果需要本地打包安装请在根目录执行如下命令：
+本项目为Maven项目，所有第三方jar包都是通过Maven管理，如果需要本地打包安装请在根目录执行如下命令：<br/>
 mvn clean install -Dmaven.test.skip=true
 
 
