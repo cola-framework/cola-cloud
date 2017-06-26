@@ -28,20 +28,21 @@ import javax.persistence.criteria.CriteriaDelete;
 import javax.persistence.criteria.CriteriaUpdate;
 
 /**
- * cola
- * Created by jiachen.shi on 7/18/2016.
+ * The interface Model service.
  */
 public interface ModelService {
 
     /**
-     * Get entity graph
-     * @param entityGraphName
-     * @return
+     * Gets entity graph.
+     *
+     * @param entityGraphName the entity graph name
+     * @return the entity graph
      */
     public EntityGraph getEntityGraph(String entityGraphName);
 
     /**
      * Create entity graph entity graph.
+     *
      * @param <T>    the type parameter
      * @param tClass the t class
      * @return the entity graph
@@ -49,13 +50,15 @@ public interface ModelService {
     public <T> EntityGraph<T> createEntityGraph(Class<T> tClass);
 
     /**
-     * Gets current transacntion.
-     * @return the current transacntion
+     * Gets transacntion.
+     *
+     * @return the transacntion
      */
     public EntityTransaction getTransacntion();
 
     /**
      * Save t.
+     *
      * @param <T>    the type parameter
      * @param entity the entity
      * @return the t
@@ -64,6 +67,7 @@ public interface ModelService {
 
     /**
      * Save list.
+     *
      * @param <T>      the type parameter
      * @param entities the entities
      * @return the list
@@ -72,48 +76,54 @@ public interface ModelService {
 
     /**
      * Delete.
-     * @param <T>            the type parameter
-     * @param <ID>           the type parameter
-     * @param tClass         the t class
-     * @param id             the id
-     * @param deleted the physical delete
+     *
+     * @param <T>     the type parameter
+     * @param <ID>    the type parameter
+     * @param tClass  the t class
+     * @param id      the id
+     * @param deleted the deleted
      */
     public <T extends AbstractEntity, ID extends Serializable> void delete(Class<T> tClass, ID id, Boolean deleted);
 
     /**
      * Delete.
-     * @param <T>            the type parameter
-     * @param entity         the entity
-     * @param deleted the physical delete
+     *
+     * @param <T>     the type parameter
+     * @param entity  the entity
+     * @param deleted the deleted
      */
     public <T extends AbstractEntity> void delete(T entity, Boolean deleted);
 
     /**
      * Delete.
-     * @param <T>            the type parameter
-     * @param entities       the entities
-     * @param deleted the physical delete
+     *
+     * @param <T>      the type parameter
+     * @param entities the entities
+     * @param deleted  the deleted
      */
     public <T extends AbstractEntity> void delete(Iterable<? extends T> entities, Boolean deleted);
 
     /**
      * Delete all.
-     * @param <T>            the type parameter
-     * @param entityClass    the entity class
-     * @param deleted the physical delete
+     *
+     * @param <T>         the type parameter
+     * @param entityClass the entity class
+     * @param deleted     the deleted
      */
     public <T extends AbstractEntity> void deleteAll(Class<T> entityClass, Boolean deleted);
 
     /**
      * Delete in batch.
-     * @param <T>            the type parameter
-     * @param entities       the entities
-     * @param deleted the physical delete
+     *
+     * @param <T>      the type parameter
+     * @param entities the entities
+     * @param deleted  the deleted
      */
     public <T extends AbstractEntity> void deleteInBatch(Iterable<T> entities, Boolean deleted);
 
     /**
      * Load t.
+     *
      * @param <T>    the type parameter
      * @param <ID>   the type parameter
      * @param tClass the t class
@@ -124,6 +134,7 @@ public interface ModelService {
 
     /**
      * Load t.
+     *
      * @param <T>          the type parameter
      * @param <ID>         the type parameter
      * @param tClass       the t class
@@ -135,17 +146,19 @@ public interface ModelService {
 
     /**
      * Load t.
-     * @param tClass
-     * @param id
-     * @param entityGraph
-     * @param <T>
-     * @param <ID>
-     * @return
+     *
+     * @param <T>         the type parameter
+     * @param <ID>        the type parameter
+     * @param tClass      the t class
+     * @param id          the id
+     * @param entityGraph the entity graph
+     * @return the t
      */
     public <T extends AbstractEntity, ID extends Serializable> T load(Class<T> tClass, ID id, EntityGraph<T> entityGraph);
 
     /**
      * Load t.
+     *
      * @param <T>        the type parameter
      * @param <ID>       the type parameter
      * @param tClass     the t class
@@ -157,6 +170,7 @@ public interface ModelService {
 
     /**
      * Load t.
+     *
      * @param <T>        the type parameter
      * @param <ID>       the type parameter
      * @param tClass     the t class
@@ -169,6 +183,7 @@ public interface ModelService {
 
     /**
      * Get t.
+     *
      * @param <T>    the type parameter
      * @param <ID>   the type parameter
      * @param tClass the t class
@@ -179,6 +194,7 @@ public interface ModelService {
 
     /**
      * Execute int.
+     *
      * @param jpql the jpql
      * @return the int
      */
@@ -186,6 +202,7 @@ public interface ModelService {
 
     /**
      * Execute int.
+     *
      * @param jpql    the jpql
      * @param parames the parames
      * @return the int
@@ -194,6 +211,7 @@ public interface ModelService {
 
     /**
      * Execute int.
+     *
      * @param jpql    the jpql
      * @param parames the parames
      * @return the int
@@ -202,6 +220,7 @@ public interface ModelService {
 
     /**
      * Execute int.
+     *
      * @param criteria the criteria
      * @return the int
      */
@@ -209,6 +228,7 @@ public interface ModelService {
 
     /**
      * Execute int.
+     *
      * @param criteria the criteria
      * @return the int
      */
@@ -216,6 +236,7 @@ public interface ModelService {
 
     /**
      * Execute stored procedure t.
+     *
      * @param <T>                 the type parameter
      * @param <S>                 the type parameter
      * @param storedProcedureName the stored procedure name
@@ -228,6 +249,7 @@ public interface ModelService {
 
     /**
      * Execute stored procedure t.
+     *
      * @param <T>                 the type parameter
      * @param <S>                 the type parameter
      * @param storedProcedureName the stored procedure name
@@ -240,6 +262,7 @@ public interface ModelService {
 
     /**
      * Exists boolean.
+     *
      * @param <T>         the type parameter
      * @param <ID>        the type parameter
      * @param entityClass the entity class

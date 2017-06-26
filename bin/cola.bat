@@ -91,12 +91,14 @@ echo Usage:  cola app-name app-version [start ^| stop] [jar command args...]
 echo.
 echo Sample:
 echo         1.if you want to start cola-discovery application node.
-echo           cola discovery 0.0.1-SNAPSHOT start --server.port=8080
-echo           or
-echo           cola discovery 0.0.1-SNAPSHOT start --server.port 8080
+echo           cola discovery 0.0.1 start
 echo.
 echo         2.if you want to stop cola-discovery application node.
-echo           cola discovery 0.0.1-SNAPSHOT stop
+echo           cola discovery 0.0.1 stop
+echo.
+echo         3.if you want to add java system arguments to cola-discovery application node.
+echo           cola discovery 0.0.1 start --server.port=8080
+echo           cola discovery 0.0.1 start --server.port 8080
 goto end
 
 :paramError

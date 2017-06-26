@@ -17,6 +17,7 @@ package com.cola.libs.jpa.entity;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Locale;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;
@@ -37,7 +38,7 @@ public class AbstractEntity implements Serializable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     @Column(name = "create_time", nullable = false)
     @Temporal(TemporalType.TIMESTAMP)
@@ -64,7 +65,7 @@ public class AbstractEntity implements Serializable{
      * Gets id.
      * @return the id
      */
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -72,7 +73,7 @@ public class AbstractEntity implements Serializable{
      * Sets id.
      * @param id the id
      */
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

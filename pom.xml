@@ -11,11 +11,11 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.cola</groupId>
     <artifactId>cola-parent</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.1</version>
     <packaging>pom</packaging>
     <name>cola</name>
     <description>Cola Project</description>
-`
+
     <modules>
         <module>lib</module>
         <module>service</module>
@@ -28,8 +28,6 @@
         <project.version>0.0.1-SNAPSHOT</project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <maven.compiler.source>${java.version}</maven.compiler.source>
-        <maven.compiler.target>${java.version}</maven.compiler.target>
 
         <commons-lang.version>2.6</commons-lang.version>
         <commons-codec.version>1.6</commons-codec.version>
@@ -39,7 +37,9 @@
         <asm.version>5.0.4</asm.version>
         <aws.version>1.9.3</aws.version>
         <antlr-runtime.version>3.5</antlr-runtime.version>
-        <rxjava.version>1.0.10</rxjava.version>
+        <rxjava.version>1.2.10</rxjava.version>
+        <byte-buddy.version>1.6.14</byte-buddy.version>
+        <javassist.version>3.21.0-GA</javassist.version>
         <guava.version>18.0</guava.version>
         <archaius.version>0.7.4</archaius.version>
         <fasterxml.version>1.3.0</fasterxml.version>
@@ -56,15 +56,18 @@
         <lucene.version>6.1.0</lucene.version>
         <hikariCP.version>2.4.7</hikariCP.version>
         <mysql.version>5.1.39</mysql.version>
-        <hibernate.version>5.2.4.Final</hibernate.version>
+        <hibernate.version>5.2.10.Final</hibernate.version>
+        <hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
         <powermock.version>1.6.5</powermock.version>
         <raven.version>6.0.0</raven.version>
         <eureka-client.version>1.4.11</eureka-client.version>
         <jersey.version>1.19.1</jersey.version>
         <drools.version>6.5.0.Final</drools.version>
-        <swagger2.version>2.2.2</swagger2.version>
-        <druid.version>1.0.23</druid.version>
+        <swagger2.version>2.7.0</swagger2.version>
+        <druid.version>1.0.31</druid.version>
         <ignite.version>1.7.0</ignite.version>
+        <quartz.version>2.3.0</quartz.version>
+        <aspectj.version>1.8.9</aspectj.version>
         <ignite-hibernate.version>1.2.0-incubating</ignite-hibernate.version>
 
         <spring-data-redis.version>1.7.1.RELEASE</spring-data-redis.version>
@@ -73,9 +76,9 @@
         <spring-session.version>1.2.1.RELEASE</spring-session.version>
         <spring-data-commons.version>1.12.3.RELEASE</spring-data-commons.version>
 
-        <spring.version>4.3.3.RELEASE</spring.version>
-        <spring-boot.version>1.4.1.RELEASE</spring-boot.version>
-        <spring-cloud.version>1.2.1.RELEASE</spring-cloud.version>
+        <spring.version>4.3.9.RELEASE</spring.version>
+        <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
+        <spring-cloud.version>1.3.1.RELEASE</spring-cloud.version>
     </properties>
 
     <build>
@@ -125,6 +128,15 @@
                     </configuration>
                 </plugin>
                 <!-- Apply more sensible defaults for user projects -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.6.1</version>
+                    <configuration>
+                        <source>${java.version}</source>
+                        <target>${java.version}</target>
+                    </configuration>
+                </plugin>
                 <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-jar-plugin</artifactId>
@@ -254,6 +266,7 @@
         <plugins>
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.10.4</version>
                 <executions>
                     <execution>
                         <id>javadoc</id>
@@ -266,6 +279,7 @@
             </plugin>
             <plugin>
                 <artifactId>maven-source-plugin</artifactId>
+                <version>3.0.1</version>
                 <executions>
                     <execution>
                         <id>attach-sources</id>
@@ -346,19 +360,27 @@
                 <groupId>com.google.guava</groupId>
                 <artifactId>guava</artifactId>
                 <version>${guava.version}</version>
-                <scope>complie</scope>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>net.bytebuddy</groupId>
+                <artifactId>byte-buddy</artifactId>
+                <version>${byte-buddy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.javassist</groupId>
+                <artifactId>javassist</artifactId>
+                <version>${javassist.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.netflix.archaius</groupId>
                 <artifactId>archaius-core</artifactId>
                 <version>${archaius.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.netflix.eureka</groupId>
                 <artifactId>eureka-client</artifactId>
                 <version>${eureka-client.version}</version>
-                <scope>complie</scope>
             </dependency>
 
             <!-- Jersey -->
@@ -366,19 +388,16 @@
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-core</artifactId>
                 <version>${jersey.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey</groupId>
                 <artifactId>jersey-client</artifactId>
                 <version>${jersey.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.sun.jersey.contribs</groupId>
                 <artifactId>jersey-apache-client4</artifactId>
                 <version>${jersey.version}</version>
-                <scope>complie</scope>
             </dependency>
 
             <!-- Logging -->
@@ -477,6 +496,14 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- Quartz -->
+            <dependency>
+                <groupId>org.quartz-scheduler</groupId>
+                <artifactId>quartz</artifactId>
+                <version>${quartz.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
             <!-- Lucene -->
             <dependency>
                 <groupId>org.apache.lucene</groupId>
@@ -504,43 +531,36 @@
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-cbor</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.dataformat</groupId>
                 <artifactId>jackson-dataformat-xml</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-afterburner</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.module</groupId>
                 <artifactId>jackson-module-jaxb-annotation</artifactId>
                 <version>${jackson.version}</version>
-                <scope>complie</scope>
             </dependency>
 
             <!-- netflix hystrix -->
@@ -548,19 +568,16 @@
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-core</artifactId>
                 <version>${hystrix.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-metrics-event-stream</artifactId>
                 <version>${hystrix.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.netflix.hystrix</groupId>
                 <artifactId>hystrix-serialization</artifactId>
                 <version>${hystrix.version}</version>
-                <scope>complie</scope>
             </dependency>
 
             <!-- netflix servo -->
@@ -568,13 +585,11 @@
                 <groupId>com.netflix.servo</groupId>
                 <artifactId>servo-core</artifactId>
                 <version>${servo.version}</version>
-                <scope>complie</scope>
             </dependency>
             <dependency>
                 <groupId>com.netflix.servo</groupId>
                 <artifactId>servo-internal</artifactId>
                 <version>${servo.version}</version>
-                <scope>complie</scope>
             </dependency>
 
             <!-- ignite -->
@@ -647,7 +662,7 @@
             <dependency>
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-validator</artifactId>
-                <version>${hibernate.version}</version>
+                <version>${hibernate-validator.version}</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -678,11 +693,13 @@
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger2</artifactId>
                 <version>${swagger2.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>io.springfox</groupId>
                 <artifactId>springfox-swagger-ui</artifactId>
                 <version>${swagger2.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <!-- Powermock -->
@@ -696,6 +713,15 @@
                 <groupId>org.powermock</groupId>
                 <artifactId>powermock-module-junit4</artifactId>
                 <version>${powermock.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
+
+            <!-- aspects -->
+            <dependency>
+                <groupId>org.aspectj</groupId>
+                <artifactId>aspectjweaver</artifactId>
+                <version>${aspectj.version}</version>
                 <scope>compile</scope>
             </dependency>
 
@@ -842,6 +868,18 @@
             <!-- Spring Boot -->
             <dependency>
                 <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-autoconfigure</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>compile</scope>
@@ -866,12 +904,6 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-starter-redis</artifactId>
-                <version>${spring-boot.version}</version>
-                <scope>compile</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-aop</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>compile</scope>
@@ -888,6 +920,19 @@
                 <version>${spring-boot.version}</version>
                 <scope>compile</scope>
             </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-freemarker</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-data-redis</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
 
             <!-- Spring Cloud -->
             <dependency>

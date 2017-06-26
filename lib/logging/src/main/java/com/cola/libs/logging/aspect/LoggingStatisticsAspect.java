@@ -52,15 +52,19 @@ public class LoggingStatisticsAspect {
     public void excludedPackages() {
     }
 
+    @Pointcut("@within(org.springframework.boot.autoconfigure.SpringBootApplication)")
+    public void excludedApplicationRunner() {
+    }
+
     @Pointcut("@within(org.springframework.context.annotation.Configuration) || execution(* com.cola..configuration..*.*(..))")
     public void excludedConfiguration() {
     }
 
-    @Pointcut("@within(javax.persistence.Entity) || @within(javax.persistence.MappedSuperclass) || execution(* (com.cola.libs.jpa.entity.AbstractEntity+).*(..))")
+/*    @Pointcut("@within(javax.persistence.Entity) || @within(javax.persistence.MappedSuperclass) || execution(* (com.cola.libs.jpa.entity.AbstractEntity+).*(..))")
     public void excludedEntity() {
-    }
+    }*/
 
-    @Around("includedPackages() && !excluedTests() && !excludedPackages() && !excludedConfiguration() && !excludedEntity()")
+    @Around("includedPackages() && !excluedTests() && !excludedPackages() && !excludedConfiguration() && !excludedApplicationRunner()")
     public Object aspectLoggingStatistics(ProceedingJoinPoint pjp) throws Throwable {
         Signature signature = pjp.getSignature();
 

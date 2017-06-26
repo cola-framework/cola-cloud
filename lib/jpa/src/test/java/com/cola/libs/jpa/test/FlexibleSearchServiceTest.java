@@ -41,7 +41,8 @@ public class FlexibleSearchServiceTest {
     @Autowired
     private FlexibleSearchService flexibleSearchService;
 
-/*    @Test
+/*
+    @Test
     @Transactional(readOnly = true)
     public void entityGraphTest(){
         Map<String,Object> properties = new HashMap<>();

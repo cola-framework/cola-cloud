@@ -35,6 +35,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
+import org.springframework.boot.autoconfigure.transaction.TransactionManagerCustomizers;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.cache.CacheManager;
@@ -74,8 +75,8 @@ public class CacheConfiguration extends HibernateJpaAutoConfiguration{
     @Value("${spring.ignite.entity.packages:com.cola}")
     private String igniteEntityPackages;
 
-    public CacheConfiguration(DataSource dataSource, JpaProperties jpaProperties, ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider) {
-        super(dataSource, jpaProperties, jtaTransactionManagerProvider);
+    public CacheConfiguration(DataSource dataSource, JpaProperties jpaProperties, ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider, ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
+        super(dataSource, jpaProperties, jtaTransactionManagerProvider, transactionManagerCustomizers);
     }
 
     private org.apache.ignite.configuration.CacheConfiguration[] initIgniteCacheConfig(){

@@ -41,7 +41,7 @@ import javax.persistence.Table;
 @DiscriminatorValue("user")
 public class User extends AbstractEntity {
 
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private String name;
 
     @Column(length = 200)
@@ -52,7 +52,7 @@ public class User extends AbstractEntity {
 
     private Date birthday;
 
-    @Column(length = 20)
+    @Column(length = 20, nullable = false)
     private String password;
 
     @Column(name="provider_id", length = 200)
