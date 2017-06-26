@@ -1,8 +1,7 @@
-# Cola
-基于SpringCloud搭建的微服务框架
+# Cola - 基于SpringCloud搭建的微服务框架
 
 
-## 目录说明
+## 目录
 /bin        用于存放项目编译脚本<br/>
 /lib        用于存放项目底层服务<br/>
 /log        用于存放日志记录<br/>
