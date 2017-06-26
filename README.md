@@ -1,4 +1,5 @@
-# Cola    ### 基于SpringCloud搭建的微服务框架
+# Cola
+基于SpringCloud搭建的微服务框架
 
 
 ## 目录说明
