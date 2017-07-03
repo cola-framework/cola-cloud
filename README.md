@@ -1,9 +1,11 @@
 # Cola
-基于SpringCloud搭建的微服务框架
+### 基于SpringCloud搭建的微服务框架
 
 # 目录结构
 ```
 - cola
+    - api
+        - userclient
     - bin
     - lib
         - apidoc
@@ -50,18 +52,20 @@
 # 服务编译/构建
 本项目为Maven项目，所有第三方jar包都是通过Maven管理，如果需要本地打包安装请在根目录执行如下命令：<br/>
 ```
-mvn clean install -Dmaven.test.skip=true
+\cola>mvn clean install -Dmaven.test.skip=true
 ```
 # 应用服务启动/关闭
 服务启动可以运行bin目录下的cola脚本，查看命令详情请在bin目录运行如下命令：
 ```
-cola -help
+\cola\bin>cola -help
 ```
 服务启动命令如下：
 ```
-cola discovery 0.0.1 start
+\cola\bin>cola discovery 0.0.1 start
 ```
 服务停止命令如下：
 ```
-cola discovery 0.0.1 stop
+\cola\bin>cola discovery 0.0.1 stop
 ```
+建议开发人员直接在项目下执行命令：
+\cola\platform\discovery>mvn spring-boot:run

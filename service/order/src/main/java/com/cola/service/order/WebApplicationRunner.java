@@ -21,14 +21,15 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
 /**
  * cola
  * Created by jiachen.shi on 11/2/2016.
  */
+@SpringBootApplication
 @EnableDiscoveryClient
-@SpringBootApplication(scanBasePackages = {"com.cola"})
-@EntityScan(basePackages = {"com.cola"})
+@EnableFeignClients
 public class WebApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);

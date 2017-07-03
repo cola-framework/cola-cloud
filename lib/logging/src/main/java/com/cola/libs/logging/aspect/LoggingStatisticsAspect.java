@@ -63,8 +63,11 @@ public class LoggingStatisticsAspect {
 /*    @Pointcut("@within(javax.persistence.Entity) || @within(javax.persistence.MappedSuperclass) || execution(* (com.cola.libs.jpa.entity.AbstractEntity+).*(..))")
     public void excludedEntity() {
     }*/
+    @Pointcut("execution(* com.cola..entity..*.*(..))")
+        public void excludedEntity(){
+    }
 
-    @Around("includedPackages() && !excluedTests() && !excludedPackages() && !excludedConfiguration() && !excludedApplicationRunner()")
+    @Around("includedPackages() && !excluedTests() && !excludedPackages() && !excludedConfiguration() && !excludedApplicationRunner() && !excludedEntity()")
     public Object aspectLoggingStatistics(ProceedingJoinPoint pjp) throws Throwable {
         Signature signature = pjp.getSignature();
 

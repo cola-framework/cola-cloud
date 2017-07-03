@@ -68,7 +68,7 @@ public class UserController {
 
     @ApiOperation(value="Update User", notes="")
     @ApiImplicitParam(name = "userBean", value = "User Info", required = true, dataType = "UserBean")
-    @RequestMapping(value = "/createUser", method = RequestMethod.POST)
+    @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
     public @ResponseBody ResponseMessage<UserBean> updateUser(@RequestBody UserBean userBean){
 
         ResponseMessage<UserBean> message = new ResponseMessage<>();

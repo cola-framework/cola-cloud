@@ -32,11 +32,9 @@ public class EurekaServerRunner {
     private static Logger logger = LoggerFactory.getLogger(EurekaServerRunner.class);
 
     public static void main(String[] args) {
-        logger.info("***************** Eureka Server Start ******************");
         SpringApplication app = new SpringApplication(EurekaServerRunner.class);
         //app.setShowBanner(false);
         app.run(args);
-        logger.info("***************** Eureka Server End ********************");
     }
 
 }

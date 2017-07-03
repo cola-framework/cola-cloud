@@ -34,11 +34,9 @@ public class ConfigurationServerRunner {
     private static Logger logger = LoggerFactory.getLogger(ConfigurationServerRunner.class);
 
     public static void main(String[] args) {
-        logger.info("************ Cola Configuration Server Start *************");
         SpringApplication app = new SpringApplication(ConfigurationServerRunner.class);
         //app.setShowBanner(false);
         app.run(args);
-        logger.info("************ Cola Configuration Server End *************");
     }
 
 }
