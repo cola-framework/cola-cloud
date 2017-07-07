@@ -20,6 +20,8 @@
         <module>auth</module>
         <module>product</module>
         <module>promotion</module>
+        <module>price</module>
+        <module>stock</module>
         <module>order</module>
         <module>oms</module>
         <module>website</module>

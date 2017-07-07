@@ -16,8 +16,9 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>discovery</module>
+        <module>registration</module>
         <module>configuration</module>
+        <module>gateway</module>
         <module>monitor</module>
     </modules>
 

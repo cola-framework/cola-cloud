@@ -15,6 +15,7 @@
  */
 package com.cola.libs.jpa.test;
 
+import com.cola.libs.jpa.entity.OrderItem;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.test.entity.OrderItemTest;
@@ -25,15 +26,19 @@ import org.junit.Assert;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * cola
@@ -41,7 +46,10 @@ import java.util.List;
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = TestConfiguration.class)
+@Transactional
 public class ModelServiceTest {
+
+    private static Logger logger = LoggerFactory.getLogger(ModelServiceTest.class);
 
     @Autowired
     private ModelService modelService;
@@ -59,7 +67,7 @@ public class ModelServiceTest {
     public OutputCapture capture = new OutputCapture();
 
     @Test
-    public void signBeanCRUDTest(){
+    public void commonTest(){
 
         PriceRowTest priceRow = new PriceRowTest();
         priceRow.setPrice(new BigDecimal(10.00));
@@ -241,29 +249,25 @@ public class ModelServiceTest {
         List<Rolelp> rolelps = load1.getRolelps();
     }*/
 
-/*
+
     @Test
     public void cascadeTest(){
-
-        Role role = lazyLoadingTest.pre_init();
-        Role newRole = lazyLoadingTest.test(role.getId());
-        lazyLoadingTest.destroy(role);
-
         UUID uuid = UUID.randomUUID();
-        Product product = new Product();
+        ProductTest product = new ProductTest();
         product.setCode(uuid.toString().substring(0, 20));
         product.setLastModifiedBy(1L);
         product.setCreateBy(1L);
         product = modelService.save(product);
 
         uuid = UUID.randomUUID();
-        Order order = new Order();
+        OrderTest order = new OrderTest();
         order.setCreateBy(1L);
         order.setLastModifiedBy(1L);
         order.setCode(uuid.toString().substring(0, 20));
+        modelService.save(order);
 
-        List<OrderItem> orderItems = new ArrayList<>();
-        OrderItem orderItem = new OrderItem();
+        List<OrderItemTest> orderItems = new ArrayList<>();
+        OrderItemTest orderItem = new OrderItemTest();
         orderItem.setQuantity(1);
         orderItem.setLastModifiedBy(1L);
         orderItem.setCreateBy(1L);
@@ -274,12 +278,31 @@ public class ModelServiceTest {
         orderItem.setLastModifiedTime(new Date());
         orderItem.setDeleted(false);
         orderItems.add(orderItem);
-        order.setOrderItems(orderItems);
-        order = modelService.save(order);
+        modelService.save(orderItems);
 
-        modelService.delete(order, true);
+/*        order.setOrderItems(orderItems);
+        modelService.save(order);*/
+
+        uuid = UUID.randomUUID();
+        //order.setCode(uuid.toString().substring(0, 20));
+        orderItem.setPrice(new BigDecimal(20.00));
+        modelService.save(orderItem);
+
+        uuid = UUID.randomUUID();
+        order.setCode(uuid.toString().substring(0, 20));
+        //orderItem.setPrice(new BigDecimal(25.00));
+        modelService.save(order);
+
+        long count = flexibleSearchService.count(OrderTest.class);
+        Assert.assertEquals(count, 1L);
+
+        count = flexibleSearchService.count(OrderItemTest.class);
+        Assert.assertEquals(count, 1L);
+
+        count = flexibleSearchService.count(ProductTest.class);
+        Assert.assertEquals(count, 1L);
     }
-*/
+
 
 /*    @Test
     @Transactional

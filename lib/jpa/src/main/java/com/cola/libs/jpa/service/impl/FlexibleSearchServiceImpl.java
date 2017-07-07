@@ -20,11 +20,6 @@ import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.support.JpqlAnalysisConstant;
 import com.cola.libs.jpa.support.QueryHintConstant;
-
-import org.hibernate.SQLQuery;
-import org.hibernate.Session;
-import org.hibernate.jpa.HibernateQuery;
-import org.hibernate.transform.Transformers;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -37,23 +32,12 @@ import org.springframework.data.jpa.repository.query.QueryUtils;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import javax.persistence.Tuple;
 import javax.persistence.TypedQuery;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Path;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
+import java.util.*;
 
 /**
  * cola
@@ -73,7 +57,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     private <T> Query createQuery(String jpql, Class<T> tClass){
         if(tClass == null){
             return this.em.createQuery(jpql);
-        }else{
+        }/*else{
             if(!Object[].class.equals(tClass) && !Tuple.class.equals(tClass)){
                 Query query = this.em.createQuery(jpql);
                 if(Map.class.isAssignableFrom(tClass)){
@@ -89,7 +73,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                 }else{
                     Session session = (Session)this.em.getDelegate();
                     if(session != null){
-                        org.hibernate.Query hqlQuery = session.createQuery(jpql);
+                        org.hibernate.query.Query hqlQuery = session.createQuery(jpql);
                         if(hqlQuery != null && hqlQuery.getReturnTypes().length > 1){
                             HibernateQuery hibernateQuery = query.unwrap(HibernateQuery.class);
                             if(hibernateQuery != null){
@@ -101,7 +85,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                 query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
                 return query;
             }
-        }
+        }*/
         TypedQuery<T> query = this.em.createQuery(jpql, tClass);
         query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
         return query;
@@ -110,21 +94,19 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     private <T> Query createNativeQuery(String sql, Class<T> tClass){
         if(tClass == null){
             return this.em.createNativeQuery(sql);
-        }else{
+        }/*else{
             if(!Object[].class.equals(tClass)){
                 Query query = this.em.createNativeQuery(sql);
+                NativeQuery sqlQuery = query.unwrap(NativeQuery.class);
                 if(Map.class.isAssignableFrom(tClass)){
-                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
                     if(sqlQuery != null){
                         sqlQuery.setResultTransformer(Transformers.ALIAS_TO_ENTITY_MAP);
                     }
                 }else if(List.class.isAssignableFrom(tClass)){
-                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
                     if(sqlQuery != null){
                         sqlQuery.setResultTransformer(Transformers.TO_LIST);
                     }
                 }else{
-                    SQLQuery sqlQuery = query.unwrap(SQLQuery.class);
                     if(sqlQuery != null){
                         sqlQuery.setResultTransformer(Transformers.aliasToBean(tClass));
                     }
@@ -132,7 +114,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
                 query.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
                 return query;
             }
-        }
+        }*/
         Query nativeQuery = this.em.createNativeQuery(sql, tClass);
         nativeQuery.setHint(QueryHintConstant.CACHEABLE, this.useQueryCache);
         return nativeQuery;
@@ -141,7 +123,7 @@ public class FlexibleSearchServiceImpl implements FlexibleSearchService {
     private Query covertQueryFromFlexibleQueryBuilder(FlexibleQueryBuilder builder, Class<?> resultClass) {
         Query query = this.createQuery(builder.toJPQL(), resultClass);
         if (builder.getParamList().size() > 0) {
-            int i = 1;
+            int i = 0;
             for (Object p : builder.getParamList()) {
                 query.setParameter(i, p);
                 i++;

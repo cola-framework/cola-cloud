@@ -158,7 +158,7 @@ goto end
 
 :help
 echo.
-echo Usage:  cola app-name [start ^| stop ^| develop ^| debug] [-Djvm.args="..."] [-Drun.args="..."]
+echo Usage:  cola app-name [start ^| stop ^| develop ^| debug] [debug remote port] [-Djvm.args="..."] [-Drun.args="..."]
 echo.
 echo Sample:
 echo         1.if you want to start cola-discovery application node.

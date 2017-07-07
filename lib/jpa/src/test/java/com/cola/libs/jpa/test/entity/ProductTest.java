@@ -20,7 +20,7 @@ public class ProductTest extends AbstractEntity {
     @Column(length = 20, nullable = false)
     private String code;
 
-    @OneToMany(cascade = { CascadeType.ALL}, mappedBy ="product")
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="product")
     private List<PriceRowTest> priceRows;
 
     /**

@@ -9,8 +9,8 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.platform.discovery</groupId>
-    <artifactId>cola-discovery</artifactId>
+    <groupId>com.cola.platform.registration</groupId>
+    <artifactId>cola-registration</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>

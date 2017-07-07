@@ -103,7 +103,6 @@ public class ModelServiceImpl implements ModelService {
         if(entityInformation.isNew(entity)) {
             this.setDefaultValue(entity, new ArrayList<>());
             em.persist(entity);
-            //em.refresh(entity);
         } else {
             entity.setLastModifiedTime(new Date());
             entity = em.merge(entity);

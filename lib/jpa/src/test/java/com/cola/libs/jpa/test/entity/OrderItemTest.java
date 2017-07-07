@@ -22,7 +22,7 @@ public class OrderItemTest extends AbstractEntity {
     @JoinColumn(name="order_id", nullable = false)
     private OrderTest order;
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
+    @ManyToOne(cascade = {}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="product_id", nullable = false)
     private ProductTest product;
 

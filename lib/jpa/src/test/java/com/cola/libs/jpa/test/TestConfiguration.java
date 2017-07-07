@@ -17,6 +17,7 @@ package com.cola.libs.jpa.test;
 
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.domain.EntityScan;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -31,8 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("classpath:hikariCP.properties")
 @EnableAutoConfiguration
 @EnableTransactionManagement
-//@EntityScan(basePackages = {"com.cola.libs.jpa.test.entity"})
-@ComponentScan(basePackages = {"com.cola.libs.jpa.test.entity"})
+@EntityScan(basePackages = {"com.cola.libs.jpa.test.entity"})
 public class TestConfiguration {
 
     @Bean
