@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration debug="false">
-    <!-- spring boot default logback configuration -->
+    <!-- spring boot default logback config -->
     <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
 
     <!--定义日志文件的存储地址 勿在 LogBack 的配置中使用相对路径-->

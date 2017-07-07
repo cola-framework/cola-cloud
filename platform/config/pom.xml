@@ -9,14 +9,18 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.platform.registration</groupId>
-    <artifactId>cola-registration</artifactId>
+    <groupId>com.cola.platform.config</groupId>
+    <artifactId>cola-config</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-eureka-server</artifactId>
+            <artifactId>spring-cloud-config-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-eureka</artifactId>
         </dependency>
     </dependencies>
 
