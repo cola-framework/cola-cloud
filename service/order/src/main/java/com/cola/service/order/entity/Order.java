@@ -13,10 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entity;
+package com.cola.service.order.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Cacheable;
@@ -31,54 +32,64 @@ import javax.persistence.InheritanceType;
 import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
-import javax.persistence.NamedSubgraph;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 /**
  * cola
- * Created by jiachen.shi on 6/21/2016.
+ * Created by jiachen.shi on 7/25/2016.
  */
 @Entity
 @Cacheable
-@Table(name = "t_role", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "code"})})
+@Table(name = "t_order", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("role")
-@NamedEntityGraphs(value = {
-        @NamedEntityGraph(name = "role.rolelps",
-                attributeNodes = @NamedAttributeNode(value = "rolelps", subgraph = "rolelps.language"),
-                subgraphs = {@NamedSubgraph(name = "rolelps.language", attributeNodes = {@NamedAttributeNode("language")})})})
-public class Role extends AbstractEntity {
+@DiscriminatorValue("order")
+@NamedEntityGraphs(value = {@NamedEntityGraph(name = "order.orderItems", attributeNodes = @NamedAttributeNode("orderItems"))})
+public class Order extends AbstractEntity {
 
     @Column(length = 20, nullable = false)
     private String code;
 
-    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="role")
-    private List<Rolelp> rolelps;
+    @Column(name = "total_price", nullable = false)
+    private BigDecimal totalPrice;
 
-    /**
-     * Gets code.
-     * @return the code
-     */
+    @Column(name = "total_discount", nullable = false)
+    private BigDecimal totalDiscount;
+
+    @OneToMany(cascade = {CascadeType.ALL}, mappedBy ="order")
+    private List<OrderItem> orderItems;
+
+    public BigDecimal getTotalPrice() {
+        return totalPrice;
+    }
+
+    public void setTotalPrice(BigDecimal totalPrice) {
+        this.totalPrice = totalPrice;
+    }
+
+    public BigDecimal getTotalDiscount() {
+        return totalDiscount;
+    }
+
+    public void setTotalDiscount(BigDecimal totalDiscount) {
+        this.totalDiscount = totalDiscount;
+    }
+
     public String getCode() {
         return code;
     }
 
-    /**
-     * Sets code.
-     * @param code the code
-     */
     public void setCode(String code) {
         this.code = code;
     }
 
-    public List<Rolelp> getRolelps() {
-        return rolelps;
+    public List<OrderItem> getOrderItems() {
+        return orderItems;
     }
 
-    public void setRolelps(List<Rolelp> rolelps) {
-        this.rolelps = rolelps;
+    public void setOrderItems(List<OrderItem> orderItems) {
+        this.orderItems = orderItems;
     }
 }

@@ -13,15 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entity;
+package com.cola.service.website.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
-import com.cola.libs.jpa.entity.PriceRow;
-
-import java.util.List;
 
 import javax.persistence.Cacheable;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.DiscriminatorColumn;
 import javax.persistence.DiscriminatorType;
@@ -29,10 +25,6 @@ import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
-import javax.persistence.NamedAttributeNode;
-import javax.persistence.NamedEntityGraph;
-import javax.persistence.NamedEntityGraphs;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
@@ -42,40 +34,28 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Cacheable
-@Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type","code"})})
+@Table(name = "t_language", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "iso_code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("product")
-@NamedEntityGraphs(value = {@NamedEntityGraph(name = "product.priceRows", attributeNodes = @NamedAttributeNode("priceRows"))})
-public class Product extends AbstractEntity {
+@DiscriminatorValue("language")
+public class Language extends AbstractEntity {
 
-    @Column(length = 20, nullable = false)
-    private String code;
-
-    @OneToMany(cascade = { CascadeType.ALL}, mappedBy ="product")
-    private List<PriceRow> priceRows;
+    @Column(name="iso_code", length = 20, nullable = false)
+    private String isoCode;
 
     /**
-     * Gets code.
-     * @return the code
+     * Gets iso code.
+     * @return the iso code
      */
-    public String getCode() {
-        return code;
+    public String getIsoCode() {
+        return isoCode;
     }
 
     /**
-     * Sets code.
-     * @param code the code
+     * Sets iso code.
+     * @param isoCode the iso code
      */
-    public void setCode(String code) {
-        this.code = code;
-    }
-
-    public List<PriceRow> getPriceRows() {
-        return priceRows;
-    }
-
-    public void setPriceRows(List<PriceRow> priceRows) {
-        this.priceRows = priceRows;
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
     }
 }

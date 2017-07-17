@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entity;
+package com.cola.service.user.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
-import com.cola.libs.jpa.entity.Language;
-import com.cola.libs.jpa.entity.Role;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -44,19 +42,16 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Cacheable
-@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "lang_id", "role_id"})}, indexes = {@Index(name="index_role", columnList = "table_type, role_id")})
+@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "role_id"})}, indexes = {@Index(name="index_role", columnList = "table_type, role_id")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
 @DiscriminatorValue("role_lp")
 @NamedEntityGraphs(value = {
-        @NamedEntityGraph(name = "rolelp.language", attributeNodes = @NamedAttributeNode(value = "language")),
-        @NamedEntityGraph(name = "rolelp.role", attributeNodes = @NamedAttributeNode(value = "role")),
-        @NamedEntityGraph(name = "rolelp.all", attributeNodes = {@NamedAttributeNode(value = "role"), @NamedAttributeNode(value = "language")})})
+        @NamedEntityGraph(name = "rolelp.role", attributeNodes = @NamedAttributeNode(value = "role"))})
 public class Rolelp extends AbstractEntity {
 
-    @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name="lang_id", nullable = false)
-    private Language language;
+    @Column(length = 20, nullable = false)
+    private String isoCode;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="role_id", nullable = false)
@@ -65,12 +60,12 @@ public class Rolelp extends AbstractEntity {
     @Column(length = 50)
     private String name;
 
-    public Language getLanguage() {
-        return language;
+    public String getIsoCode() {
+        return isoCode;
     }
 
-    public void setLanguage(Language language) {
-        this.language = language;
+    public void setIsoCode(String isoCode) {
+        this.isoCode = isoCode;
     }
 
     public Role getRole() {

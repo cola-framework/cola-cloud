@@ -13,30 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.platform.configuration;
+package com.cola.service.stock;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.config.server.EnableConfigServer;
-import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
+import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
+import org.springframework.cloud.netflix.feign.EnableFeignClients;
 
 /**
  * cola
- * Created by jiachen.shi on 6/16/2016.
+ * Created by jiachen.shi on 11/2/2016.
  */
 @SpringBootApplication
-@EnableConfigServer
-@EnableEurekaClient
-public class ConfigurationServerRunner {
+@EnableDiscoveryClient
+@EnableFeignClients
+public class WebApplicationRunner {
 
-    private static Logger logger = LoggerFactory.getLogger(ConfigurationServerRunner.class);
+    private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);
 
     public static void main(String[] args) {
-        SpringApplication app = new SpringApplication(ConfigurationServerRunner.class);
-        //app.setShowBanner(false);
-        app.run(args);
+        logger.info("**************** WebApplication Cola-Stock Start *****************");
+        SpringApplication.run(WebApplicationRunner.class, args);
+        logger.info("***************** WebApplication Cola-Stock End ******************");
     }
 
 }

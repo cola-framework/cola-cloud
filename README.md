@@ -46,7 +46,9 @@
 - Logging管理框架 -- Logback/ELK<br/>
 - 规则引擎框架 -- drools<br/>
 - 搜索引擎框架 -- Solr/Elasticsearch<br/>
+- 后台管理前端框架 -- AdminLTE<br/>
 - 数据库 -- MySQL<br/>
+
 
 
 # 服务编译/构建
@@ -59,13 +61,31 @@
 ```
 \cola\bin>cola -help
 ```
-服务启动命令如下：
+或
 ```
-\cola\bin>cola discovery 0.0.1 start
+\cola\bin>cola --help
 ```
-服务停止命令如下：
+或
 ```
-\cola\bin>cola discovery 0.0.1 stop
+\cola\bin>cola /?
 ```
-建议开发人员直接在项目下执行命令：
-\cola\platform\discovery>mvn spring-boot:run
+命令格式：
+```
+cola app-name [start ^| stop ^| develop ^| debug] [debug remote port] [-Djvm.args="..."] [-Drun.args="..."]
+```
+服务启动：
+```
+\cola\bin>cola registry start
+```
+服务停止：
+```
+\cola\bin>cola registry stop
+```
+建议开发人员使用develop或者debug模式启动服务
+```
+\cola\bin>cola user develop
+```
+或
+```
+\cola\bin>cola user debug
+```

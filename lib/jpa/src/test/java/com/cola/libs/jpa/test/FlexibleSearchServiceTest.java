@@ -15,18 +15,11 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entity.Language;
-import com.cola.libs.jpa.entity.Product;
-import com.cola.libs.jpa.entity.Role;
-import com.cola.libs.jpa.entity.Rolelp;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
-
-import com.cola.libs.jpa.support.FlexibleQueryBuilder;
 import com.cola.libs.jpa.test.entity.OrderItemTest;
 import com.cola.libs.jpa.test.entity.OrderTest;
 import com.cola.libs.jpa.test.entity.ProductTest;
-import com.sun.tools.corba.se.idl.constExpr.Or;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -34,10 +27,6 @@ import org.junit.runner.RunWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.transaction.annotation.Transactional;
@@ -113,7 +102,7 @@ public class FlexibleSearchServiceTest {
     }
 
 
-    @Test
+/*    @Test
     public void entityGraphTest(){
         Map<String,Object> properties = new HashMap<>();
         properties.put("javax.persistence.fetchgraph", modelService.getEntityGraph("role.rolelps"));
@@ -145,7 +134,7 @@ public class FlexibleSearchServiceTest {
         String sql = "select r.code, rl.name from t_role_lp rl left join t_role r on (rl.role_id=r.id)";
         Iterable<List> lists = flexibleSearchService.nativeQuery(sql, List.class);
 
-    }
+    }*/
 
     @Test
     public void countTest(){
@@ -165,7 +154,7 @@ public class FlexibleSearchServiceTest {
         Assert.assertEquals(count, 0L);
     }
 
-    @Test
+/*    @Test
     @Transactional(readOnly = true)
     public void complexTest(){
         String jpql = "select max(name) from Rolelp lp where lp.role=?";
@@ -207,6 +196,6 @@ public class FlexibleSearchServiceTest {
         Iterable<List> query3 = flexibleSearchService.query(jpql, List.class);
 
         Iterable<TestBean> query4 = flexibleSearchService.query(jpql, TestBean.class);
-    }
+    }*/
 
 }

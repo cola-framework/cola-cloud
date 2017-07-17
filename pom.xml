@@ -66,7 +66,7 @@
         <drools.version>6.5.0.Final</drools.version>
         <swagger2.version>2.7.0</swagger2.version>
         <druid.version>1.0.31</druid.version>
-        <ignite.version>1.7.0</ignite.version>
+        <ignite.version>1.8.0</ignite.version>
         <quartz.version>2.3.0</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
         <ignite-hibernate.version>1.2.0-incubating</ignite-hibernate.version>

@@ -13,9 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entity;
+package com.cola.service.product.entity;
+
+import com.cola.libs.jpa.entity.AbstractEntity;
 
 import java.math.BigDecimal;
+import java.util.Date;
 
 import javax.persistence.Cacheable;
 import javax.persistence.CascadeType;
@@ -34,6 +37,8 @@ import javax.persistence.NamedAttributeNode;
 import javax.persistence.NamedEntityGraph;
 import javax.persistence.NamedEntityGraphs;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 
 /**
  * cola
@@ -41,72 +46,35 @@ import javax.persistence.Table;
  */
 @Entity
 @Cacheable
-@Table(name = "t_order_items", indexes = {@Index(name = "index_order", columnList = "table_type, order_id")})
+@Table(name = "t_price_rows", indexes = {@Index(name="index_table_type", columnList = "table_type")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("order_items")
+@DiscriminatorValue("price_rows")
 @NamedEntityGraphs(value = {
-        @NamedEntityGraph(name = "orderItem.order", attributeNodes = @NamedAttributeNode(value = "order"))})
-public class OrderItem extends AbstractEntity {
-
-    @ManyToOne(cascade = {CascadeType.MERGE, CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name="order_id", nullable = false)
-    private Order order;
+        @NamedEntityGraph(name = "priceRow.product", attributeNodes = @NamedAttributeNode(value = "product"))})
+public class PriceRow extends AbstractEntity {
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
     @JoinColumn(name="product_id", nullable = false)
     private Product product;
 
-    @Column(name = "quantity", nullable = false)
-    private Integer quantity;
-
     @Column(name = "price", nullable = false)
     private BigDecimal price;
 
-    @Column(name = "total_price", nullable = false)
-    private BigDecimal totalPrice;
+    @Column(name = "start_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date startTime;
 
-    @Column(name = "discount", nullable = false)
-    private BigDecimal discout;
-
-    public BigDecimal getTotalPrice() {
-        return totalPrice;
-    }
-
-    public void setTotalPrice(BigDecimal totalPrice) {
-        this.totalPrice = totalPrice;
-    }
-
-    public BigDecimal getDiscout() {
-        return discout;
-    }
-
-    public void setDiscout(BigDecimal discout) {
-        this.discout = discout;
-    }
-
-    public Order getOrder() {
-        return order;
-    }
-
-    public void setOrder(Order order) {
-        this.order = order;
-    }
+    @Column(name = "end_time")
+    @Temporal(TemporalType.TIMESTAMP)
+    private Date endTime;
 
     public Product getProduct() {
         return product;
     }
 
-    public void setProduct(Product product) {
+    public void getsetProduct(Product product) {
         this.product = product;
-    }
-
-    public Integer getQuantity() {
-        return quantity;
-    }
-
-    public void setQuantity(Integer quantity) {
-        this.quantity = quantity;
     }
 
     public BigDecimal getPrice() {
@@ -115,5 +83,21 @@ public class OrderItem extends AbstractEntity {
 
     public void setPrice(BigDecimal price) {
         this.price = price;
+    }
+
+    public Date getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(Date startTime) {
+        this.startTime = startTime;
+    }
+
+    public Date getEndTime() {
+        return endTime;
+    }
+
+    public void setEndTime(Date endTime) {
+        this.endTime = endTime;
     }
 }

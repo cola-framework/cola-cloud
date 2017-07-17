@@ -15,10 +15,19 @@
  */
 package com.cola.libs.beans.web.context;
 
+import java.util.Map;
+import java.util.Objects;
+
 /**
  * cola
  * Created by jiachen.shi on 7/25/2016.
  */
 public class ApplicationContext {
+
+    public static ThreadLocal<Map<String,Object>> threadLocal = new ThreadLocal<Map<String, Object>>();
+
+    public static Map<String, Object> getCurrentContext(){
+        return threadLocal.get();
+    }
 
 }

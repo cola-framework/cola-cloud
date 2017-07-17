@@ -15,12 +15,16 @@
  */
 package com.cola.libs.beans.web.restful;
 
+import java.io.Serializable;
+import java.util.Map;
+
 /**
  * cola
  * Created by jiachen.shi on 6/20/2016.
  */
 public class ResponseMessage<T> {
 
+    private Map<String, Serializable> applicationContext;
     private ResponseHeader header;
     private T body;
 
@@ -38,5 +42,13 @@ public class ResponseMessage<T> {
 
     public void setBody(T body) {
         this.body = body;
+    }
+
+    public Map<String, Serializable> getApplicationContext() {
+        return applicationContext;
+    }
+
+    public void setApplicationContext(Map<String, Serializable> applicationContext) {
+        this.applicationContext = applicationContext;
     }
 }

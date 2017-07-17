@@ -15,7 +15,6 @@
  */
 package com.cola.libs.jpa.test;
 
-import com.cola.libs.jpa.entity.OrderItem;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.test.entity.OrderItemTest;

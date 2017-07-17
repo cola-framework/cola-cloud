@@ -13,20 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.jpa.entity;
+package com.cola.service.order.entity;
 
 import com.cola.libs.jpa.entity.AbstractEntity;
 
-import javax.persistence.Cacheable;
-import javax.persistence.Column;
-import javax.persistence.DiscriminatorColumn;
-import javax.persistence.DiscriminatorType;
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.Inheritance;
-import javax.persistence.InheritanceType;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
+import java.util.List;
 
 /**
  * cola
@@ -34,28 +26,30 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Cacheable
-@Table(name = "t_language", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "iso_code"})})
+@Table(name = "t_product", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type","code"})})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
-@DiscriminatorValue("language")
-public class Language extends AbstractEntity {
+@DiscriminatorValue("product")
+@NamedEntityGraphs(value = {@NamedEntityGraph(name = "product.priceRows", attributeNodes = @NamedAttributeNode("priceRows"))})
+public class Product extends AbstractEntity {
 
-    @Column(name="iso_code", length = 20, nullable = false)
-    private String isoCode;
+    @Column(length = 20, nullable = false)
+    private String code;
 
     /**
-     * Gets iso code.
-     * @return the iso code
+     * Gets code.
+     * @return the code
      */
-    public String getIsoCode() {
-        return isoCode;
+    public String getCode() {
+        return code;
     }
 
     /**
-     * Sets iso code.
-     * @param isoCode the iso code
+     * Sets code.
+     * @param code the code
      */
-    public void setIsoCode(String isoCode) {
-        this.isoCode = isoCode;
+    public void setCode(String code) {
+        this.code = code;
     }
+
 }
