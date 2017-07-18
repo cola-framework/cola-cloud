@@ -36,10 +36,8 @@ public class MonitorServerRunner {
     private static Logger logger = LoggerFactory.getLogger(MonitorServerRunner.class);
 
     public static void main(String[] args) {
-        logger.info("************ Cola Monitor Server Start *************");
         SpringApplication app = new SpringApplication(MonitorServerRunner.class);
         //app.setShowBanner(false);
         app.run(args);
-        logger.info("************* Cola Monitor Server End **************");
     }
 }
