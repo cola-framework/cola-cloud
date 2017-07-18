@@ -46,10 +46,6 @@ import javax.persistence.UniqueConstraint;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
 @DiscriminatorValue("role")
-@NamedEntityGraphs(value = {
-        @NamedEntityGraph(name = "role.rolelps",
-                attributeNodes = @NamedAttributeNode(value = "rolelps", subgraph = "rolelps.language"),
-                subgraphs = {@NamedSubgraph(name = "rolelps.language", attributeNodes = {@NamedAttributeNode("language")})})})
 public class Role extends AbstractEntity {
 
     @Column(length = 20, nullable = false)

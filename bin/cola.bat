@@ -162,19 +162,19 @@ echo Usage:  cola app-name [start ^| stop ^| develop ^| debug] [debug remote por
 echo.
 echo Sample:
 echo         1.if you want to start cola-discovery application node.
-echo           cola discovery start
+echo           cola registry start
 echo.
 echo         2.if you want to stop cola-discovery application node.
-echo           cola discovery stop
+echo           cola registry stop
 echo.
 echo         3.if you want to debug cola-discovery application node.
 echo           cola discovery debug 9000
 echo.
 echo         4.if you want to start cola-discovery application node via develop mode.
-echo           cola discovery develop
+echo           cola registry develop
 echo.
 echo         5.if you want to add arguments to cola-discovery application node.
-echo           cola discovery start -Drun.args="--server.port=8080 --spring.application.name=test" -Djvm.args="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=9000,suspend=n"
+echo           cola registry start -Drun.args="--server.port=8080 --spring.application.name=test" -Djvm.args="-Xdebug -Xrunjdwp:server=y,transport=dt_socket,address=9000,suspend=n"
 goto end
 
 :paramError
