@@ -13,4 +13,17 @@
     <artifactId>cola-user</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cola.libs.jpa</groupId>
+            <artifactId>cola-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cola.api.i18n</groupId>
+            <artifactId>cola-i18n-api</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -1,10 +1,10 @@
 package com.cola.service.user.service.impl;
 
 import com.cola.libs.beans.vo.UserBean;
-import com.cola.service.user.entity.User;
 import com.cola.libs.jpa.service.FlexibleSearchService;
 import com.cola.libs.jpa.service.ModelService;
 import com.cola.libs.jpa.support.FlexibleQueryBuilder;
+import com.cola.service.user.entity.User;
 import com.cola.service.user.service.UserService;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
@@ -73,6 +73,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional(readOnly = true)
     public UserBean getUserByNameOrMobileOrEmail(String input) {
+
         if(StringUtils.isNotEmpty(input)){
             String hql = "from User u where u.name = ? or u.mobile = ? or u.email = ? ";
             FlexibleQueryBuilder builder = new FlexibleQueryBuilder(hql);

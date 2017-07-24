@@ -13,4 +13,12 @@
     <artifactId>cola-website</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>com.cola.libs.jpa</groupId>
+            <artifactId>cola-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+    </dependencies>
+
 </project>

@@ -16,6 +16,7 @@
     <packaging>pom</packaging>
 
     <modules>
+        <module>i18n</module>
         <module>user</module>
         <module>auth</module>
         <module>product</module>
@@ -49,13 +50,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.jpa</groupId>
-            <artifactId>cola-jpa</artifactId>
+            <groupId>com.cola.libs.logging</groupId>
+            <artifactId>cola-logging</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.logging</groupId>
-            <artifactId>cola-logging</artifactId>
+            <groupId>com.cola.libs.session</groupId>
+            <artifactId>cola-session</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

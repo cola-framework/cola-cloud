@@ -19,6 +19,11 @@
             <artifactId>cola-user</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.cola.libs.jpa</groupId>
+            <artifactId>cola-jpa</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

@@ -19,6 +19,8 @@
         <module>apidoc</module>
         <module>beans</module>
         <module>logging</module>
+        <module>httpclient</module>
+        <module>session</module>
         <module>cache</module>
         <module>cronjob</module>
         <module>jpa</module>
