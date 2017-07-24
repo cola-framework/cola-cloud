@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
  * Created by jiachen.shi on 6/27/2017.
  */
 @FeignClient("user")
+@RequestMapping("/user")
 public interface UserService {
 
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
