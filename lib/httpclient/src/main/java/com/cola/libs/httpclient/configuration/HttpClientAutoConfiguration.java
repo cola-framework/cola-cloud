@@ -9,6 +9,9 @@ import org.springframework.cloud.netflix.feign.FeignAutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
+
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * Created by jiachen.shi on 7/24/2017.
@@ -25,6 +28,9 @@ public class HttpClientAutoConfiguration {
             if (!Strings.isNullOrEmpty(sessionId)) {
                 requestTemplate.header("Cookie", "SESSION=" + sessionId);
             }
+
+            HttpServletRequest request = ((ServletRequestAttributes)RequestContextHolder.getRequestAttributes()).getRequest();
+            requestTemplate.header("Accept-Language", request.getHeader("Accept-Language"));
         };
     }
 

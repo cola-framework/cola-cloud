@@ -24,7 +24,6 @@ import java.util.Map;
  */
 public class ResponseMessage<T> {
 
-    private Map<String, Serializable> applicationContext;
     private ResponseHeader header;
     private T body;
 
@@ -44,11 +43,4 @@ public class ResponseMessage<T> {
         this.body = body;
     }
 
-    public Map<String, Serializable> getApplicationContext() {
-        return applicationContext;
-    }
-
-    public void setApplicationContext(Map<String, Serializable> applicationContext) {
-        this.applicationContext = applicationContext;
-    }
 }
