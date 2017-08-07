@@ -1,8 +1,10 @@
 package com.cola.api.i18n;
 
+import com.cola.libs.beans.web.restful.ResponseMessage;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -13,9 +15,12 @@ import java.util.Map;
 public interface I18nService {
 
     @RequestMapping(value = "/{website}/{page}", method = RequestMethod.GET)
-    @ResponseBody Map<String, String> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @RequestParam("attributes") String[] attributes);
+    @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @RequestParam("attributes") List<String> attributes);
 
     @RequestMapping(value ="/{website}/{page}/{attribute}", method = RequestMethod.GET)
-    @ResponseBody Map<String, String> geti18nMessage(@PathVariable("website")  String website, @PathVariable("page") String page, @PathVariable("attribute") String attribute, @RequestParam(value="args", required = false) Object[] args);
+    @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@PathVariable("website")  String website, @PathVariable("page") String page, @PathVariable("attribute") String attribute, @RequestParam(value="args", required = false) List<Object> args);
+
+    @RequestMapping(method = RequestMethod.GET)
+    @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@RequestParam("attributes") List<String> attributes);
 
 }

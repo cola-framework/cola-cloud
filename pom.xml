@@ -19,6 +19,7 @@
     <modules>
         <module>api</module>
         <module>lib</module>
+        <module>web</module>
         <module>service</module>
         <module>platform</module>
     </modules>
@@ -32,6 +33,7 @@
 
         <commons-lang.version>2.6</commons-lang.version>
         <commons-codec.version>1.6</commons-codec.version>
+        <commons-collections.version>3.2.2</commons-collections.version>
         <servlet.version>2.5</servlet.version>
         <junit.version>4.12</junit.version>
         <xstream.version>1.4.9</xstream.version>
@@ -48,7 +50,6 @@
         <hamcrest.version>1.1</hamcrest.version>
         <hystrix.version>1.5.6</hystrix.version>
         <servo.version>0.10.1</servo.version>
-        <httpclient.version>4.3.4</httpclient.version>
         <jackson.version>2.8.3</jackson.version>
         <httpclient.version>4.3.6</httpclient.version>
         <slf4j.version>1.7.10</slf4j.version>
@@ -70,6 +71,7 @@
         <ignite.version>1.8.0</ignite.version>
         <quartz.version>2.3.0</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
+        <shiro.version>1.4.0</shiro.version>
         <openfeign.version>9.5.0</openfeign.version>
         <ignite-hibernate.version>1.2.0-incubating</ignite-hibernate.version>
 
@@ -82,6 +84,7 @@
         <spring.version>4.3.9.RELEASE</spring.version>
         <spring-boot.version>1.5.4.RELEASE</spring-boot.version>
         <spring-cloud.version>1.3.1.RELEASE</spring-cloud.version>
+        <spring-cloud-security.version>1.2.1.RELEASE</spring-cloud-security.version>
     </properties>
 
     <build>
@@ -301,6 +304,12 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-collections</groupId>
+                <artifactId>commons-collections</artifactId>
+                <version>${commons-collections.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -681,6 +690,7 @@
                 <artifactId>feign-okhttp</artifactId>
                 <version>${openfeign.version}</version>
             </dependency>
+
             <!-- Drools -->
             <dependency>
                 <groupId>org.drools</groupId>
@@ -723,6 +733,17 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- shiro -->
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-core</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.shiro</groupId>
+                <artifactId>shiro-spring</artifactId>
+                <version>${shiro.version}</version>
+            </dependency>
 
             <!-- aspects -->
             <dependency>
@@ -821,6 +842,12 @@
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-webmvc</artifactId>
                 <version>${spring.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.security</groupId>
+                <artifactId>spring-security-core</artifactId>
+                <version>${spring-security.version}</version>
                 <scope>compile</scope>
             </dependency>
             <dependency>
@@ -998,6 +1025,16 @@
                 <groupId>org.springframework.cloud</groupId>
                 <artifactId>spring-cloud-starter-zuul</artifactId>
                 <version>${spring-cloud.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-security</artifactId>
+                <version>${spring-cloud-security.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-starter-oauth2</artifactId>
+                <version>${spring-cloud-security.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>

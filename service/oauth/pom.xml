@@ -9,20 +9,24 @@
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.service.auth</groupId>
-    <artifactId>cola-auth</artifactId>
+    <groupId>com.cola.service.oauth</groupId>
+    <artifactId>cola-oauth</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.service.user</groupId>
-            <artifactId>cola-user</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
             <groupId>com.cola.libs.jpa</groupId>
             <artifactId>cola-jpa</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-security</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-oauth2</artifactId>
         </dependency>
     </dependencies>
 

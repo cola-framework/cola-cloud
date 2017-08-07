@@ -40,7 +40,7 @@ set RUN_MODE=%2
 set JVM_ARGS=
 set RUN_ARGS=
 set DEBUG_PORT=
-set JAR_FILE=*cola-%APP_NAME%-*.jar
+set JAR_FILE=*cola-%APP_NAME%-?.?.?.jar
 
 if ""%RUN_MODE%"" == ""debug"" (
 	setlocal enabledelayedexpansion

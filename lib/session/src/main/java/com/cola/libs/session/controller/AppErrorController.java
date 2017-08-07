@@ -1,13 +1,16 @@
-package com.cola.libs.session.error.controller;
+package com.cola.libs.session.controller;
 
-import com.cola.libs.beans.web.restful.ResponseHeader;
 import com.cola.libs.beans.web.restful.ResponseMessage;
-import org.springframework.boot.autoconfigure.web.*;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.boot.autoconfigure.web.ErrorController;
+import org.springframework.boot.autoconfigure.web.ErrorProperties;
+import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
 import org.springframework.core.annotation.AnnotationAwareOrderComparator;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.util.Assert;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.context.request.ServletRequestAttributes;
@@ -23,16 +26,16 @@ import java.util.Map;
  */
 @RestController
 @RequestMapping({"${server.error.path:${error.path:/error}}"})
-public class ApplicationErrorController implements ErrorController {
+public class AppErrorController implements ErrorController {
     private final ErrorProperties errorProperties;
     private final ErrorAttributes errorAttributes;
     private final List<ErrorViewResolver> errorViewResolvers;
 
-    public ApplicationErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
+    public AppErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties) {
         this(errorAttributes, errorProperties, Collections.emptyList());
     }
 
-    public ApplicationErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties, List<ErrorViewResolver> errorViewResolvers) {
+    public AppErrorController(ErrorAttributes errorAttributes, ErrorProperties errorProperties, List<ErrorViewResolver> errorViewResolvers) {
         Assert.notNull(errorAttributes, "ErrorAttributes must not be null");
         this.errorAttributes = errorAttributes;
         this.errorViewResolvers = this.sortErrorViewResolvers(errorViewResolvers);
@@ -68,19 +71,11 @@ public class ApplicationErrorController implements ErrorController {
         }
     }
 
-    @RequestMapping
+    @RequestMapping(method = RequestMethod.GET)
     public @ResponseBody ResponseMessage<Map<String, Object>> error(HttpServletRequest request) {
         Map<String, Object> body = this.getErrorAttributes(request, this.isIncludeStackTrace(request, MediaType.ALL));
-        ResponseMessage result = new ResponseMessage();
-        ResponseHeader header = new ResponseHeader();
-        result.setHeader(header);
-        header.setCode(getStatus(request).value());
-        Object message = body.get("message");
-        if(null != message){
-            header.setMessage((String)message);
-        }
-        result.setBody(body);
-        return result;
+        HttpStatus status = this.getStatus(request);
+        return ResponseMessage.status(status.value(), body.get("message")!=null?(String)body.get("message"):null, body);
     }
 
     protected boolean isIncludeStackTrace(HttpServletRequest request, MediaType produces) {

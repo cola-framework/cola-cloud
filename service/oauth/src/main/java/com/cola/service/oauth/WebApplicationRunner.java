@@ -13,22 +13,20 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.auth;
+package com.cola.service.oauth;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
-import org.springframework.cloud.netflix.feign.EnableFeignClients;
+import org.springframework.security.oauth2.config.annotation.web.configuration.EnableAuthorizationServer;
 
 /**
  * cola
  * Created by jiachen.shi on 6/23/2016.
  */
 @SpringBootApplication
-@EnableDiscoveryClient
-@EnableFeignClients
+@EnableAuthorizationServer
 public class WebApplicationRunner {
 
     private static Logger logger = LoggerFactory.getLogger(WebApplicationRunner.class);

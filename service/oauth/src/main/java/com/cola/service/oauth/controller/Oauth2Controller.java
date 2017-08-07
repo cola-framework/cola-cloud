@@ -13,11 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.service.auth.controller;
+package com.cola.service.oauth.controller;
 
-import com.cola.libs.beans.web.restful.ResponseHeader;
 import com.cola.libs.beans.web.restful.ResponseMessage;
-import com.cola.libs.beans.enums.ResponseCode;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -41,25 +39,11 @@ public class Oauth2Controller {
     public
     @ResponseBody
     ResponseMessage oauth2(@RequestHeader("providerType") String providerType, @RequestHeader("accessToken") String accessToken) {
-
-        ResponseMessage responseMessage = new ResponseMessage();
-        ResponseHeader responseHeader = new ResponseHeader();
-        responseMessage.setHeader(responseHeader);
-
-        responseHeader.setCode(ResponseCode.SUCCESS.getCode());
-
-        return responseMessage;
+        return ResponseMessage.ok(null);
     }
 
     @RequestMapping(value = "/token")
     public @ResponseBody ResponseMessage token(){
-
-        ResponseMessage responseMessage = new ResponseMessage();
-        ResponseHeader responseHeader = new ResponseHeader();
-        responseMessage.setHeader(responseHeader);
-
-        responseHeader.setCode(ResponseCode.SUCCESS.getCode());
-
-        return responseMessage;
+        return ResponseMessage.ok(null);
     }
 }

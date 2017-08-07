@@ -18,7 +18,6 @@ package com.cola.libs.cache.configuration;
 import com.cola.libs.cache.management.CacheManagerFactory;
 import com.cola.libs.cache.management.IgniteCacheManager;
 import com.cola.libs.cache.management.RedisCacheManager;
-
 import org.apache.ignite.cache.CacheAtomicityMode;
 import org.apache.ignite.cache.CacheMode;
 import org.apache.ignite.configuration.IgniteConfiguration;
@@ -29,7 +28,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
-import org.springframework.boot.autoconfigure.condition.*;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.data.redis.RedisAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.HibernateJpaAutoConfiguration;
 import org.springframework.boot.autoconfigure.orm.jpa.JpaProperties;
@@ -37,7 +38,10 @@ import org.springframework.boot.autoconfigure.transaction.TransactionManagerCust
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.orm.jpa.EntityManagerFactoryBuilder;
 import org.springframework.cache.CacheManager;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
+import org.springframework.context.annotation.Primary;
 import org.springframework.data.redis.connection.RedisConnectionFactory;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.serializer.StringRedisSerializer;
@@ -45,11 +49,10 @@ import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.persistenceunit.DefaultPersistenceUnitManager;
 import org.springframework.transaction.jta.JtaTransactionManager;
 
+import javax.sql.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
-import javax.sql.DataSource;
 
 /**
  * cola
@@ -57,7 +60,7 @@ import javax.sql.DataSource;
  */
 @Configuration
 @AutoConfigureAfter({RedisAutoConfiguration.class})
-public class CacheAutoConfiguration extends HibernateJpaAutoConfiguration{
+public class CacheAutoConfiguration extends HibernateJpaAutoConfiguration {
 
     private static Logger logger = LoggerFactory.getLogger(CacheAutoConfiguration.class);
 
@@ -72,6 +75,17 @@ public class CacheAutoConfiguration extends HibernateJpaAutoConfiguration{
 
     public CacheAutoConfiguration(DataSource dataSource, JpaProperties jpaProperties, ObjectProvider<JtaTransactionManager> jtaTransactionManagerProvider, ObjectProvider<TransactionManagerCustomizers> transactionManagerCustomizers) {
         super(dataSource, jpaProperties, jtaTransactionManagerProvider, transactionManagerCustomizers);
+    }
+
+    @Bean
+    @Primary
+    @DependsOn("cacheManagerFactory")
+    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
+            EntityManagerFactoryBuilder factoryBuilder, DataSource dataSource) {
+        Map<String, Object> vendorProperties = getVendorProperties();
+        customizeVendorProperties(vendorProperties);
+        return factoryBuilder.dataSource(dataSource).packages(getPackagesToScan())
+                .properties(vendorProperties).jta(isJta()).build();
     }
 
     private org.apache.ignite.configuration.CacheConfiguration[] initIgniteCacheConfig(){
@@ -104,17 +118,6 @@ public class CacheAutoConfiguration extends HibernateJpaAutoConfiguration{
         }
 
         return list.toArray(new org.apache.ignite.configuration.CacheConfiguration[list.size()]);
-    }
-
-    @Bean
-    @Primary
-    @DependsOn("cacheManagerFactory")
-    public LocalContainerEntityManagerFactoryBean entityManagerFactory(
-            EntityManagerFactoryBuilder factoryBuilder, DataSource dataSource) {
-        Map<String, Object> vendorProperties = getVendorProperties();
-        customizeVendorProperties(vendorProperties);
-        return factoryBuilder.dataSource(dataSource).packages(getPackagesToScan())
-                .properties(vendorProperties).jta(isJta()).build();
     }
 
     @Bean

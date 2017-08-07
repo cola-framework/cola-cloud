@@ -15,6 +15,8 @@
  */
 package com.cola.libs.beans.web.restful;
 
+import org.springframework.util.ObjectUtils;
+
 /**
  * cola
  * Created by jiachen.shi on 6/20/2016.
@@ -23,6 +25,31 @@ public class ResponseHeader {
 
     private int code;
     private String message;
+
+    public int hashCode() {
+        return  ObjectUtils.nullSafeHashCode(this.message) * 29 +
+                this.code;
+    }
+
+    public boolean equals(Object other) {
+        if(this == other) {
+            return true;
+        } else if(null == other) {
+            return false;
+        } else {
+            ResponseHeader otherHeader = (ResponseHeader)other;
+            return this.code == otherHeader.getCode()
+                    && ObjectUtils.nullSafeEquals(this.message, otherHeader.message);
+        }
+    }
+
+    public String toString() {
+        StringBuilder builder = new StringBuilder("\"header\":{");
+        builder.append("\"code\":").append(code).append(",");
+        builder.append("\"message\":").append(this.message);
+        builder.append("}");
+        return builder.toString();
+    }
 
     public int getCode() {
         return code;

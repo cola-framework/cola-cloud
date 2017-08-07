@@ -1,15 +1,18 @@
 package com.cola.service.i18n.controller;
 
+import com.cola.libs.beans.web.restful.ResponseMessage;
 import com.cola.service.i18n.support.LocaleMessageSourceService;
 import io.swagger.annotations.*;
 import org.apache.catalina.servlet4preview.http.HttpServletRequest;
 import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,9 +28,6 @@ public class I18nController {
     @Resource
     private LocaleMessageSourceService localeMessageSourceService;
 
-    @Resource
-    private HttpServletRequest request;
-
     private String DEFAULT_WEBSITE = "default";
     private String DEFAULT_PAGE = "main";
     private String MESSAGE_SEPARATOR = ".";
@@ -37,14 +37,11 @@ public class I18nController {
     @ApiImplicitParams({
             @ApiImplicitParam(name = "website", value = "website name",  required = true, dataType = "String"),
             @ApiImplicitParam(name = "page", value = "page name", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "attributes", value = "attribute list", required = true, dataTypeClass = String[].class)
+            @ApiImplicitParam(name = "attributes", value = "attribute list", required = true, dataTypeClass = List.class)
     })
     @RequestMapping(value = "/{website}/{page}", method = RequestMethod.GET)
-    public @ResponseBody Map<String, String> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @RequestParam("attributes") String[] attributes){
+    public @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @RequestParam("attributes") List<String> attributes){
         Map<String,String> result = new HashMap<>();
-        String id = request.getSession().getId();
-        String aa = (String)request.getSession().getAttribute("aa");
-        logger.info("session-id:"+id+";aa="+aa);
         if(StringUtils.isEmpty(website)){
             website = DEFAULT_WEBSITE;
         }
@@ -56,7 +53,7 @@ public class I18nController {
                 result.put(attribute, localeMessageSourceService.getMessage(website + MESSAGE_SEPARATOR + page + MESSAGE_SEPARATOR + attribute));
             }
         }
-        return result;
+        return ResponseMessage.ok(result);
     }
 
     @ApiOperation(value="geti18nMessage", notes="get i18n message for attribute", response = Map.class)
@@ -65,10 +62,10 @@ public class I18nController {
             @ApiImplicitParam(name = "website", value = "website name", required = true, dataType = "String"),
             @ApiImplicitParam(name = "page", value = "page name", required = true, dataType = "String"),
             @ApiImplicitParam(name = "attribute", value = "attribute name", required = true, dataType = "String"),
-            @ApiImplicitParam(name = "args", value = "arguments", dataTypeClass = Object[].class)
+            @ApiImplicitParam(name = "args", value = "arguments", dataTypeClass = List.class)
     })
     @RequestMapping(value ="/{website}/{page}/{attribute}", method = RequestMethod.GET)
-    public @ResponseBody Map<String, String> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @PathVariable("attribute") String attribute, @RequestParam(value="args", required = false) Object[] args) {
+    public @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@PathVariable("website") String website, @PathVariable("page") String page, @PathVariable("attribute") String attribute, @RequestParam(value="args", required = false) List<Object> args) {
         Map<String,String> result = new HashMap<>();
         if(StringUtils.isEmpty(website)){
             website = DEFAULT_WEBSITE;
@@ -77,7 +74,22 @@ public class I18nController {
             page = DEFAULT_PAGE;
         }
         result.put(attribute, localeMessageSourceService.getMessage(website + MESSAGE_SEPARATOR + page + MESSAGE_SEPARATOR + attribute, args));
-        return result;
+        return ResponseMessage.ok(result);
     }
 
+    @ApiOperation(value="geti18nMessage", notes="get i18n message for attributes", response = Map.class)
+    @ApiResponse(code = 200, message = "OK")
+    @ApiImplicitParams({
+            @ApiImplicitParam(name = "attributes", value = "attribute name", required = true, dataTypeClass = List.class)
+    })
+    @RequestMapping(method = RequestMethod.GET)
+    public @ResponseBody ResponseMessage<Map<String, String>> geti18nMessage(@RequestParam("attributes") List<String> attributes){
+        Map<String,String> result = new HashMap<>();
+        for(String attribute:attributes){
+            if(StringUtils.isNotEmpty(attribute)){
+                result.put(attribute, localeMessageSourceService.getMessage(attribute));
+            }
+        }
+        return ResponseMessage.ok(result);
+    }
 }

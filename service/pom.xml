@@ -17,8 +17,8 @@
 
     <modules>
         <module>i18n</module>
+        <module>oauth</module>
         <module>user</module>
-        <module>auth</module>
         <module>product</module>
         <module>promotion</module>
         <module>price</module>
@@ -57,6 +57,11 @@
         <dependency>
             <groupId>com.cola.libs.session</groupId>
             <artifactId>cola-session</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.cola.web.dashboard</groupId>
+            <artifactId>cola-dashboard</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

@@ -1,17 +1,17 @@
 package com.cola.libs.session.configuration;
 
 import com.cola.libs.sessioin.interceptor.SessionContextInterceptor;
-import com.cola.libs.session.error.controller.ApplicationErrorController;
+import com.cola.libs.session.controller.AppErrorController;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnWebApplication;
-import org.springframework.boot.autoconfigure.condition.SearchStrategy;
-import org.springframework.boot.autoconfigure.web.*;
+import org.springframework.boot.autoconfigure.web.ErrorAttributes;
+import org.springframework.boot.autoconfigure.web.ErrorMvcAutoConfiguration;
+import org.springframework.boot.autoconfigure.web.ErrorViewResolver;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Primary;
 import org.springframework.util.StringUtils;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -64,8 +64,8 @@ public class WebApplicationAutoConfiguration extends WebMvcConfigurerAdapter{
     }
 
     @Bean
-    public ApplicationErrorController applicationErrorController(ErrorAttributes errorAttributes) {
-        return new ApplicationErrorController(errorAttributes, this.serverProperties.getError(), this.errorViewResolvers);
+    public AppErrorController appErrorController(ErrorAttributes errorAttributes) {
+        return new AppErrorController(errorAttributes, this.serverProperties.getError(), this.errorViewResolvers);
     }
 
 }

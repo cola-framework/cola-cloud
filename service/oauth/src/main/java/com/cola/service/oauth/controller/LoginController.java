@@ -13,32 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.cola.libs.beans.enums;
+package com.cola.service.oauth.controller;
+
+import com.cola.libs.beans.web.restful.ResponseMessage;
+import com.cola.libs.beans.vo.UserLogin;
+
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 
 /**
  * cola
- * Created by jiachen.shi on 6/20/2016.
+ * Created by jiachen.shi on 6/21/2016.
  */
-public enum ResponseCode {
+@RestController
+public class LoginController {
 
-    SUCCESS("response.header.message.success", 200),
-
-    ERROR("response.header.message.error", 500);
-
-    private String msgKey;
-    private int code;
-
-    ResponseCode(String msgKey, int code) {
-        this.msgKey = msgKey;
-        this.code = code;
-    }
-
-    public String getMsgKey() {
-        return msgKey;
-    }
-
-    public int getCode() {
-        return code;
+    public @ResponseBody
+    ResponseMessage login(@RequestBody UserLogin userLogin){
+        return ResponseMessage.ok(null);
     }
 
 }
