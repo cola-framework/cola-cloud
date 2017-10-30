@@ -36,6 +36,8 @@
         <commons-collections.version>3.2.2</commons-collections.version>
         <servlet.version>2.5</servlet.version>
         <junit.version>4.12</junit.version>
+        <assertj.version>2.6.0</assertj.version>
+        <jsoup.version>1.10.3</jsoup.version>
         <xstream.version>1.4.9</xstream.version>
         <joda-time.version>2.9.6</joda-time.version>
         <asm.version>5.0.4</asm.version>
@@ -51,6 +53,7 @@
         <hystrix.version>1.5.6</hystrix.version>
         <servo.version>0.10.1</servo.version>
         <jackson.version>2.8.3</jackson.version>
+        <jsonpath.verson>2.4.0</jsonpath.verson>
         <httpclient.version>4.3.6</httpclient.version>
         <slf4j.version>1.7.10</slf4j.version>
         <logback.version>1.1.7</logback.version>
@@ -72,6 +75,7 @@
         <quartz.version>2.3.0</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
         <shiro.version>1.4.0</shiro.version>
+        <webmagic.version>0.7.3</webmagic.version>
         <openfeign.version>9.5.0</openfeign.version>
         <ignite-hibernate.version>1.2.0-incubating</ignite-hibernate.version>
 
@@ -325,6 +329,18 @@
                 <scope>compile</scope>
             </dependency>
             <dependency>
+                <groupId>org.assertj</groupId>
+                <artifactId>assertj-core</artifactId>
+                <version>${assertj.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jsoup</groupId>
+                <artifactId>jsoup</artifactId>
+                <version>${jsoup.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
                 <groupId>com.thoughtworks.xstream</groupId>
                 <artifactId>xstream</artifactId>
                 <version>${xstream.version}</version>
@@ -536,6 +552,14 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- jsonpath -->
+            <dependency>
+                <groupId>com.jayway.jsonpath</groupId>
+                <artifactId>json-path</artifactId>
+                <version>${jsonpath.verson}</version>
+                <scope>compile</scope>
+            </dependency>
+
             <!-- Jackson -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
@@ -738,11 +762,13 @@
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-core</artifactId>
                 <version>${shiro.version}</version>
+                <scope>compile</scope>
             </dependency>
             <dependency>
                 <groupId>org.apache.shiro</groupId>
                 <artifactId>shiro-spring</artifactId>
                 <version>${shiro.version}</version>
+                <scope>compile</scope>
             </dependency>
 
             <!-- aspects -->
@@ -751,6 +777,35 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <!-- webmagic -->
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-core</artifactId>
+                <version>${webmagic.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-extension</artifactId>
+                <version>${webmagic.version}</version>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.slf4j</groupId>
+                        <artifactId>slf4j-log4j12</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>us.codecraft</groupId>
+                <artifactId>webmagic-selenium</artifactId>
+                <version>${webmagic.version}</version>
             </dependency>
 
             <!-- Spring -->
