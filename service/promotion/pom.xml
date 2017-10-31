@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.ruleengine</groupId>
+            <groupId>com.cola.lib.ruleengine</groupId>
             <artifactId>cola-ruleengine</artifactId>
             <version>${project.version}</version>
         </dependency>

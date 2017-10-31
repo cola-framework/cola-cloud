@@ -7,8 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.LocaleResolver;
 import org.springframework.web.servlet.i18n.SessionLocaleResolver;
 
-import java.util.Locale;
-
 /**
  * Created by jiachen.shi on 7/19/2017.
  */

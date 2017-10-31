@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.cola.libs.httpclient.configuration.HttpClientAutoConfiguration
+  com.cola.lib.httpclient.configuration.HttpClientAutoConfiguration

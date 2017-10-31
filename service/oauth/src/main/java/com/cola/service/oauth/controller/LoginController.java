@@ -15,8 +15,8 @@
  */
 package com.cola.service.oauth.controller;
 
-import com.cola.libs.beans.web.restful.ResponseMessage;
-import com.cola.libs.beans.vo.UserLogin;
+import com.cola.lib.beans.web.restful.ResponseMessage;
+import com.cola.lib.beans.vo.UserLogin;
 
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;

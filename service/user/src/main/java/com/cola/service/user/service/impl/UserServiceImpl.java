@@ -1,9 +1,9 @@
 package com.cola.service.user.service.impl;
 
 import com.cola.libs.beans.vo.UserBean;
-import com.cola.libs.jpa.service.FlexibleSearchService;
-import com.cola.libs.jpa.service.ModelService;
-import com.cola.libs.jpa.support.FlexibleQueryBuilder;
+import com.cola.lib.jpa.service.FlexibleSearchService;
+import com.cola.lib.jpa.service.ModelService;
+import com.cola.lib.jpa.support.FlexibleQueryBuilder;
 import com.cola.service.user.entity.User;
 import com.cola.service.user.service.UserService;
 import org.apache.commons.lang.StringUtils;

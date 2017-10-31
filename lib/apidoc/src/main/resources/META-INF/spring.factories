@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-    com.cola.libs.apidoc.configuration.Swagger2AutoConfiguration
+    com.cola.lib.apidoc.configuration.Swagger2AutoConfiguration

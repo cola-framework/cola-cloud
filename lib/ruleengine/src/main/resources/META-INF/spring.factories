@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.cola.libs.ruleengine.configruation.RuleEngineConfigruation
+  com.cola.lib.ruleengine.configruation.RuleEngineConfigruation

@@ -15,7 +15,7 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.jpa</groupId>
+            <groupId>com.cola.lib.jpa</groupId>
             <artifactId>cola-jpa</artifactId>
             <version>${project.version}</version>
         </dependency>

@@ -15,7 +15,7 @@
  */
 package com.cola.service.website.entity;
 
-import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.lib.jpa.entity.AbstractEntity;
 
 import javax.persistence.Cacheable;
 import javax.persistence.Column;

@@ -4,23 +4,23 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>cola-lib</artifactId>
-        <groupId>com.cola.libs</groupId>
+        <groupId>com.cola.lib</groupId>
         <version>0.0.1</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.cola.libs.jpa</groupId>
+    <groupId>com.cola.lib.jpa</groupId>
     <artifactId>cola-jpa</artifactId>
     <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.cache</groupId>
+            <groupId>com.cola.lib.cache</groupId>
             <artifactId>cola-cache</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.logging</groupId>
+            <groupId>com.cola.lib.logging</groupId>
             <artifactId>cola-logging</artifactId>
             <version>${project.version}</version>
         </dependency>

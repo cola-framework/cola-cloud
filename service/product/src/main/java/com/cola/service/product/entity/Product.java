@@ -15,7 +15,7 @@
  */
 package com.cola.service.product.entity;
 
-import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.lib.jpa.entity.AbstractEntity;
 
 import java.util.List;
 

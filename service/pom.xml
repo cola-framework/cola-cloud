@@ -40,22 +40,22 @@
 
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.beans</groupId>
+            <groupId>com.cola.lib.beans</groupId>
             <artifactId>cola-beans</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.apidoc</groupId>
+            <groupId>com.cola.lib.apidoc</groupId>
             <artifactId>cola-apidoc</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.logging</groupId>
+            <groupId>com.cola.lib.logging</groupId>
             <artifactId>cola-logging</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.session</groupId>
+            <groupId>com.cola.lib.session</groupId>
             <artifactId>cola-session</artifactId>
             <version>${project.version}</version>
         </dependency>

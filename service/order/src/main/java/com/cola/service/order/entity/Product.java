@@ -15,7 +15,7 @@
  */
 package com.cola.service.order.entity;
 
-import com.cola.libs.jpa.entity.AbstractEntity;
+import com.cola.lib.jpa.entity.AbstractEntity;
 
 import javax.persistence.*;
 import java.util.List;

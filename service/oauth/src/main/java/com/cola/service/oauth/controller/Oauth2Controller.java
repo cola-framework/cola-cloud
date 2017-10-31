@@ -15,7 +15,7 @@
  */
 package com.cola.service.oauth.controller;
 
-import com.cola.libs.beans.web.restful.ResponseMessage;
+import com.cola.lib.beans.web.restful.ResponseMessage;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestHeader;
