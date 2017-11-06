@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro">
+    <group name='base.min'>
+        <css>/src/css/*</css>
+        <js>/src/js/*</js>
+    </group>
+</groups>

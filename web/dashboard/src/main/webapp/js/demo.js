@@ -45,8 +45,8 @@ $(function () {
    * @returns String The value of the setting | null
    */
   function get(name) {
-    if (typeof (Storage) !== 'undefined') {
-      return localStorage.getItem(name)
+    if (typeof (localStorage) !== 'undefined') {
+		return localStorage.getItem(name);
     } else {
       window.alert('Please use a modern browser to properly view this template!')
     }
@@ -60,8 +60,8 @@ $(function () {
    * @returns void
    */
   function store(name, val) {
-    if (typeof (Storage) !== 'undefined') {
-      localStorage.setItem(name, val)
+    if (typeof (localStorage) !== 'undefined') {
+		return localStorage.setItem(name, val);
     } else {
       window.alert('Please use a modern browser to properly view this template!')
     }

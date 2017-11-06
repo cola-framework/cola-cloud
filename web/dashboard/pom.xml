@@ -13,4 +13,38 @@
     <artifactId>cola-dashboard</artifactId>
     <packaging>jar</packaging>
 
+    <dependencies>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>ro.isdc.wro4j</groupId>
+                <artifactId>wro4j-maven-plugin</artifactId>
+                <version>${wro4j.version}</version>
+                <executions>
+                    <execution>
+                        <id>wro4j</id>
+                        <phase>compile</phase>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <minimize>true</minimize>
+                    <contextFolder>${basedir}/src/main/webapp</contextFolder>
+                    <wroFile>${basedir}/src/main/webapp/WEB-INF/wro.xml</wroFile>
+                    <extraConfigFile>${basedir}/src/main/resources/wro.properties</extraConfigFile>
+                    <cssDestinationFolder>${basedir}/src/main/webapp/static/css</cssDestinationFolder>
+                    <jsDestinationFolder>${basedir}/src/main/webapp/static/js</jsDestinationFolder>
+                    <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

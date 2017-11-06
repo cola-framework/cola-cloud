@@ -30,6 +30,7 @@
         <project.version>0.0.1-SNAPSHOT</project.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+        <wro4j.version>1.7.9</wro4j.version>
 
         <commons-lang.version>2.6</commons-lang.version>
         <commons-codec.version>1.6</commons-codec.version>
