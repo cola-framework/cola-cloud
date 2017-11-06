@@ -40,8 +40,8 @@
                     <contextFolder>${basedir}/src/main/webapp</contextFolder>
                     <wroFile>${basedir}/src/main/webapp/WEB-INF/wro.xml</wroFile>
                     <extraConfigFile>${basedir}/src/main/resources/wro.properties</extraConfigFile>
-                    <cssDestinationFolder>${basedir}/src/main/webapp/static/css</cssDestinationFolder>
-                    <jsDestinationFolder>${basedir}/src/main/webapp/static/js</jsDestinationFolder>
+                    <cssDestinationFolder>${basedir}/src/main/webapp/css</cssDestinationFolder>
+                    <jsDestinationFolder>${basedir}/src/main/webapp/js</jsDestinationFolder>
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
                 </configuration>
             </plugin>
