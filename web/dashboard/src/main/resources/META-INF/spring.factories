@@ -1,2 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.cola.web.dashboard.DashboardAutoConfiguration
+  com.cola.web.dashboard.configuratioin.DashboardAutoConfiguration

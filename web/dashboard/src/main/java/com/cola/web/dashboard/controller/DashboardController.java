@@ -1,4 +1,4 @@
-package com.cola.web.dashboard;
+package com.cola.web.dashboard.controller;
 
 import com.netflix.appinfo.AmazonInfo;
 import com.netflix.appinfo.ApplicationInfoManager;
@@ -27,19 +27,20 @@ import java.util.*;
  * @author Spencer Gibb
  */
 @Controller
-@RequestMapping("${eureka.dashboard.path:/}")
+@RequestMapping("${cola.dashboard.path:/}")
 public class DashboardController {
 
-    @Value("${eureka.dashboard.path:/}")
+    @Value("${cola.dashboard.path:/}")
     private String dashboardPath = "";
+
     private ApplicationInfoManager applicationInfoManager;
 
     public DashboardController(ApplicationInfoManager applicationInfoManager) {
         this.applicationInfoManager = applicationInfoManager;
     }
 
-    @RequestMapping(method = RequestMethod.GET)
-    public String status(HttpServletRequest request, Map<String, Object> model) {
+    @RequestMapping(method = RequestMethod.GET, produces = "text/html")
+    public String dashboard(HttpServletRequest request, Map<String, Object> model) {
         populateBase(request, model);
         populateApps(model);
         StatusInfo statusInfo;
@@ -54,7 +55,7 @@ public class DashboardController {
         return "dashboard";
     }
 
-    @RequestMapping(value = "/lastn", method = RequestMethod.GET)
+    @RequestMapping(value = "/lastn", method = RequestMethod.GET, produces = "text/html")
     public String lastn(HttpServletRequest request, Map<String, Object> model) {
         populateBase(request, model);
         PeerAwareInstanceRegistryImpl registry = (PeerAwareInstanceRegistryImpl) getRegistry();
@@ -70,7 +71,7 @@ public class DashboardController {
             lastNRegistered.add(registeredInstance(entry.second(), entry.first()));
         }
         model.put("lastNRegistered", lastNRegistered);
-        return "eureka/lastn";
+        return "lastn";
     }
 
     private Map<String, Object> registeredInstance(String id, long date) {
@@ -209,7 +210,7 @@ public class DashboardController {
                     instance.put("url", url);
                     boolean isHref = url != null && url.startsWith("http");
                     instance.put("isHref", isHref);
-					/*
+                    /*
 					 * String id = p.first(); String url = p.second(); if(url != null &&
 					 * url.startsWith("http")){
 					 * buf.append("<a href=\"").append(url).append("\">"); }else { url =
