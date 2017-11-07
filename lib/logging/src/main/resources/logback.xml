@@ -13,7 +13,7 @@
     <property name="FILE_LOG_PATTERN"
               value="%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${PID:- } [%t] %logger : %m%n%wex"/>
 
-    <turboFilter class="com.cola.libs.logging.filter.DynamicLoggerFilter"/>
+    <turboFilter class="com.cola.lib.logging.filter.DynamicLoggerFilter"/>
 
     <!-- 控制台输出 -->
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">

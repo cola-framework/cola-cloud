@@ -36,7 +36,7 @@ import javax.persistence.OptimisticLockException;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
-@DeclarePrecedence("com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
+@DeclarePrecedence("com.cola.lib.jpa.aspect.RetryOnOptimisticLockingFailureAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
 public class RetryOnOptimisticLockingFailureAspect {
 
     private static Logger logger;
@@ -44,11 +44,11 @@ public class RetryOnOptimisticLockingFailureAspect {
     /**
      * Retry on opt failure.
      */
-    @Pointcut("execution(@com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure * *(..))")
+    @Pointcut("execution(@com.cola.lib.jpa.annotation.RetryOnOptimisticLockingFailure * *(..))")
     public void executionOfROLFMethod() {
     }
 
-    @Pointcut("(execution(public * ((@com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure *)+).*(..)) && @within(com.cola.libs.jpa.annotation.RetryOnOptimisticLockingFailure))")
+    @Pointcut("(execution(public * ((@com.cola.lib.jpa.annotation.RetryOnOptimisticLockingFailure *)+).*(..)) && @within(com.cola.lib.jpa.annotation.RetryOnOptimisticLockingFailure))")
     public void executionOfAnyPublicMethodInAtROLFType() {
     }
 

@@ -12,6 +12,6 @@ import org.springframework.context.annotation.PropertySource;
 @Configuration
 @EnableAutoConfiguration(exclude={FallbackWebSecurityAutoConfiguration.class})
 @PropertySource("classpath:hikariCP.properties")
-@EntityScan(basePackages = {"com.cola.libs"})
+@EntityScan(basePackages = {"com.cola.lib"})
 public class TestConfiguration {
 }

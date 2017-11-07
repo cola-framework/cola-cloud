@@ -33,12 +33,12 @@
     </build>
     <dependencies>
         <dependency>
-            <groupId>com.cola.libs.logging</groupId>
+            <groupId>com.cola.lib.logging</groupId>
             <artifactId>cola-logging</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.session</groupId>
+            <groupId>com.cola.lib.session</groupId>
             <artifactId>cola-session</artifactId>
             <version>${project.version}</version>
         </dependency>

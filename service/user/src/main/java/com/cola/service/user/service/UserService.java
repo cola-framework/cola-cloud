@@ -1,6 +1,6 @@
 package com.cola.service.user.service;
 
-import com.cola.libs.beans.vo.UserBean;
+import com.cola.lib.beans.vo.UserBean;
 
 /**
  * Created by jiachen.shi on 6/20/2017.

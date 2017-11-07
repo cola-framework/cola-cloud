@@ -4,6 +4,6 @@
         <include within="com.cola..*"/>
     </weaver>
     <aspects>
-        <aspect name="com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect"/>
+        <aspect name="com.cola.lib.jpa.aspect.RetryOnOptimisticLockingFailureAspect"/>
     </aspects>
 </aspectj>

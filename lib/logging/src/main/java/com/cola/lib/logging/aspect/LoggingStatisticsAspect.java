@@ -33,7 +33,7 @@ import java.lang.reflect.Parameter;
  * Created by jiachen.shi on 9/6/2016.
  */
 @Aspect
-@DeclarePrecedence("com.cola.libs.jpa.aspect.RetryOnOptimisticLockingFailureAspect,com.cola.libs.logging.aspect.LoggingStatisticsAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
+@DeclarePrecedence("com.cola.lib.jpa.aspect.RetryOnOptimisticLockingFailureAspect,com.cola.lib.logging.aspect.LoggingStatisticsAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
 public class LoggingStatisticsAspect {
 
     private final String DEFAULT_PACKAGE = "com.cola";
@@ -48,7 +48,7 @@ public class LoggingStatisticsAspect {
     public void excluedTests(){
     }
 
-    @Pointcut("execution(* com.cola.libs.logging..*.*(..))")
+    @Pointcut("execution(* com.cola.lib.logging..*.*(..))")
     public void excludedPackages() {
     }
 
@@ -60,7 +60,7 @@ public class LoggingStatisticsAspect {
     public void excludedConfiguration() {
     }
 
-/*    @Pointcut("@within(javax.persistence.Entity) || @within(javax.persistence.MappedSuperclass) || execution(* (com.cola.libs.jpa.entity.AbstractEntity+).*(..))")
+/*    @Pointcut("@within(javax.persistence.Entity) || @within(javax.persistence.MappedSuperclass) || execution(* (com.cola.lib.jpa.entity.AbstractEntity+).*(..))")
     public void excludedEntity() {
     }*/
     @Pointcut("execution(* com.cola..entity..*.*(..))")

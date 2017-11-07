@@ -32,7 +32,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("classpath:hikariCP.properties")
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@EntityScan(basePackages = {"com.cola.libs.jpa.test.entity"})
+@EntityScan(basePackages = {"com.cola.lib.jpa.test.entity"})
 public class TestConfiguration {
 
     @Bean

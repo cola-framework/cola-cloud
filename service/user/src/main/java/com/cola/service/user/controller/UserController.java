@@ -1,9 +1,9 @@
 package com.cola.service.user.controller;
 
 import com.cola.api.i18n.I18nService;
-import com.cola.libs.beans.enums.ResponseStatus;
-import com.cola.libs.beans.vo.UserBean;
-import com.cola.libs.beans.web.restful.ResponseMessage;
+import com.cola.lib.beans.enums.ResponseStatus;
+import com.cola.lib.beans.vo.UserBean;
+import com.cola.lib.beans.web.restful.ResponseMessage;
 import com.cola.service.user.service.UserService;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiOperation;

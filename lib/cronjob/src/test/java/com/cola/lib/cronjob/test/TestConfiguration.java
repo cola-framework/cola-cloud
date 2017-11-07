@@ -13,6 +13,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource("classpath:test.properties")
 @EnableAutoConfiguration
 @EnableTransactionManagement
-@EntityScan(basePackages = {"com.cola.libs"})
+@EntityScan(basePackages = {"com.cola.lib"})
 public class TestConfiguration {
 }

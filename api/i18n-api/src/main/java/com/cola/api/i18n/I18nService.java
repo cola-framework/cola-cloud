@@ -1,6 +1,6 @@
 package com.cola.api.i18n;
 
-import com.cola.libs.beans.web.restful.ResponseMessage;
+import com.cola.lib.beans.web.restful.ResponseMessage;
 import org.springframework.cloud.netflix.feign.FeignClient;
 import org.springframework.web.bind.annotation.*;
 

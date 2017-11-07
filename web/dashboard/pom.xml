@@ -15,8 +15,8 @@
 
     <dependencies>
         <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-freemarker</artifactId>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-netflix-eureka-server</artifactId>
         </dependency>
     </dependencies>
 
@@ -37,13 +37,25 @@
                 </executions>
                 <configuration>
                     <minimize>true</minimize>
-                    <contextFolder>${basedir}/src/main/webapp</contextFolder>
-                    <wroFile>${basedir}/src/main/webapp/WEB-INF/wro.xml</wroFile>
+                    <contextFolder>${basedir}/src/main/resources/static</contextFolder>
+                    <wroFile>src/main/resources/wro.xml</wroFile>
                     <extraConfigFile>${basedir}/src/main/resources/wro.properties</extraConfigFile>
-                    <cssDestinationFolder>${basedir}/src/main/webapp/css</cssDestinationFolder>
-                    <jsDestinationFolder>${basedir}/src/main/webapp/js</jsDestinationFolder>
+                    <cssDestinationFolder>${basedir}/src/main/resources/static/css</cssDestinationFolder>
+                    <jsDestinationFolder>${basedir}/src/main/resources/static/js</jsDestinationFolder>
                     <wroManagerFactory>ro.isdc.wro.maven.plugin.manager.factory.ConfigurableWroManagerFactory</wroManagerFactory>
                 </configuration>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.webjars</groupId>
+                        <artifactId>jquery</artifactId>
+                        <version>${jquery.version}</version>
+                    </dependency>
+                    <dependency>
+                        <groupId>org.webjars</groupId>
+                        <artifactId>bootstrap</artifactId>
+                        <version>${bootstrap.version}</version>
+                    </dependency>
+                </dependencies>
             </plugin>
         </plugins>
     </build>

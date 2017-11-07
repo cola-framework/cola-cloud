@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<groups xmlns="http://www.isdc.ro/wro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.isdc.ro/wro wro.xsd">
+    <group name='base.min'>
+        <!-- Bootstrap 3.3.7 -->
+        <css>/css/bootstrap.min.css</css>
+        <!-- Font Awesome -->
+        <css>/css/font-awesome.min.css</css>
+        <!-- Ionicons -->
+        <css>/css/ionicons.min.css</css>
+        <!-- Theme style -->
+        <css>/css/AdminLTE.min.css</css>
+        <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
+        <css>/css/_all-skins.min.css</css>
+        <!-- jQuery 3 -->
+        <js>/js/jquery.min.js</js>
+        <!-- Slimscroll -->
+        <js>/js/jquery.slimscroll.min.js</js>
+        <!-- Bootstrap 3.3.7 -->
+        <js>/js/bootstrap.min.js</js>
+        <!-- AdminLTE App -->
+        <js>/js/adminlte.min.js</js>
+    </group>
+    <group name='custom'>
+        <js>/js/demo.js</js>
+    </group>
+</groups>

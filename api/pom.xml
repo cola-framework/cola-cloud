@@ -22,12 +22,12 @@
 
     <dependencies>
 	    <dependency>
-            <groupId>com.cola.libs.beans</groupId>
+            <groupId>com.cola.lib.beans</groupId>
             <artifactId>cola-beans</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
-            <groupId>com.cola.libs.httpclient</groupId>
+            <groupId>com.cola.lib.httpclient</groupId>
             <artifactId>cola-httpclient</artifactId>
             <version>${project.version}</version>
         </dependency>
