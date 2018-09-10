@@ -32,57 +32,59 @@ public class UserController {
     @Autowired
     private I18nService i18nService;
 
-    @ApiOperation(value="getUser", notes="find user by name")
+    @ApiOperation(value = "getUser", notes = "find user by name")
     @ApiImplicitParam(name = "name", value = "User Name/Mobile number/Email Address", required = true, dataType = "String")
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
     public @ResponseBody
-    ResponseMessage<UserBean> getUser(@RequestParam("name") String name){
+    ResponseMessage<UserBean> getUser(@RequestParam("name") String name) {
         List<String> attributes = new ArrayList<>();
         attributes.add("default.main.login");
         attributes.add("default.main.size");
         ResponseMessage<Map<String, String>> mapResponseMessage = i18nService.geti18nMessage(attributes);
 
         ResponseMessage<UserBean> result;
-        if(StringUtils.isNotEmpty(name)){
+        if (StringUtils.isNotEmpty(name)) {
             UserBean userBean = userService.getUserByNameOrMobileOrEmail(name);
-            if(null != userBean){
+            if (null != userBean) {
                 result = ResponseMessage.ok(userBean);
-            }else{
+            } else {
                 result = ResponseMessage.error(ResponseStatus.ERROR.getCode(), ResponseStatus.ERROR.getMsgKey());
             }
-        }else{
+        } else {
             result = ResponseMessage.error(ResponseStatus.ERROR.getCode(), ResponseStatus.ERROR.getMsgKey());
         }
         return result;
     }
 
-    @ApiOperation(value="createUser", notes="create user info")
+    @ApiOperation(value = "createUser", notes = "create user info")
     @ApiImplicitParam(name = "userBean", value = "User Info", required = true, dataType = "UserBean")
     @RequestMapping(value = "/createUser", method = RequestMethod.POST)
-    public @ResponseBody ResponseMessage<UserBean> createUser(@RequestBody UserBean userBean){
+    public @ResponseBody
+    ResponseMessage<UserBean> createUser(@RequestBody UserBean userBean) {
         ResponseMessage<UserBean> result = null;
-        try{
-            if(null != userBean){
+        try {
+            if (null != userBean) {
                 userService.createUser(userBean);
                 result = ResponseMessage.ok(userBean);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             result = ResponseMessage.error(ResponseStatus.ERROR.getCode(), ResponseStatus.ERROR.getMsgKey());
         }
         return result;
     }
 
-    @ApiOperation(value="updateUser", notes="update user info")
+    @ApiOperation(value = "updateUser", notes = "update user info")
     @ApiImplicitParam(name = "userBean", value = "User Info", required = true, dataType = "UserBean")
     @RequestMapping(value = "/updateUser", method = RequestMethod.POST)
-    public @ResponseBody ResponseMessage<UserBean> updateUser(@RequestBody UserBean userBean){
+    public @ResponseBody
+    ResponseMessage<UserBean> updateUser(@RequestBody UserBean userBean) {
         ResponseMessage<UserBean> result = null;
-        try{
-            if(null != userBean){
+        try {
+            if (null != userBean) {
                 userService.updateUser(userBean);
                 result = ResponseMessage.ok(userBean);
             }
-        }catch (Exception e){
+        } catch (Exception e) {
             result = ResponseMessage.error(ResponseStatus.ERROR.getCode(), ResponseStatus.ERROR.getMsgKey());
         }
         return result;

@@ -42,7 +42,7 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Cacheable
-@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "role_id"})}, indexes = {@Index(name="index_role", columnList = "table_type, role_id")})
+@Table(name = "t_role_lp", uniqueConstraints = {@UniqueConstraint(columnNames = {"table_type", "role_id"})}, indexes = {@Index(name = "index_role", columnList = "table_type, role_id")})
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @DiscriminatorColumn(name = "table_type", discriminatorType = DiscriminatorType.STRING, length = 30)
 @DiscriminatorValue("role_lp")
@@ -54,7 +54,7 @@ public class Rolelp extends AbstractEntity {
     private String isoCode;
 
     @ManyToOne(cascade = {CascadeType.REFRESH}, optional = false, fetch = FetchType.LAZY)
-    @JoinColumn(name="role_id", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private Role role;
 
     @Column(length = 50)
