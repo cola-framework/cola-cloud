@@ -75,6 +75,7 @@
         <quartz.version>2.3.0</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
         <wro4j.version>1.7.9</wro4j.version>
+        <lombok.version>1.16.18</lombok.version>
         <shiro.version>1.4.0</shiro.version>
         <webmagic.version>0.7.3</webmagic.version>
         <openfeign.version>9.5.0</openfeign.version>
@@ -802,6 +803,14 @@
                 <artifactId>aspectjweaver</artifactId>
                 <version>${aspectj.version}</version>
                 <scope>compile</scope>
+            </dependency>
+
+            <!-- lombok -->
+            <dependency>
+                <groupId>org.projectlombok</groupId>
+                <artifactId>lombok</artifactId>
+                <version>${lombok.version}</version>
+                <scope>provided</scope>
             </dependency>
 
             <!-- webmagic -->
