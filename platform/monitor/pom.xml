@@ -7,8 +7,8 @@
         <groupId>com.cola.platform</groupId>
         <version>0.0.1</version>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
+    <modelVersion>4.0.0</modelVersion>
     <groupId>com.cola.platform.monitor</groupId>
     <artifactId>cola-monitor</artifactId>
     <packaging>jar</packaging>
