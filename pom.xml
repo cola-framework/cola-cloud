@@ -19,11 +19,11 @@
     <modules>
         <module>lib</module>
         <module>TLMALL</module>
+        <module>platform</module>
         <!--
         <module>api</module>
         <module>web</module>
         <module>service</module>
-        <module>platform</module>
         -->
     </modules>
 
