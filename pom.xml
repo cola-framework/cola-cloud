@@ -17,11 +17,14 @@
     <description>Cola Project</description>
 
     <modules>
-        <module>api</module>
         <module>lib</module>
+        <module>TLMALL</module>
+        <!--
+        <module>api</module>
         <module>web</module>
         <module>service</module>
         <module>platform</module>
+        -->
     </modules>
 
     <properties>
