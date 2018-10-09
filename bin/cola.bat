@@ -40,7 +40,7 @@ set RUN_MODE=%2
 set JVM_ARGS=
 set RUN_ARGS=
 set DEBUG_PORT=
-set JAR_FILE=*cola-%APP_NAME%-?.?.?.jar
+set JAR_FILE=*%APP_NAME%-?.?.?.jar
 
 if ""%RUN_MODE%"" == ""debug"" (
 	setlocal enabledelayedexpansion
@@ -102,7 +102,7 @@ if defined M2_HOME (
 )
 
 set MAVEN_CMD=mvn.cmd
-%MAVEN_CMD% -version >NUL 2>&1
+call %MAVEN_CMD% -version >NUL 2>&1
 if "%ERRORLEVEL%" == "0" goto runmvn
 
 echo.
