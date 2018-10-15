@@ -1,4 +1,4 @@
-package com.cola.platform.gateway.security.cache;
+package com.pttl.tlmall.platform.gateway.security.cache;
 
 import org.apache.shiro.cache.Cache;
 import org.apache.shiro.cache.CacheException;

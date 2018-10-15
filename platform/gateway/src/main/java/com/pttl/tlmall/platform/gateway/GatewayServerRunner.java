@@ -1,4 +1,4 @@
-package com.cola.platform.gateway;
+package com.pttl.tlmall.platform.gateway;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
