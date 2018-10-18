@@ -10,15 +10,15 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 /**
  * Created by jiachen.shi on 6/19/2017.
  */
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = TestConfiguration.class)
-public class ScheduleCronJobTest {
-
-    private static Logger logger = LoggerFactory.getLogger(ScheduleCronJobTest.class);
-
-    @Test
-    public void init(){
-        logger.info("start");
-    }
-
-}
+//@RunWith(SpringJUnit4ClassRunner.class)
+//@ContextConfiguration(classes = TestConfiguration.class)
+//public class ScheduleCronJobTest {
+//
+//    private static Logger logger = LoggerFactory.getLogger(ScheduleCronJobTest.class);
+//
+//    @Test
+//    public void init(){
+//        logger.info("start");
+//    }
+//
+//}

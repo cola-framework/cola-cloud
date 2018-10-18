@@ -9,10 +9,10 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 /**
  * Created by jiachen.shi on 6/19/2017.
  */
-@Configuration
-@PropertySource("classpath:test.properties")
-@EnableAutoConfiguration
-@EnableTransactionManagement
-@EntityScan(basePackages = {"com.cola.lib"})
-public class TestConfiguration {
-}
+//@Configuration
+//@PropertySource("classpath:test.properties")
+//@EnableAutoConfiguration
+//@EnableTransactionManagement
+//@EntityScan(basePackages = {"com.cola.lib"})
+//public class TestConfiguration {
+//}
