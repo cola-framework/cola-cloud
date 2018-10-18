@@ -1,2 +1,3 @@
 language: java
-script: true
+jdk:
+- oraclejdk8
