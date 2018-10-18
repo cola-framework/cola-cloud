@@ -18,12 +18,9 @@
 
     <modules>
         <module>lib</module>
-        <module>TLMALL</module>
-        <!--
         <module>api</module>
         <module>web</module>
         <module>service</module>
-        -->
         <module>platform</module>
     </modules>
 
