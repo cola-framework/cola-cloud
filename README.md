@@ -1,5 +1,5 @@
 # Cola eCommerce Framework
-[![Travis](https://travis-ci.org/cola-framework/cola.svg?branch=master)](https://travis-ci.org/cola-framework/cola.svg?branch=master)  ![Travis](https://img.shields.io/badge/language-java-orange.svg?sytle=flag) ![Travis](https://img.shields.io/conda/pn/conda-forge/py.svg)  ![Travis](https://img.shields.io/badge/release-v0.0.1-green.svg?sytle=flag)  ![Travis](https://img.shields.io/packagist/l/doctrine/orm.svg)
+[![Travis](https://travis-ci.org/cola-framework/cola.svg?branch=master)](https://travis-ci.org/cola-framework/cola)  ![Travis](https://img.shields.io/badge/language-java-orange.svg?sytle=flag) ![Travis](https://img.shields.io/conda/pn/conda-forge/py.svg)  ![Travis](https://img.shields.io/badge/release-v0.0.1-green.svg?sytle=flag)  ![Travis](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ### 基于SpringCloud搭建的微服务框架
 
 # 目录结构
