@@ -1,4 +1,4 @@
-# Cola eCommerce Framework
+# Cola Cloud Framework
 [![Travis](https://img.shields.io/travis/cola-framework/cola.svg)](https://travis-ci.org/cola-framework/cola)   ![Travis](https://img.shields.io/badge/release-v0.0.1-green.svg?sytle=flag)  ![Travis](https://img.shields.io/badge/language-java-orange.svg?sytle=flag)   ![Travis](https://img.shields.io/badge/platform-win32%20%7C%20win64%20%7C%20osx64%20%7C%20linux64-lightgrey.svg) ![Travis](https://img.shields.io/packagist/l/doctrine/orm.svg)
 ### 基于SpringCloud搭建的微服务框架
 
