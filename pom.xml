@@ -34,7 +34,7 @@
         <commons-lang.version>2.6</commons-lang.version>
         <commons-codec.version>1.6</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
-        <servlet.version>2.5</servlet.version>
+        <servlet.version>3.1.0</servlet.version>
         <junit.version>4.12</junit.version>
         <assertj.version>2.6.0</assertj.version>
         <jsoup.version>1.10.3</jsoup.version>
@@ -75,6 +75,7 @@
         <quartz.version>2.3.0</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
         <wro4j.version>1.7.9</wro4j.version>
+        <wsdl4j.version>1.6.3</wsdl4j.version>
         <lombok.version>1.16.18</lombok.version>
         <shiro.version>1.4.0</shiro.version>
         <webmagic.version>0.7.3</webmagic.version>
@@ -325,7 +326,7 @@
             <!-- Servlet -->
             <dependency>
                 <groupId>javax.servlet</groupId>
-                <artifactId>servlet-api</artifactId>
+                <artifactId>javax.servlet-api</artifactId>
                 <version>${servlet.version}</version>
                 <scope>provided</scope>
             </dependency>
@@ -805,6 +806,14 @@
                 <scope>compile</scope>
             </dependency>
 
+            <!-- webservice -->
+            <dependency>
+                <groupId>wsdl4j</groupId>
+                <artifactId>wsdl4j</artifactId>
+                <version>${wsdl4j.version}</version>
+                <scope>compile</scope>
+            </dependency>
+
             <!-- lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
@@ -1015,9 +1024,26 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-web-services</artifactId>
+                <version>${spring-boot.version}</version>
+                <scope>compile</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-starter-web</artifactId>
                 <version>${spring-boot.version}</version>
                 <scope>compile</scope>
+                <exclusions>
+                    <exclusion>
+                        <groupId>org.springframework.boot</groupId>
+                        <artifactId>spring-boot-starter-tomcat</artifactId>
+                    </exclusion>
+                </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-starter-undertow</artifactId>
+                <version>${spring-boot.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.springframework.boot</groupId>
