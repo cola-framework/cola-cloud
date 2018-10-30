@@ -13,7 +13,8 @@ import org.springframework.web.bind.annotation.*;
 public interface UserService {
 
     @RequestMapping(value = "/getUser", method = RequestMethod.GET)
-    @ResponseBody ResponseMessage<UserBean> getUser(@RequestParam("name") String name);
+    @ResponseBody
+    ResponseMessage<UserBean> getUser(@RequestParam("name") String name);
 
     @RequestMapping(value = "/createUser", method = RequestMethod.POST)
     @ResponseBody ResponseMessage<UserBean> createUser(@RequestBody UserBean userBean);

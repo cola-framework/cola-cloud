@@ -1,4 +1,4 @@
-package com.pttl.tlmall.platform.gateway.security.cache;
+package com.cola.platform.gateway.security.cache;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

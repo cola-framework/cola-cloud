@@ -15,8 +15,10 @@
  */
 package com.cola.lib.cache.hibernate;
 
-import com.cola.lib.cache.hibernate.region.CollectionRegion;
-import com.cola.lib.cache.hibernate.region.*;
+import com.cola.lib.cache.hibernate.region.CustomizeNaturalIdRegion;
+import com.cola.lib.cache.hibernate.region.DefaultEntityRegion;
+import com.cola.lib.cache.hibernate.region.DefaultQueryResultRegion;
+import com.cola.lib.cache.hibernate.region.DefaultTimestampRegion;
 import com.cola.lib.cache.management.CacheManagerFactory;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
@@ -75,7 +77,7 @@ public class CustomizeRegionFactory implements RegionFactory {
 
     @Override
     public org.hibernate.cache.spi.CollectionRegion buildCollectionRegion(String regionName, Properties properties, CacheDataDescription metaData) throws CacheException {
-        return new CollectionRegion(regionName, this.cacheManager.getCache(regionName), properties, this.settings, metaData);
+        return new com.cola.lib.cache.hibernate.region.CollectionRegion(regionName, this.cacheManager.getCache(regionName), properties, this.settings, metaData);
     }
 
     @Override

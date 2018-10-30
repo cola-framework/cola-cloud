@@ -15,8 +15,8 @@
 // */
 //package com.cola.lib.jpa.test;
 //
-//import com.cola.lib.jpa.service.FlexibleSearchService;
-//import com.cola.lib.jpa.service.ModelService;
+//import FlexibleSearchService;
+//import ModelService;
 //import com.cola.lib.jpa.test.entity.OrderItemTest;
 //import com.cola.lib.jpa.test.entity.OrderTest;
 //import com.cola.lib.jpa.test.entity.PriceRowTest;

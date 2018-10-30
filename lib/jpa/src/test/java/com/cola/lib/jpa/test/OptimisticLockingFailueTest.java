@@ -15,15 +15,9 @@
  */
 package com.cola.lib.jpa.test;
 
-import com.cola.lib.jpa.annotation.RetryOnOptimisticLockingFailure;
 import com.cola.lib.jpa.service.ModelService;
 
-import org.junit.Assert;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashMap;
-import java.util.Map;
 
 /**
  * cola

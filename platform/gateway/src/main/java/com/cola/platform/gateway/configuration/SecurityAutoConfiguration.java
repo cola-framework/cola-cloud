@@ -1,6 +1,6 @@
-package com.pttl.tlmall.platform.gateway.configuration;
+package com.cola.platform.gateway.configuration;
 
-import com.pttl.tlmall.platform.gateway.security.cache.SecurityCacheManager;
+import com.cola.platform.gateway.security.cache.SecurityCacheManager;
 import org.apache.shiro.cache.CacheManager;
 import org.apache.shiro.mgt.RememberMeManager;
 import org.apache.shiro.session.mgt.SessionManager;

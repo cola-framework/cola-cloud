@@ -36,7 +36,7 @@ import javax.persistence.OptimisticLockException;
  * Created by jiachen.shi on 7/20/2016.
  */
 @Aspect
-@DeclarePrecedence("com.cola.lib.jpa.aspect.RetryOnOptimisticLockingFailureAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
+@DeclarePrecedence("RetryOnOptimisticLockingFailureAspect,org.springframework.transaction.aspectj.AnnotationTransactionAspect")
 public class RetryOnOptimisticLockingFailureAspect {
 
     private static Logger logger;

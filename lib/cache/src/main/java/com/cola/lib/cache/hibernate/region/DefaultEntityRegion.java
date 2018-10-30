@@ -15,8 +15,8 @@
  */
 package com.cola.lib.cache.hibernate.region;
 
-import com.cola.lib.cache.hibernate.strategy.AbstractRegionAccessStrategy;
 import com.cola.lib.cache.hibernate.strategy.AccessStrategyAdapter;
+import com.cola.lib.cache.hibernate.strategy.AbstractRegionAccessStrategy;
 import org.hibernate.boot.spi.SessionFactoryOptions;
 import org.hibernate.cache.CacheException;
 import org.hibernate.cache.spi.CacheDataDescription;
