@@ -22,7 +22,6 @@ package com.cola.lib.beans.enums;
 public enum ResponseStatus {
 
     OK("response.header.message.ok", 200),
-
     ERROR("response.header.message.error", 500);
 
     private String msgKey;
