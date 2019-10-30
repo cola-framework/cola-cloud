@@ -52,7 +52,7 @@
         <hamcrest.version>1.1</hamcrest.version>
         <hystrix.version>1.5.6</hystrix.version>
         <servo.version>0.10.1</servo.version>
-        <jackson.version>2.9.7</jackson.version>
+        <jackson.version>2.10.0</jackson.version>
         <jsonpath.verson>2.4.0</jsonpath.verson>
         <httpclient.version>4.3.6</httpclient.version>
         <slf4j.version>1.7.10</slf4j.version>
