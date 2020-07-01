@@ -72,7 +72,7 @@
         <swagger2.version>2.7.0</swagger2.version>
         <druid.version>1.0.31</druid.version>
         <ignite.version>1.8.0</ignite.version>
-        <quartz.version>2.3.0</quartz.version>
+        <quartz.version>2.3.2</quartz.version>
         <aspectj.version>1.8.9</aspectj.version>
         <wro4j.version>1.7.9</wro4j.version>
         <wsdl4j.version>1.6.3</wsdl4j.version>
