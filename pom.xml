@@ -35,7 +35,7 @@
         <commons-codec.version>1.6</commons-codec.version>
         <commons-collections.version>3.2.2</commons-collections.version>
         <servlet.version>3.1.0</servlet.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <assertj.version>2.6.0</assertj.version>
         <jsoup.version>1.10.3</jsoup.version>
         <xstream.version>1.4.9</xstream.version>
