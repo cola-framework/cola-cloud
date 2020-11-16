@@ -38,7 +38,7 @@
         <junit.version>4.12</junit.version>
         <assertj.version>2.6.0</assertj.version>
         <jsoup.version>1.10.3</jsoup.version>
-        <xstream.version>1.4.9</xstream.version>
+        <xstream.version>1.4.13-java7</xstream.version>
         <joda-time.version>2.9.6</joda-time.version>
         <asm.version>5.0.4</asm.version>
         <aws.version>1.9.3</aws.version>
