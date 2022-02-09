@@ -62,7 +62,7 @@
         <lucene.version>7.5.0</lucene.version>
         <hikariCP.version>2.4.7</hikariCP.version>
         <mysql.version>5.1.39</mysql.version>
-        <hibernate.version>5.2.10.Final</hibernate.version>
+        <hibernate.version>5.4.24.Final</hibernate.version>
         <hibernate-validator.version>5.4.1.Final</hibernate-validator.version>
         <powermock.version>1.6.5</powermock.version>
         <raven.version>6.0.0</raven.version>
