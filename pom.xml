@@ -77,7 +77,7 @@
         <wro4j.version>1.7.9</wro4j.version>
         <wsdl4j.version>1.6.3</wsdl4j.version>
         <lombok.version>1.16.18</lombok.version>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.7.1</shiro.version>
         <webmagic.version>0.7.3</webmagic.version>
         <openfeign.version>9.5.0</openfeign.version>
         <ignite-hibernate.version>1.2.0-incubating</ignite-hibernate.version>
