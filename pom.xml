@@ -68,7 +68,7 @@
         <raven.version>6.0.0</raven.version>
         <eureka.version>1.6.2</eureka.version>
         <jersey.version>1.19.1</jersey.version>
-        <drools.version>6.5.0.Final</drools.version>
+        <drools.version>7.60.0.Final</drools.version>
         <swagger2.version>2.7.0</swagger2.version>
         <druid.version>1.0.31</druid.version>
         <ignite.version>1.8.0</ignite.version>
